@@ -30,7 +30,15 @@ namespace Solve_Funktion
 
         public static double NextDouble(int Start, int End)
         {
-            return Math.Round(((double)RDom.Next(Start, End)) + RDom.NextDouble(), Info.Rounding);
+            if (Info.UseDecimals)
+            {
+                return Math.Round(((double)RDom.Next(Start, End)) + RDom.NextDouble(), Info.Rounding);
+            }
+            else
+            {
+                return (double)RDom.Next(Start, End);
+            }
+
         }
 
         public static bool RandomBool()

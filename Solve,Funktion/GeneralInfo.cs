@@ -3,75 +3,70 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.ComponentModel;
-
+using System.Threading;
 
 namespace Solve_Funktion
 {
-    internal class GeneralInfo : INotifyPropertyChanged
+    public class GeneralInfo : UIUpdateLimiter
     {
-        internal event PropertyChangedEventHandler PropertyChanged;
-        private Stopwatch Watch = new Stopwatch();
-
         private object Locker = new object();
 
-        private int totalattempts = 0;
-        private int totalspecies;
+        private long totalattempts = 0;
+        private int totalspecies = 0;
 
-        internal int TotalAttempts
+        public long TotalAttempts
         {
             get
             {
-                lock (Locker)
-                {
-                    return totalattempts;
-                }
+                return Interlocked.Read(ref totalattempts);
             }
             set
             {
-                lock (Locker)
-                {
-                    totalattempts = value;
-                    OnPropertyChanged("GetTotalAttempts");
-                }
+                Interlocked.Exchange(ref totalattempts, value);
+                UpdateProperty("GetTotalAttempts");
             }
         }
-        internal string GetTotalAttempts
+        public void IncrementTotalAttemps()
+        {
+            Interlocked.Increment(ref totalattempts);
+            UpdateProperty("GetTotalAttempts");
+        }
+        public void AddTotalAttempts(long ToAdd)
+        {
+            Interlocked.Add(ref totalattempts, ToAdd);
+            UpdateProperty("GetTotalAttempts");
+        }
+        public string GetTotalAttempts
         {
             get
             {
-                return totalattempts.ToString("N0");
+                return TotalAttempts.ToString("N0");
             }
         }
-        internal int TotalSpecies
+        
+        public int TotalSpecies
         {
             get
             {
-                return totalspecies;
+                int ToReturn = 0;
+                Interlocked.Exchange(ref ToReturn, totalspecies);
+                return ToReturn;
             }
             set
             {
-                totalspecies = value;
-                OnPropertyChanged("TotalSpecies");
+                Interlocked.Exchange(ref totalspecies, value);
+                UpdateProperty("TotalSpecies");
             }
         }
-
-        private void OnPropertyChanged(string property)
+        public void IncrementTotalSpecies()
         {
-            if (!Watch.IsRunning)
-            {
-                Watch.Start();
-            }
-            //the number is the time to wait between updates
-            if (Watch.ElapsedMilliseconds > 128)
-            {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(property));
-                    Watch.Reset();
-                }
-            }
+            Interlocked.Increment(ref totalspecies);
+            UpdateProperty("TotalSpecies");
+        }
+        public void AddTotalSpecies(int ToAdd)
+        {
+            Interlocked.Add(ref totalspecies, ToAdd);
+            UpdateProperty("TotalSpecies");
         }
     }
 }

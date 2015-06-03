@@ -13,8 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
-using System.Threading;
 using System.Globalization;
+using System.Collections.Concurrent;
 
 namespace Solve_Funktion
 {
@@ -23,6 +23,8 @@ namespace Solve_Funktion
     /// </summary>
     public partial class MainWindow : Window
     {
+        ConcurrentStack<SpecieInfoControl> SpecControls;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +32,7 @@ namespace Solve_Funktion
 
         private void Window_ContentRendered_1(object sender, EventArgs e)
         {
+            SpecControls = new ConcurrentStack<SpecieInfoControl>(new[] { SC8, SC7, SC6, SC5, SC4, SC3, SC2, SC1 });
             Task.Factory.StartNew(() => Logic());
         }
 
@@ -42,84 +45,46 @@ namespace Solve_Funktion
         private void GetSequence()
         {
             string SeqX = Info.SequenceX;
-            List<double> SeqRX = SeqX.Split(',').ToList().Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToList();
+            double[] SeqRX = SeqX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             string SeqY = Info.SequenceY;
-            List<double> SeqRY = SeqY.Split(',').ToList().Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToList();
-            for (int i = 0; i < SeqRX.Count; i++)
+            double[] SeqRY = SeqY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            Info.Seq = new Point[SeqRX.Length];
+            for (int i = 0; i < SeqRX.Length; i++)
             {
-                Info.Seq.Add(new Point(SeqRX[i], SeqRY[i]));
+                Info.Seq[i] = new Point(SeqRX[i], SeqRY[i]);
             }
         }
 
-        List<Genome> Species;
-        object LockerUpdateBestInfo = new object();
-
-        private async void FindFunctionWithSpecies()
+        private void FindFunctionWithSpecies()
         {
-            Species = CreateSpecies(Info.SpeciesAmount);
-            List<Task<Genome>> Tasks = new List<Task<Genome>>();
-            for (int i = 0; i < Species.Count; i++)
-            {
-                int Temp = i;
-                Tasks.Add(Task<Genome>.Run(() => Species[Temp].EvolveSolution()));
-            }
+            var SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
+            SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+            SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-            while (true)
-            {
-                Task<Genome> Finished = await Task.WhenAny(Tasks);
-                if (Finished.Result.BestCandidate.OffSet != 0)
-                {
-                    lock (LockerUpdateBestInfo)
-                    {
-                        int Index = Tasks.IndexOf(Finished);
-                        Tasks[Index] = Task<Genome>.Run(() => Finished.Result.EvolveSolution());
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Done");
-                    break;
-                }
-            }
-        }
-
-        private List<Genome> CreateSpecies(int Amount)
-        {
-            object LockerAdd = new object();
-            List<Genome> Species = new List<Genome>();
-            GeneralInfo GInfo = new GeneralInfo();
+            GeneralInfo GInfo = SpecieEnviroment.SetupEviroment(Info.SpeciesAmount);
             GeneralInfoControl.InsertInfo(GInfo);
-            // the amount of threads to use is tied to the SpecieInfoControl amount
-            List<SpecieInfoControl> SpecControls = new List<SpecieInfoControl>() { SC1, SC2, SC3, SC4, SC5, SC6, SC7, SC8 };
-            Parallel.For(0, Amount, i =>
-            {
-                Genome Spec = new SingleParentEvolution(this);
-                //Genome Spec = new EdgeEvolution(this);
-                Spec.CreateStorages();
-                Spec.SpecInfoControl = SpecControls[i];
-                Spec.GInfoControl = GeneralInfoControl;
-                lock (LockerAdd)
-                {
-                    Species.Add(Spec);
-                }
-            });
-            return Species;
+            SpecieEnviroment.SimulateEnviroment();
+
+            MessageBox.Show("Done");
         }
 
-        public void UpdateBestInfo()
+        public void SpecieEnviroment_OnSubscribeToSpecies(SubscribeEventEventArgs e)
         {
-            lock (LockerUpdateBestInfo)
+            SpecieInfoControl SpecControl;
+            if (SpecControls.TryPop(out SpecControl))
             {
-                List<Genome> SpecInfos = Species.Where(x => Tools.IsANumber(x.BestCandidate.OffSet))
-                                      .OrderBy(x => x.BestCandidate.OffSet)
-                                      .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToList();
-                SpeciesInfo SpecInfo = SpecInfos.First().SpecInfo;
+                e.Specie.OnSpecieCreated += SpecControl.InsertInfo;
+            }
+        }
 
-                if (BCandControl.SpecInfo == null ||
-                    BCandControl.SpecInfo.Offset > SpecInfo.Offset && SpecInfo.FunctionText != null)
-                {
-                    BCandControl.InsertInfo(SpecInfo);
-                }
+        public void SpecieEnviroment_OnBestEquationChanged(BestEquationEventArgs e)
+        {
+            if (BCandControl.BestFunction == null ||
+                BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset ||
+                BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset && 
+                BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
+            {
+                BCandControl.InsertInfo(e.BestEquationInfo);
             }
         }
     }

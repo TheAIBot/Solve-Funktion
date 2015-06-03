@@ -11,18 +11,18 @@ namespace Solve_Funktion
 {
     public static class RandomCand
     {
-
-        public static List<Equation> RandomCandidates(double Amount, ref Stack<Equation> CandidateStorage)
+        public static void MakeRandomEquations(Equation[] Candidates, int StartIndex, int Amount)
         {
-            List<Equation> AllCand = new List<Equation>((int)Amount);
-            for (int i = 0; i < Amount; i++)
+            for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
-                Equation Cand = CandidateStorage.Pop();
-                Cand.MakeRandom();
-                Cand.CalcOffSet();
-                AllCand.Add(Cand);
+                MakeRandomEquation(Candidates[i]);
             }
-            return AllCand;
+        }
+
+        public static void MakeRandomEquation(Equation Cand)
+        {
+            Cand.MakeRandom();
+            Cand.CalcTotalOffSet();
         }
     }
 }

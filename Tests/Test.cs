@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Solve_Funktion;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
+using System.Windows;
 
 namespace Tests
 {
@@ -14,6 +16,7 @@ namespace Tests
         [TestMethod]
         public void MassSingleOPCopy()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 SingleOPCopyTest();
@@ -21,12 +24,7 @@ namespace Tests
         }
         public void SingleOPCopyTest()
         {
-            Stack<Operator> OPStorage = new Stack<Operator>();
-            for (int i = 0; i < Info.MaxSize * 2; i++)
-            {
-                OPStorage.Push(new Operator());
-            }
-            Equation Cand = MakeRandomEquation(OPStorage);
+            Equation Cand = MakeRandomEquation(Info.MaxSize * 2);
             Operator Original = Cand.EquationParts.First();
             Operator Copy = new Operator();
             Original.GetCopy(Copy, Cand,Cand.EquationParts);
@@ -37,6 +35,7 @@ namespace Tests
         [TestMethod]
         public void MassCopyEquationInfoTest()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 CopyEquationInfoTest();
@@ -45,9 +44,9 @@ namespace Tests
         public void CopyEquationInfoTest()
         {
             Equation Cand = MakeRandomEquation();
-            Equation Derp = MakeRandomEquation(Cand.OPStorage);
-            Derp.StoreAndCleanup();
-            Equation Copy = Cand.GetClone(Derp);
+            Equation Derp = MakeRandomEquation();
+            Derp.Cleanup();
+            Equation Copy = Cand.MakeClone(Derp);
 
             EquationsAreSame(Cand, Copy);
         }
@@ -55,6 +54,7 @@ namespace Tests
         [TestMethod]
         public void MassEquationStoreAndCleanupTest()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 EquationStoreAndCleanupTest();
@@ -62,14 +62,9 @@ namespace Tests
         }
         public void EquationStoreAndCleanupTest()
         {
-            Stack<Operator> OPStorage = new Stack<Operator>();
-            for (int i = 0; i < Info.MaxSize * 2; i++)
-            {
-                OPStorage.Push(new Operator());
-            }
-            int StartOPCount = OPStorage.Count + Info.MaxSize;
-            Equation Cand = MakeRandomEquation(OPStorage);
-            Cand.StoreAndCleanup();
+            Equation Cand = MakeRandomEquation();
+            int StartOPCount = Info.MaxSize;
+            Cand.Cleanup();
 
             Assert.AreEqual(Cand.EquationParts.Count, 0, "EquationParts is not empty");
             Assert.AreEqual(Cand.AllOperators.Count, 0, "AllOperators is not empty");
@@ -80,6 +75,7 @@ namespace Tests
         [TestMethod]
         public void MassOPStoreAndCleaupTest()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 OPStoreAndCleanupTest();
@@ -87,13 +83,8 @@ namespace Tests
         }
         public void OPStoreAndCleanupTest()
         {
-            Stack<Operator> OPStorage = new Stack<Operator>();
-            for (int i = 0; i < Info.MaxSize * 2; i++)
-            {
-                OPStorage.Push(new Operator());
-            }
-            Equation Cand = MakeRandomEquation(OPStorage);
-            int OPStorageCount = OPStorage.Count;
+            Equation Cand = MakeRandomEquation();
+            int OPStorageCount = Cand.OPStorage.Count;
             int AllOperatorsCount = Cand.AllOperators.Count;
             int SortedopreatorsCount = Cand.SortedOperators.Sum(x => x.Count);
             int OperatorsLeftCount = Cand.OperatorsLeft;
@@ -102,7 +93,7 @@ namespace Tests
             int ContainedListCount = Cand.EquationParts.Count;
             Oper.StoreAndCleanup();
 
-            Assert.AreEqual(OPStorageCount + OPCount, OPStorage.Count, "Not all operators was put back into storage");
+            Assert.AreEqual(OPStorageCount + OPCount, Cand.OPStorage.Count, "Not all operators was put back into storage");
             Assert.AreEqual(AllOperatorsCount - OPCount, Cand.AllOperators.Count, "Not all operators was removed from AllOperators");
             Assert.AreEqual(SortedopreatorsCount - OPCount, Cand.SortedOperators.Sum(x => x.Count), "Not all operators was removed from SortedOperators");
             Assert.AreEqual(OperatorsLeftCount + OPCount, Cand.OperatorsLeft, "OperatorsLeft doesn't match the expected result");
@@ -112,6 +103,7 @@ namespace Tests
         [TestMethod]
         public void MassCheckEquationInfo_OperatorsLeft()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 CheckEquationInfo_OperatorsLeft();
@@ -125,7 +117,7 @@ namespace Tests
             {
                 TestStorage.Push(new Operator());
             }
-            Equation Cand = new Equation(ref TestStorage);
+            Equation Cand = new Equation(Info.MaxSize);
             Assert.AreEqual(Cand.OperatorsLeft, Info.MaxSize, "OperatorsLeft return wrong value");
             if (Cand.OperatorsLeft > 0)
             {
@@ -139,6 +131,7 @@ namespace Tests
         [TestMethod]
         public void MassCheckEquationMaking()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 CheckEquationMaking();
@@ -147,7 +140,7 @@ namespace Tests
         public void CheckEquationMaking()
         {
             Equation Cand = MakeRandomEquation();
-            Cand.CalcOffSet();
+            Cand.CalcTotalOffSet();
 
             VerifyEquation(Cand);
         }
@@ -155,6 +148,7 @@ namespace Tests
         [TestMethod]
         public void MassTestEvolveCand()
         {
+            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 TestEvolveCand();
@@ -168,6 +162,19 @@ namespace Tests
             VerifyEquation(Cand);
         }
 
+        public void PrepareTests()
+        {
+            const string SeqX = "1,2,3,4, 5, 6, 7, 8, 9,10";
+            double[] SeqRX = SeqX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            const string SeqY = "2,3,5,7,11,13,17,19,23,29";
+            double[] SeqRY = SeqY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            Info.Seq = new Point[SeqRX.Length];
+            for (int i = 0; i < SeqRX.Length; i++)
+            {
+                Info.Seq[i] = new Point(SeqRX[i], SeqRY[i]);
+            }
+        }
+
         public void VerifyEquation(Equation Cand)
         {
             Assert.IsTrue(Cand.EquationParts.Count >= 0 && Cand.EquationParts.Count <= Info.MaxSize,
@@ -179,7 +186,6 @@ namespace Tests
 
         public void EquationsAreSame(Equation Original, Equation Copy)
         {
-            Assert.AreEqual(Original.OPStorage, Copy.OPStorage, "OPStorage is not the same");
             Assert.AreEqual(Original.AllOperators.Count, Copy.AllOperators.Count, "AllOperators Count is not the same");
             Assert.AreEqual(Original.SortedOperators.Count, Copy.SortedOperators.Count, "SortedOperators Count is not the same");
 
@@ -213,35 +219,19 @@ namespace Tests
 
         public Equation MakeRandomEquation()
         {
-            Stack<Operator> OPStorage = new Stack<Operator>();
-            for (int i = 0; i < Info.MaxSize; i++)
-            {
-                OPStorage.Push(new Operator());
-            }
-            Equation Cand = new Equation(ref OPStorage);
+            Equation Cand = new Equation(Info.MaxSize);
             SynchronizedRandom.CreateRandom();
             Cand.MakeRandom();
             return Cand;
         }
         public Equation MakeRandomEquation(int OperatorCount)
         {
-            Stack<Operator> OPStorage = new Stack<Operator>();
+            Stack<Operator> OperatorStorage = new Stack<Operator>();
             for (int i = 0; i < OperatorCount; i++)
             {
-                OPStorage.Push(new Operator());
+                OperatorStorage.Push(new Operator());
             }
-            Equation Cand = new Equation(ref OPStorage);
-            SynchronizedRandom.CreateRandom();
-            Cand.MakeRandom();
-            return Cand;
-        }
-        public Equation MakeRandomEquation(Stack<Operator> OPStorage)
-        {
-            for (int i = 0; i < Info.MaxSize; i++)
-            {
-                OPStorage.Push(new Operator());
-            }
-            Equation Cand = new Equation(ref OPStorage);
+            Equation Cand = new Equation(OperatorStorage);
             SynchronizedRandom.CreateRandom();
             Cand.MakeRandom();
             return Cand;

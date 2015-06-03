@@ -10,13 +10,12 @@ namespace Solve_Funktion
 {
     public static class EvolveCand
     {
-        public static List<Equation> EvolveCandidates(List<Equation> Copys)
+        public static void EvolveCandidates(Equation[] Copys, int StartIndex, int Amount)
         {
-            foreach (Equation Cand in Copys)
+            for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
-                EvolveCandidate(Cand);
+                EvolveCandidate(Copys[i]);
             }
-            return Copys;
         }
 
         public static void EvolveCandidate(Equation Cand)
@@ -44,7 +43,7 @@ namespace Solve_Funktion
                 }
 # endif
             }
-            Cand.CalcOffSet();
+            Cand.CalcTotalOffSet();
         }
 
         private static void ChangeOPS(Equation Cand)
@@ -71,7 +70,7 @@ namespace Solve_Funktion
                 List<Operator> LLOper = Cand.SortedOperators[WhereToAdd];
                 int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Count);
                 Operator ToAdd = Cand.OPStorage.Pop();
-                ToAdd.MakeRandom(Cand, LLOper);
+                ToAdd.MakeRandom(Cand, LLOper, WhereToAddOP);
             }
         }
     }

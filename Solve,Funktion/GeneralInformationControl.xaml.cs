@@ -40,8 +40,10 @@ namespace Solve_Funktion
             {
                 OldAttempsSec.RemoveAt(0);
             }
-            this.Dispatcher.Invoke(() => AttempsSec.Text = OldAttempsSec.Average().ToString("N0") + " Attemps/Sec");
-
+            if (OldAttempsSec.Count > 0)
+            {
+                this.Dispatcher.Invoke(() => AttempsSec.Text = OldAttempsSec.Average().ToString("N0") + " Attemps/Sec");
+            }
         }
 
         public void InsertInfo(GeneralInfo gInfo)

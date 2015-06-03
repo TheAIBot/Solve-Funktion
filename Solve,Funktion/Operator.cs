@@ -9,8 +9,6 @@ namespace Solve_Funktion
     [Serializable]
     public class Operator
     {
-        //AllOperators
-        //ContainedList
         public bool ResultOnRightSide;
         public MathFunction MFunction;
         public MathFunction ExtraMathFunction;
@@ -32,6 +30,23 @@ namespace Solve_Funktion
                 MFunction = Info.Operators[SynchronizedRandom.Next(0, Info.Operators.Count)];
             // should never be an infinete loop because this function should only be called when there is 1 or more operators left
             // and there should always be an operator that doesn't need a min of operators
+            } while (!MFunction.CanUseOperator(this));
+            UseNumber = SynchronizedRandom.RandomBool();
+            Number = SynchronizedRandom.NextDouble(Info.NumberRangeMin, Info.NumberRangeMax);
+            MFunction.MakeRandom(this);
+        }
+        public void MakeRandom(Equation eq, List<Operator> containedList, int CIndex)
+        {
+            Eq = eq;
+            ContainedList = containedList;
+            Eq.AllOperators.Add(this);
+            ContainedList.Insert(CIndex, this);
+            ResultOnRightSide = SynchronizedRandom.RandomBool();
+            do
+            {
+                MFunction = Info.Operators[SynchronizedRandom.Next(0, Info.Operators.Count)];
+                // should never be an infinete loop because this function should only be called when there is 1 or more operators left
+                // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseNumber = SynchronizedRandom.RandomBool();
             Number = SynchronizedRandom.NextDouble(Info.NumberRangeMin, Info.NumberRangeMax);

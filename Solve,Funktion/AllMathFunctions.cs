@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Solve_Funktion
 {
@@ -17,7 +15,6 @@ namespace Solve_Funktion
         private string ReversedMiddleFix;
 
         public abstract double Calculate(double Result, double x, Operator Oper);
-        //public abstract string ShowOperator(string Result, string x, Operator Oper);
         public abstract void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
 
         public virtual void MakeRandom(Operator Oper)
@@ -48,7 +45,6 @@ namespace Solve_Funktion
 
         protected void DrawOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            CreateReversedStrings();
             if (IsConnecter)
                 DrawConnector(x, Oper, Forwards, Backwards);
             else
@@ -474,8 +470,42 @@ namespace Solve_Funktion
             {
                 Result.Append(PBackwards[i]);
             }
-            Result.Append(PForwards.ToString());
-            Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+            Result.Append(PForwards);
+            //////////StringBuilder Forwards = new StringBuilder();
+            //////////StringBuilder Backwards = new StringBuilder();
+            //////////const string Variable = "x";
+            //////////Forwards.Append(Variable);
+            //////////foreach (Operator EquationPart in EquationParts)
+            //////////{
+            //////////    EquationPart.ShowOperator(Variable, Forwards, Backwards);
+            //////////}
+            //////////StringBuilder Result = new StringBuilder(Backwards.Length + Forwards.Length);
+            //////////for (int i = Backwards.Length - 1; i >= 0; i--)
+            //////////{
+            //////////    Result.Append(Backwards[i]);
+            //////////}
+            //////////Result.Append(Forwards.ToString());
+            //////////return Result.ToString();
+            //if (Oper.ResultOnRightSide)
+            //{
+            //    Result.Append(PForwards);
+            //    for (int i = PBackwards.Length - 1; i >= 0; i--)
+            //    {
+            //        Result.Append(PBackwards[i]);
+            //    }
+            //    Result.Append(PForwards);
+            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+            //}
+            //else
+            //{
+            //    Result.Append(PBackwards);
+            //    for (int i = PForwards.Length - 1; i >= 0; i--)
+            //    {
+            //        Result.Append(PForwards[i]);
+            //    }
+            //    Result.Append(PBackwards);
+            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+            //}
         }
         private StringBuilder ReverseStringBuilder(StringBuilder ToReverse)
         {
@@ -575,7 +605,7 @@ namespace Solve_Funktion
     {
         public AND()
         {
-            MiddleFix = "AND";
+            MiddleFix = " AND ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)
@@ -592,7 +622,7 @@ namespace Solve_Funktion
     {
         public NAND()
         {
-            MiddleFix = "NAND";
+            MiddleFix = " NAND ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)
@@ -609,7 +639,7 @@ namespace Solve_Funktion
     {
         public OR()
         {
-            MiddleFix = "OR";
+            MiddleFix = " OR ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)
@@ -626,7 +656,7 @@ namespace Solve_Funktion
     {
         public NOR()
         {
-            MiddleFix = "NOR";
+            MiddleFix = " NOR ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)
@@ -643,7 +673,7 @@ namespace Solve_Funktion
     {
         public XOR()
         {
-            MiddleFix = "XOR";
+            MiddleFix = " XOR ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)
@@ -660,7 +690,7 @@ namespace Solve_Funktion
     {
         public XNOR()
         {
-            MiddleFix = "XNOR";
+            MiddleFix = " XNOR ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)
@@ -678,7 +708,7 @@ namespace Solve_Funktion
         public NOT()
         {
             IsConnecter = false;
-            PreFix = "NOT";
+            PreFix = " NOT ";
             CreateReversedStrings();
         }
         public override double Calculate(double Result, double x, Operator Oper)

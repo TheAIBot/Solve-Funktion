@@ -129,5 +129,6 @@ namespace Solve_Funktion
                 return Attempts.ToString("N0");
             }
         }
+        public int OperatorCount = 0;
     }
 }

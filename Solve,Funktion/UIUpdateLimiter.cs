@@ -8,10 +8,10 @@ using System.Timers;
 
 namespace Solve_Funktion
 {
-    public class UIUpdateLimiter : INotifyPropertyChanged
+    public class UIUpdateLimiter : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public double UpdateDelay = 128;
+        public double UpdateDelay = 500;
         private Timer UIUpdater = new Timer();
         public Stack<string> UpdatedProperties = new Stack<string>();
         private object UpdatedPropertiesLocker = new object();
@@ -19,7 +19,7 @@ namespace Solve_Funktion
         public UIUpdateLimiter()
         {
             UIUpdater.AutoReset = false;
-            UIUpdater.Elapsed += UIUpdateer_Elapsed;
+            UIUpdater.Elapsed += UIUpdater_Elapsed;
             UIUpdater.Interval = UpdateDelay;
             UIUpdater.Start();
         }
@@ -32,7 +32,7 @@ namespace Solve_Funktion
             }
         }
 
-        void UIUpdateer_Elapsed(object sender, ElapsedEventArgs e)
+        void UIUpdater_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (UpdatedPropertiesLocker)
             {
@@ -50,6 +50,11 @@ namespace Solve_Funktion
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
             }
+        }
+
+        public void Dispose()
+        {
+            UIUpdater.Dispose();
         }
     }
 }

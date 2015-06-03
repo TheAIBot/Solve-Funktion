@@ -25,11 +25,11 @@ namespace Solve_Funktion
             InitializeComponent();
         }
 
-        public void InsertInfo(SpeciesInfo SpecInfo)
+        public void InsertInfo(SpecieCreatedEventArgs e)
         {
             try
             {
-                Dispatcher.Invoke(() => this.DataContext = SpecInfo);
+                Dispatcher.Invoke(() => this.DataContext = e.SpecInfo);
             }
             catch (Exception) { }
         }

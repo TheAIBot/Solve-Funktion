@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Diagnostics;
-using System.Threading;
 
 namespace Solve_Funktion
 {
@@ -14,6 +11,7 @@ namespace Solve_Funktion
     {
         public List<List<Operator>> SortedOperators = new List<List<Operator>>(Info.MaxSize);
         public List<Operator> AllOperators = new List<Operator>(Info.MaxSize);
+        public List<Operator> EquationParts = new List<Operator>(Info.MaxSize);
         public int OperatorsLeft
         {
             get
@@ -22,12 +20,25 @@ namespace Solve_Funktion
             }
         }
         public Stack<Operator> OPStorage;
-        public List<Operator> EquationParts = new List<Operator>(Info.MaxSize);
+        public readonly int MaxOPAmount;
         public double OffSet;
+        public double[] Results;
 
-        public Equation(ref Stack<Operator> opstorage)
+        public Equation(int OPAmount)
         {
-            this.OPStorage = opstorage;
+            MaxOPAmount = OPAmount;
+            OPStorage = new Stack<Operator>();
+            for (int i = 0; i < MaxOPAmount; i++)
+            {
+                OPStorage.Push(new Operator());
+            }
+            SortedOperators.Add(EquationParts);
+            Results = new double[Info.Seq.Length];
+        }
+        public Equation(Stack<Operator> opstorage)
+        {
+            MaxOPAmount = opstorage.Count;
+            OPStorage = opstorage;
             SortedOperators.Add(EquationParts);
         }
 
@@ -42,22 +53,26 @@ namespace Solve_Funktion
             }
         }
 
-        public void CalcOffSet()
+        public void CalcTotalOffSet()
         {
             double offset = 0;
+            int Index = 0;
             foreach (Point Coord in Info.Seq)
             {
                 double FunctionResult = GetFunctionResult(Coord.X);
-                if (!Tools.IsANumber(FunctionResult))
+                offset += Math.Pow((Math.Abs(FunctionResult - Coord.Y) + 1), 2) - 1;
+                if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
                     return;
                 }
-                offset += Math.Abs(FunctionResult - Coord.Y);
+                Results[Index] = FunctionResult;
+                Index++;
             }
-            this.OffSet = (offset / (double)Info.Seq.Count);
+            this.OffSet = Math.Abs((offset / (double)Info.Seq.Length));
+            //this.OffSet = offset;
         }
-
+        
         private double GetFunctionResult(double x)
         {
             double Result = x;
@@ -91,17 +106,17 @@ namespace Solve_Funktion
             return Result.ToString();
         }
 
-        public List<string> GetFunctionResults()
+        public string[] GetFunctionResults()
         {
-            List<string> Results = new List<string>();
-            for (int i = 0; i < Info.Seq.Count; i++)
+            string[] TextResults = new string[Info.Seq.Length];
+            for (int i = 0; i < Info.Seq.Length; i++)
             {
-                Results.Add(GetFunctionResult(Info.Seq[i].X).ToString(Info.SRounding));
+                TextResults[i] = Results[i].ToString(Info.SRounding);
             }
-            return Results;
+            return TextResults;
         }
 
-        public void StoreAndCleanup()
+        public void Cleanup()
         {
             // the EquationParts list is being altered in this loop so it can't be a foreach loop
             // that's why it's done this way
@@ -122,14 +137,15 @@ namespace Solve_Funktion
 #endif
         }
 
-        public Equation GetClone(Equation Copy)
+        public Equation MakeClone(Equation Copy)
         {
             Copy.OffSet = OffSet;
+            Array.Copy(Results, Copy.Results, Results.Length);
             foreach (Operator EPart in EquationParts)
             {
                 //copys each operator and puts it in the new equation so their equation parts are identical
                 //this should also copy the EInfo indirectly, by inserting everything into the SortedOperators list
-                EPart.GetCopy(OPStorage.Pop(), Copy, Copy.EquationParts);
+                EPart.GetCopy(Copy.OPStorage.Pop(), Copy, Copy.EquationParts);
             }
             return Copy;
         }

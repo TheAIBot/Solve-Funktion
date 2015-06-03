@@ -20,17 +20,20 @@ namespace Solve_Funktion
     /// </summary>
     public partial class BestCandidateControl : UserControl
     {
-        public SpeciesInfo SpecInfo;
+        public SpeciesInfo BestFunction;
 
         public BestCandidateControl()
         {
             InitializeComponent();
         }
-
-        public void InsertInfo(SpeciesInfo specinfo)
+        public void InsertInfo(SpeciesInfo SpecInfo)
         {
-            SpecInfo = specinfo;
-            Dispatcher.Invoke(() => this.DataContext = SpecInfo);
+            try
+            {
+                BestFunction = SpecInfo;
+                Dispatcher.Invoke(() => this.DataContext = SpecInfo);
+            }
+            catch (Exception) { }    
         }
     }
 }
