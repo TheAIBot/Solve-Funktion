@@ -471,6 +471,7 @@ namespace Solve_Funktion
                 Result.Append(PBackwards[i]);
             }
             Result.Append(PForwards);
+            Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
             //////////StringBuilder Forwards = new StringBuilder();
             //////////StringBuilder Backwards = new StringBuilder();
             //////////const string Variable = "x";
@@ -528,11 +529,11 @@ namespace Solve_Funktion
             {
                 Operator ToAdd = Oper.Eq.OPStorage.Pop();
                 // by adding the operator now there is space for 1 less operator
-                ToAdd.MakeRandom(Oper.Eq, Oper.Operators);
+                ToAdd.MakeRandom(Oper.Operators);
             }
             do
             {
-                Oper.ExtraMathFunction = Info.Operators[SynchronizedRandom.Next(0, Info.Operators.Count)];
+                Oper.ExtraMathFunction = Oper.Eq.EInfo.Operators[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Operators.Length)];
             } while (!Oper.ExtraMathFunction.IsConnecter);
         }
         public override bool CanUseOperator(Operator Oper)

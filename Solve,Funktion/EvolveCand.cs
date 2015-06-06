@@ -10,17 +10,17 @@ namespace Solve_Funktion
 {
     public static class EvolveCand
     {
-        public static void EvolveCandidates(Equation[] Copys, int StartIndex, int Amount)
+        public static void EvolveCandidates(EvolutionInfo EInfo, Equation[] Copys, int StartIndex, int Amount)
         {
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
-                EvolveCandidate(Copys[i]);
+                EvolveCandidate(EInfo, Copys[i]);
             }
         }
 
-        public static void EvolveCandidate(Equation Cand)
+        public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
-            int AmountToChange = SynchronizedRandom.Next(1, Info.MaxChange);
+            int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
             for (int i = 0; i < AmountToChange; i++)
             {
                 int ToDo = SynchronizedRandom.Next(0, 3);
@@ -30,10 +30,10 @@ namespace Solve_Funktion
                         InsertOPS(Cand);
                         break;
                     case 1:
-                        RemoveOPS(Cand);
+                        RemoveOPS(Cand, EInfo.MaxChange);
                         break;
                     case 2:
-                        ChangeOPS(Cand);
+                        ChangeOPS(Cand, EInfo.MaxChange);
                         break;
                 }
 #if DEBUG
@@ -46,17 +46,17 @@ namespace Solve_Funktion
             Cand.CalcTotalOffSet();
         }
 
-        private static void ChangeOPS(Equation Cand)
+        private static void ChangeOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < Info.MaxSize)
+            if (Cand.OperatorsLeft < MaxChange)
             {
                 Cand.ChangeRandomOperator();
             }
         }
 
-        private static void RemoveOPS(Equation Cand)
+        private static void RemoveOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < Info.MaxSize)
+            if (Cand.OperatorsLeft < MaxChange)
             {
                 Cand.RemoveRandomOperator();
             }
@@ -70,7 +70,7 @@ namespace Solve_Funktion
                 List<Operator> LLOper = Cand.SortedOperators[WhereToAdd];
                 int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Count);
                 Operator ToAdd = Cand.OPStorage.Pop();
-                ToAdd.MakeRandom(Cand, LLOper, WhereToAddOP);
+                ToAdd.MakeRandom(LLOper, WhereToAddOP);
             }
         }
     }

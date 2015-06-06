@@ -4,39 +4,39 @@ namespace Solve_Funktion
 {
     public static class SmartCand
     {
-        public static void SmartifyCandidates(Equation[] Copys, Equation BCand, Equation OCand, int StartIndex, int Amount)
+        public static void SmartifyCandidates(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, int StartIndex, int Amount)
         {
             List<int> Indexes = CanSmartChangeNumbers(BCand, OCand);
             if (Indexes != null)
             {
-                SmartChangeNumbers(Copys, BCand, OCand, Indexes, StartIndex, Amount);
+                SmartChangeNumbers(EInfo, Copys, BCand, OCand, Indexes, StartIndex, Amount);
             }
             else
             {
-                StupidChangeNumbers(Copys, StartIndex, Amount);
+                StupidChangeNumbers(EInfo, Copys, StartIndex, Amount);
             }
         }
-        public static void SmartifyCandidate(Equation ToSmartify, Equation BCand, Equation OCand)
+        public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand)
         {
             List<int> Indexes = CanSmartChangeNumbers(BCand, OCand);
             if (Indexes != null)
             {
-                SmartChangeNumber(ToSmartify, BCand, OCand, Indexes);
+                SmartChangeNumber(EInfo, ToSmartify, BCand, OCand, Indexes);
             }
             else
             {
-                StupidChangeNumber(ToSmartify);
+                StupidChangeNumber(EInfo, ToSmartify);
             }
         }
-        public static void SmartifyCandidate(Equation ToSmartify, Equation BCand, Equation OCand, List<int> Indexes)
+        public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand, List<int> Indexes)
         {
             if (Indexes != null)
             {
-                SmartChangeNumber(ToSmartify, BCand, OCand, Indexes);
+                SmartChangeNumber(EInfo, ToSmartify, BCand, OCand, Indexes);
             }
             else
             {
-                StupidChangeNumber(ToSmartify);
+                StupidChangeNumber(EInfo, ToSmartify);
             }
         }
 
@@ -62,14 +62,14 @@ namespace Solve_Funktion
             return SmartChangeOperatorIndexes;
         }
 
-        private static void SmartChangeNumbers(Equation[] Copys, Equation BCand, Equation OCand, List<int> Indexes, int StartIndex, int Amount)
+        private static void SmartChangeNumbers(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, List<int> Indexes, int StartIndex, int Amount)
         {
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
-                SmartChangeNumber(Copys[i], BCand, OCand, Indexes);
+                SmartChangeNumber(EInfo, Copys[i], BCand, OCand, Indexes);
             }
         }
-        private static void SmartChangeNumber(Equation Eq, Equation BCand, Equation OCand, List<int> Indexes)
+        private static void SmartChangeNumber(EvolutionInfo EInfo, Equation Eq, Equation BCand, Equation OCand, List<int> Indexes)
         {
             foreach (int Index in Indexes)
             {
@@ -77,34 +77,34 @@ namespace Solve_Funktion
                 Operator OCandOper = OCand.AllOperators[Index];
                 if (BCandOper.Number > OCandOper.Number)
                 {
-                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble(Info.NumberRangeMin, (int)BCandOper.Number + 1);
+                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble(EInfo.NumberRangeMin, (int)BCandOper.Number + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble((int)BCandOper.Number, Info.NumberRangeMax);
+                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble((int)BCandOper.Number, EInfo.NumberRangeMax);
                 }
                 Eq.CalcTotalOffSet();
             }
         }
 
-        private static void StupidChangeNumbers(Equation[] Copys, int StartIndex, int Amount)
+        private static void StupidChangeNumbers(EvolutionInfo EInfo, Equation[] Copys, int StartIndex, int Amount)
         {
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
-                StupidChangeNumber(Copys[i]);
+                StupidChangeNumber(EInfo, Copys[i]);
             }
         }
-        private static void StupidChangeNumber(Equation Eq)
+        private static void StupidChangeNumber(EvolutionInfo EInfo, Equation Eq)
         {
             if (Eq.AllOperators.Count == 0)
             {
                 return;
             }
-            int AmountToChange = SynchronizedRandom.Next(1, Info.MaxChange);
+            int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
             for (int i = 0; i < AmountToChange; i++)
             {
                 int Index = SynchronizedRandom.Next(0, Eq.EquationParts.Count);
-                Eq.EquationParts[Index].Number = SynchronizedRandom.NextDouble(Info.NumberRangeMin, Info.NumberRangeMax);
+                Eq.EquationParts[Index].Number = SynchronizedRandom.NextDouble(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
             }
             Eq.CalcTotalOffSet();
         }

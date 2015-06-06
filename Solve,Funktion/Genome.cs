@@ -4,20 +4,22 @@ using System.Linq;
 
 namespace Solve_Funktion
 {
-    public abstract class Genome
+    public abstract class Genome : IDisposable
     {
         public Equation BestCandidate;
         public SpeciesInfo SpecInfo;
         public GeneralInfo GInfo;
+        public EvolutionInfo EInfo;
         public SpecieEnviromentBase SpecEnviroment;
         protected string ShouldBeNumbers = String.Empty;
         public object UIUpdateLocker = new object();
         public event SpecieCreatedEventHandler OnSpecieCreated;
 
-        public virtual void Startup(SpecieEnviromentBase Env, GeneralInfo ginfo)
+        public virtual void Startup(SpecieEnviromentBase Env, GeneralInfo ginfo, EvolutionInfo einfo)
         {
             SpecEnviroment = Env;
             GInfo = ginfo;
+            EInfo = einfo;
         }
 
         public abstract Genome EvolveSolution();
@@ -30,7 +32,10 @@ namespace Solve_Funktion
             InitializeUpdateInfo();
             if (OnSpecieCreated != null)
             {
-                OnSpecieCreated(new SpecieCreatedEventArgs() { SpecInfo = SpecInfo });
+                OnSpecieCreated(new SpecieCreatedEventArgs() 
+                { 
+                    SpecInfo = SpecInfo
+                });
             }
         }
 
@@ -41,17 +46,17 @@ namespace Solve_Funktion
                 SpecInfo.FunctionText = BestCandidate.CreateFunction();
                 SpecInfo.Offset = BestCandidate.OffSet;
                 SpecInfo.ResultText = String.Join(", ", BestCandidate.GetFunctionResults());
-                SpecInfo.Attempts += Info.CandidatesPerGen;
+                SpecInfo.Attempts += EInfo.CandidatesPerGen;
                 SpecInfo.Generation++;
                 SpecInfo.OperatorCount = BestCandidate.AllOperators.Count;
-                GInfo.AddTotalAttempts((long)Info.CandidatesPerGen);
+                GInfo.AddTotalAttempts((long)EInfo.CandidatesPerGen);
                 SpecEnviroment.CheckBestCandidate();
             }
         }
 
         protected void InitializeUpdateInfo()
         {
-                IEnumerable<string> SeqText = (from x in Info.Seq
+            IEnumerable<string> SeqText = (from x in EInfo.Goal
                                                select x.Y.ToString(Info.SRounding));
                 ShouldBeNumbers = String.Join(", ", SeqText);
                 SpecInfo.SequenceText = ShouldBeNumbers;
@@ -68,6 +73,14 @@ namespace Solve_Funktion
         public void ResetSingle(Equation Cand)
         {
             Cand.Cleanup();
+        }
+
+        public void Dispose()
+        {
+            if (SpecInfo != null)
+            {
+                SpecInfo.Dispose();
+            }
         }
     }
 }

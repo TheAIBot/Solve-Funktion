@@ -9,35 +9,41 @@ namespace Solve_Funktion
     [Serializable]
     public class Equation
     {
-        public List<List<Operator>> SortedOperators = new List<List<Operator>>(Info.MaxSize);
-        public List<Operator> AllOperators = new List<Operator>(Info.MaxSize);
-        public List<Operator> EquationParts = new List<Operator>(Info.MaxSize);
+        public List<List<Operator>> SortedOperators;
+        public List<Operator> AllOperators;
+        public List<Operator> EquationParts;
         public int OperatorsLeft
         {
             get
             {
-                return Info.MaxSize - AllOperators.Count;
+                return EInfo.MaxSize - AllOperators.Count;
             }
         }
         public Stack<Operator> OPStorage;
-        public readonly int MaxOPAmount;
+        public EvolutionInfo EInfo;
         public double OffSet;
         public double[] Results;
 
-        public Equation(int OPAmount)
+        public Equation(EvolutionInfo einfo)
         {
-            MaxOPAmount = OPAmount;
-            OPStorage = new Stack<Operator>();
-            for (int i = 0; i < MaxOPAmount; i++)
+            EInfo = einfo;
+            OPStorage = new Stack<Operator>(EInfo.MaxSize);
+            SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
+            AllOperators = new List<Operator>(EInfo.MaxSize);
+            EquationParts = new List<Operator>(EInfo.MaxSize);
+            for (int i = 0; i < EInfo.MaxSize; i++)
             {
-                OPStorage.Push(new Operator());
+                OPStorage.Push(new Operator(this));
             }
             SortedOperators.Add(EquationParts);
-            Results = new double[Info.Seq.Length];
+            Results = new double[EInfo.Goal.Length];
         }
-        public Equation(Stack<Operator> opstorage)
+        public Equation(EvolutionInfo einfo, Stack<Operator> opstorage)
         {
-            MaxOPAmount = opstorage.Count;
+            EInfo = einfo;
+            SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
+            AllOperators = new List<Operator>(EInfo.MaxSize);
+            EquationParts = new List<Operator>(EInfo.MaxSize);
             OPStorage = opstorage;
             SortedOperators.Add(EquationParts);
         }
@@ -49,7 +55,7 @@ namespace Solve_Funktion
             while (0 < OperatorsLeft - AmountToAdd)
             {
                 Operator ToAdd = OPStorage.Pop();
-                ToAdd.MakeRandom(this, EquationParts);
+                ToAdd.MakeRandom(EquationParts);
             }
         }
 
@@ -57,7 +63,7 @@ namespace Solve_Funktion
         {
             double offset = 0;
             int Index = 0;
-            foreach (Point Coord in Info.Seq)
+            foreach (Point Coord in EInfo.Goal)
             {
                 double FunctionResult = GetFunctionResult(Coord.X);
                 offset += Math.Pow((Math.Abs(FunctionResult - Coord.Y) + 1), 2) - 1;
@@ -69,9 +75,22 @@ namespace Solve_Funktion
                 Results[Index] = FunctionResult;
                 Index++;
             }
-            this.OffSet = Math.Abs((offset / (double)Info.Seq.Length));
-            //this.OffSet = offset;
+            this.OffSet = Math.Abs((offset / (double)EInfo.Goal.Length));
         }
+
+        //private void SetResults(int SeqLength)
+        //{
+        //    //if it's not set or if the length is not correct then
+        //    //a new array is created with the correct length
+        //    if (Results == null)
+        //    {
+        //        Results = new double[SeqLength];
+        //    }
+        //    else if (Results.Length != SeqLength)
+        //    {
+        //        Results = new double[SeqLength]; ;
+        //    }
+        //}
         
         private double GetFunctionResult(double x)
         {
@@ -108,8 +127,8 @@ namespace Solve_Funktion
 
         public string[] GetFunctionResults()
         {
-            string[] TextResults = new string[Info.Seq.Length];
-            for (int i = 0; i < Info.Seq.Length; i++)
+            string[] TextResults = new string[EInfo.Goal.Length];
+            for (int i = 0; i < EInfo.Goal.Length; i++)
             {
                 TextResults[i] = Results[i].ToString(Info.SRounding);
             }
@@ -130,7 +149,7 @@ namespace Solve_Funktion
             SortedOperators.Add(EquationParts);
 
 #if DEBUG
-            if (OperatorsLeft != Info.MaxSize)
+            if (OperatorsLeft != EInfo.MaxSize)
             {
                 System.Diagnostics.Debugger.Break();
             }
@@ -162,7 +181,7 @@ namespace Solve_Funktion
 
             ToChange.StoreAndCleanup();
             ToChange = OPStorage.Pop();
-            ToChange.MakeRandom(this, ContainedList);
+            ToChange.MakeRandom(ContainedList);
         }
 
         public void RemoveRandomOperator()

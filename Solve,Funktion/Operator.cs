@@ -16,40 +16,44 @@ namespace Solve_Funktion
         public bool UseNumber;
         public Equation Eq;
         public List<Operator> ContainedList;
-        public List<Operator> Operators = new List<Operator>(Info.MaxSize);
+        public List<Operator> Operators;
 
-        public void MakeRandom(Equation eq, List<Operator> containedList)
+        public Operator(Equation eq)
         {
             Eq = eq;
+            Operators = new List<Operator>(Eq.EInfo.MaxSize);
+        }
+
+        public void MakeRandom(List<Operator> containedList)
+        {
             ContainedList = containedList;
             Eq.AllOperators.Add(this);
             ContainedList.Add(this);
             ResultOnRightSide = SynchronizedRandom.RandomBool();
             do
             {
-                MFunction = Info.Operators[SynchronizedRandom.Next(0, Info.Operators.Count)];
+                MFunction = Eq.EInfo.Operators[SynchronizedRandom.Next(0, Eq.EInfo.Operators.Length)];
             // should never be an infinete loop because this function should only be called when there is 1 or more operators left
             // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseNumber = SynchronizedRandom.RandomBool();
-            Number = SynchronizedRandom.NextDouble(Info.NumberRangeMin, Info.NumberRangeMax);
+            Number = SynchronizedRandom.NextDouble(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
             MFunction.MakeRandom(this);
         }
-        public void MakeRandom(Equation eq, List<Operator> containedList, int CIndex)
+        public void MakeRandom(List<Operator> containedList, int CIndex)
         {
-            Eq = eq;
             ContainedList = containedList;
             Eq.AllOperators.Add(this);
             ContainedList.Insert(CIndex, this);
             ResultOnRightSide = SynchronizedRandom.RandomBool();
             do
             {
-                MFunction = Info.Operators[SynchronizedRandom.Next(0, Info.Operators.Count)];
+                MFunction = Eq.EInfo.Operators[SynchronizedRandom.Next(0, Eq.EInfo.Operators.Length)];
                 // should never be an infinete loop because this function should only be called when there is 1 or more operators left
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseNumber = SynchronizedRandom.RandomBool();
-            Number = SynchronizedRandom.NextDouble(Info.NumberRangeMin, Info.NumberRangeMax);
+            Number = SynchronizedRandom.NextDouble(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
             MFunction.MakeRandom(this);
         }
 
@@ -77,7 +81,6 @@ namespace Solve_Funktion
             MFunction.StoreAndCleanup(this);
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
-            Eq = null;
         }
 
         public void StoreAndCleaupAll()
@@ -86,7 +89,6 @@ namespace Solve_Funktion
             MFunction.StoreAndCleanupAll(this);
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
-            Eq = null;
         }
 
         /// <summary>

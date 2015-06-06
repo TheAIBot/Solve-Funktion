@@ -66,6 +66,7 @@
     <Compile Include="EvolutionControlUnitControl.xaml.cs">
       <DependentUpon>EvolutionControlUnitControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EvolutionInfo.cs" />
     <Compile Include="EvolveCand.cs" />
     <Compile Include="GeneralInfo.cs" />
     <Compile Include="GeneralInformationControl.xaml.cs">

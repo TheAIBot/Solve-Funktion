@@ -10,11 +10,12 @@ namespace Solve_Funktion
     {
         public event BestEquationEventHandler OnBestEquationChanged;
         public event SubscribeEventEventHandler OnSubscribeToSpecies;
+        protected EvolutionInfo EInfo;
         protected SpeciesInfo BestEquationInfo;
         protected GeneralInfo GInfo;
         protected Genome[] Species;
 
-        public abstract GeneralInfo SetupEviroment(int SpecieCount);
+        public abstract GeneralInfo SetupEviroment(EvolutionInfo EInfo);
 
         public abstract void SimulateEnviroment();
 

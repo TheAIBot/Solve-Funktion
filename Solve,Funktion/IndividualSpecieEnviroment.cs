@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace Solve_Funktion
 {
-    public class IndividualSpecieEnviroment<T> : SpecieEnviromentBase/*<T>*/where T : Genome, new()
+    public class IndividualSpecieEnviroment<T> : SpecieEnviromentBase where T : Genome, new()
     {
-        public override GeneralInfo SetupEviroment(int SpecieCount)
+        public override GeneralInfo SetupEviroment(EvolutionInfo einfo)
         {
-            Species = new Genome[SpecieCount];
+            EInfo = einfo;
+            Species = new Genome[EInfo.SpeciesAmount];
             GInfo = new GeneralInfo();
-            for (int i = 0; i < SpecieCount; i++)
+            for (int i = 0; i < EInfo.SpeciesAmount; i++)
             {
                 Species[i] = new T();
-                Species[i].Startup(this, GInfo);
+                Species[i].Startup(this, GInfo, einfo);
                 DoSubscribeEvent(Species[i]);
             }
             return GInfo;
