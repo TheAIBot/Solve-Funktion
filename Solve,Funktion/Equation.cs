@@ -27,25 +27,16 @@ namespace Solve_Funktion
         public Equation(EvolutionInfo einfo)
         {
             EInfo = einfo;
-            OPStorage = new Stack<Operator>(EInfo.MaxSize);
             SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
             AllOperators = new List<Operator>(EInfo.MaxSize);
             EquationParts = new List<Operator>(EInfo.MaxSize);
+            OPStorage = new Stack<Operator>(EInfo.MaxSize);
             for (int i = 0; i < EInfo.MaxSize; i++)
             {
                 OPStorage.Push(new Operator(this));
             }
             SortedOperators.Add(EquationParts);
             Results = new double[EInfo.Goal.Length];
-        }
-        public Equation(EvolutionInfo einfo, Stack<Operator> opstorage)
-        {
-            EInfo = einfo;
-            SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
-            AllOperators = new List<Operator>(EInfo.MaxSize);
-            EquationParts = new List<Operator>(EInfo.MaxSize);
-            OPStorage = opstorage;
-            SortedOperators.Add(EquationParts);
         }
 
         public void MakeRandom()

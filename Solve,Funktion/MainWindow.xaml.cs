@@ -124,7 +124,7 @@ namespace Solve_Funktion
                 30000,  // CandidatesPerGen
                 102,    // NumberRangeMax
                 0,      // NumberRangeMin
-                8,      // SpeciesAmount
+                1,      // SpeciesAmount
                 100,    // MaxStuckGens
                 0.8,    // EvolvedCandidatesPerGen
                 0,      // RandomCandidatesPerGen

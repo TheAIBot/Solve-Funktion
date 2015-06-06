@@ -16,7 +16,6 @@ namespace Tests
         [TestMethod]
         public void MassSingleOPCopy()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 SingleOPCopyTest();
@@ -24,9 +23,9 @@ namespace Tests
         }
         public void SingleOPCopyTest()
         {
-            Equation Cand = MakeRandomEquation(Info.MaxSize * 2);
+            Equation Cand = MakeRandomEquation();
             Operator Original = Cand.EquationParts.First();
-            Operator Copy = new Operator();
+            Operator Copy = MakeSingleOperator();
             Original.GetCopy(Copy, Cand,Cand.EquationParts);
 
             RecursiveCompareOperators(Original, Copy);
@@ -35,7 +34,6 @@ namespace Tests
         [TestMethod]
         public void MassCopyEquationInfoTest()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 CopyEquationInfoTest();
@@ -54,7 +52,6 @@ namespace Tests
         [TestMethod]
         public void MassEquationStoreAndCleanupTest()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 EquationStoreAndCleanupTest();
@@ -63,7 +60,7 @@ namespace Tests
         public void EquationStoreAndCleanupTest()
         {
             Equation Cand = MakeRandomEquation();
-            int StartOPCount = Info.MaxSize;
+            int StartOPCount = Cand.EInfo.MaxSize;
             Cand.Cleanup();
 
             Assert.AreEqual(Cand.EquationParts.Count, 0, "EquationParts is not empty");
@@ -75,7 +72,6 @@ namespace Tests
         [TestMethod]
         public void MassOPStoreAndCleaupTest()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 OPStoreAndCleanupTest();
@@ -103,7 +99,6 @@ namespace Tests
         [TestMethod]
         public void MassCheckEquationInfo_OperatorsLeft()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 CheckEquationInfo_OperatorsLeft();
@@ -112,26 +107,20 @@ namespace Tests
         public void CheckEquationInfo_OperatorsLeft()
         {
             SynchronizedRandom.CreateRandom();
-            Stack<Operator> TestStorage = new Stack<Operator>();
-            for (int i = 0; i < Info.MaxSize; i++)
-            {
-                TestStorage.Push(new Operator());
-            }
-            Equation Cand = new Equation(Info.MaxSize);
-            Assert.AreEqual(Cand.OperatorsLeft, Info.MaxSize, "OperatorsLeft return wrong value");
+            Equation Cand = MakeEquation();
+            Assert.AreEqual(Cand.OperatorsLeft, Cand.EInfo.MaxSize, "OperatorsLeft return wrong value");
             if (Cand.OperatorsLeft > 0)
             {
-                Operator ToAdd = new Operator();
-                ToAdd.MakeRandom(Cand, Cand.EquationParts);
+                Operator ToAdd = new Operator(Cand);
+                ToAdd.MakeRandom(Cand.EquationParts);
                 int DerpCount = ToAdd.GetOperatorCount();
-                Assert.AreEqual(Cand.OperatorsLeft, Info.MaxSize - DerpCount, "OperatorsLeft return wrong value");
+                Assert.AreEqual(Cand.OperatorsLeft, Cand.EInfo.MaxSize - DerpCount, "OperatorsLeft return wrong value");
             }
         }
 
         [TestMethod]
         public void MassCheckEquationMaking()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 CheckEquationMaking();
@@ -148,7 +137,6 @@ namespace Tests
         [TestMethod]
         public void MassTestEvolveCand()
         {
-            PrepareTests();
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
                 TestEvolveCand();
@@ -157,30 +145,17 @@ namespace Tests
         public void TestEvolveCand()
         {
             Equation Cand = MakeRandomEquation();
-            EvolveCand.EvolveCandidate(Cand);
+            EvolveCand.EvolveCandidate(Cand.EInfo, Cand);
 
             VerifyEquation(Cand);
         }
 
-        public void PrepareTests()
-        {
-            const string SeqX = "1,2,3,4, 5, 6, 7, 8, 9,10";
-            double[] SeqRX = SeqX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            const string SeqY = "2,3,5,7,11,13,17,19,23,29";
-            double[] SeqRY = SeqY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            Info.Seq = new Point[SeqRX.Length];
-            for (int i = 0; i < SeqRX.Length; i++)
-            {
-                Info.Seq[i] = new Point(SeqRX[i], SeqRY[i]);
-            }
-        }
-
         public void VerifyEquation(Equation Cand)
         {
-            Assert.IsTrue(Cand.EquationParts.Count >= 0 && Cand.EquationParts.Count <= Info.MaxSize,
+            Assert.IsTrue(Cand.EquationParts.Count >= 0 && Cand.EquationParts.Count <= Cand.EInfo.MaxSize,
               "Equationparts hold incorrect amount of operators" + Environment.NewLine +
               "Holds:" + Cand.EquationParts.Count.ToString() + Environment.NewLine +
-              "Expected 0 < " + Info.MaxSize.ToString());
+              "Expected 0 < " + Cand.EInfo.MaxSize.ToString());
             Assert.IsTrue(Cand != null, "Equation Is null");
         }
 
@@ -219,22 +194,94 @@ namespace Tests
 
         public Equation MakeRandomEquation()
         {
-            Equation Cand = new Equation(Info.MaxSize);
+            Equation Cand = new Equation(GetEvolutionInfo());
             SynchronizedRandom.CreateRandom();
             Cand.MakeRandom();
             return Cand;
         }
-        public Equation MakeRandomEquation(int OperatorCount)
+
+        public Equation MakeEquation()
         {
-            Stack<Operator> OperatorStorage = new Stack<Operator>();
-            for (int i = 0; i < OperatorCount; i++)
-            {
-                OperatorStorage.Push(new Operator());
-            }
-            Equation Cand = new Equation(OperatorStorage);
-            SynchronizedRandom.CreateRandom();
-            Cand.MakeRandom();
+            Equation Cand = new Equation(GetEvolutionInfo());
             return Cand;
+        }
+
+        public Operator MakeSingleOperator()
+        {
+            return MakeEquation().OPStorage.Pop();
+        }
+
+        private EvolutionInfo GetEvolutionInfo()
+        {
+            const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
+            const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+
+            Point[] Seq = GetSequence(SequenceX,
+                                      SequenceY);
+
+            MathFunction[] Operators = new MathFunction[]
+            {
+                new Plus(),
+                new Subtract(),
+                new Multiply(),
+                new Divide(),
+
+                new PowerOf(),
+                new Root(),
+                new Exponent(),
+                new NaturalLog(),
+                new Log(),
+
+                new Modulos(),
+                new Floor(),
+                new Ceil(),
+                new Round(),
+
+                new Sin(),
+                new Cos(),
+                new Tan(),
+                new ASin(),
+                new ACos(),
+                new ATan(),
+
+                new Parentheses(),
+                new Absolute(),
+
+                new AND(),
+                new NAND(),
+                new OR(),
+                new NOR(),
+                new XOR(),
+                new XNOR(),
+                new NOT()
+            };
+
+            return new EvolutionInfo(
+                Seq,    // Sequence
+                40,    // MaxSize
+                5,     // MaxChange
+                30000,  // CandidatesPerGen
+                102,    // NumberRangeMax
+                0,      // NumberRangeMin
+                1,      // SpeciesAmount
+                100,    // MaxStuckGens
+                0.8,    // EvolvedCandidatesPerGen
+                0,      // RandomCandidatesPerGen
+                0.2,    // SmartCandidatesPerGen
+                Operators // Operatres that can be used in an equation
+                );
+        }
+
+        private Point[] GetSequence(string SequenceX, string SequenceY)
+        {
+            double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            Point[] Seq = new Point[SeqRX.Length];
+            for (int i = 0; i < SeqRX.Length; i++)
+            {
+                Seq[i] = new Point(SeqRX[i], SeqRY[i]);
+            }
+            return Seq;
         }
     }
 }
