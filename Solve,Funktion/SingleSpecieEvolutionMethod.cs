@@ -11,12 +11,15 @@ namespace Solve_Funktion
         public override Genome EvolveSolution()
         {
             StartFinding();
-            BestCandidate = new Equation(EInfo);
-            do
+            if (BestCandidate == null)
             {
-                ResetSingle(BestCandidate);
-                RandomCand.MakeRandomEquation(BestCandidate);
-            } while (!Tools.IsANumber(BestCandidate.OffSet));
+                BestCandidate = new Equation(EInfo);
+                do
+                {
+                    ResetSingle(BestCandidate);
+                    RandomCand.MakeRandomEquation(BestCandidate);
+                } while (!Tools.IsANumber(BestCandidate.OffSet));
+            }
             Equation EvolvedEquation = new Equation(EInfo) { OffSet = Double.NaN };
             Equation OldEquation = new Equation(EInfo) { OffSet = Double.NaN };
             int StuckCounter = 0;

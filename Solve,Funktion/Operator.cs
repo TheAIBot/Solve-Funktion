@@ -11,11 +11,11 @@ namespace Solve_Funktion
     {
         public bool ResultOnRightSide;
         public MathFunction MFunction;
-        public MathFunction ExtraMathFunction;
         public double Number;
         public bool UseNumber;
         public Equation Eq;
         public List<Operator> ContainedList;
+        public MathFunction ExtraMathFunction;
         public List<Operator> Operators;
 
         public Operator(Equation eq)
@@ -33,8 +33,8 @@ namespace Solve_Funktion
             do
             {
                 MFunction = Eq.EInfo.Operators[SynchronizedRandom.Next(0, Eq.EInfo.Operators.Length)];
-            // should never be an infinete loop because this function should only be called when there is 1 or more operators left
-            // and there should always be an operator that doesn't need a min of operators
+                // should never be an infinete loop because this function should only be called when there is 1 or more operators left
+                // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseNumber = SynchronizedRandom.RandomBool();
             Number = SynchronizedRandom.NextDouble(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);

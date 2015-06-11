@@ -57,6 +57,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AllMathFunctions.cs" />
+    <Compile Include="FamilyEnviroment.cs" />
+    <Compile Include="Operator.cs" />
     <Compile Include="BatchSpecieEvolutionMethod.cs" />
     <Compile Include="BestCandidateControl.xaml.cs">
       <DependentUpon>BestCandidateControl.xaml</DependentUpon>
@@ -75,7 +77,6 @@
     <Compile Include="Genome.cs" />
     <Compile Include="IndividualSpecieEnviroment.cs" />
     <Compile Include="Info.cs" />
-    <Compile Include="Operator.cs" />
     <Compile Include="RandomCand.cs" />
     <Compile Include="SingleSpecieEvolution.cs" />
     <Compile Include="SingleSpecieEvolutionMethod.cs" />

@@ -11,8 +11,6 @@ namespace Solve_Funktion
         public GeneralInfo GInfo;
         public EvolutionInfo EInfo;
         public SpecieEnviromentBase SpecEnviroment;
-        protected string ShouldBeNumbers = String.Empty;
-        public object UIUpdateLocker = new object();
         public event SpecieCreatedEventHandler OnSpecieCreated;
 
         public virtual void Startup(SpecieEnviromentBase Env, GeneralInfo ginfo, EvolutionInfo einfo)
@@ -41,25 +39,21 @@ namespace Solve_Funktion
 
         public virtual void UpdateInfo()
         {
-            lock (UIUpdateLocker)
-            {
-                SpecInfo.FunctionText = BestCandidate.CreateFunction();
-                SpecInfo.Offset = BestCandidate.OffSet;
-                SpecInfo.ResultText = String.Join(", ", BestCandidate.GetFunctionResults());
-                SpecInfo.Attempts += EInfo.CandidatesPerGen;
-                SpecInfo.Generation++;
-                SpecInfo.OperatorCount = BestCandidate.AllOperators.Count;
-                GInfo.AddTotalAttempts((long)EInfo.CandidatesPerGen);
-                SpecEnviroment.CheckBestCandidate();
-            }
+            SpecInfo.FunctionText = BestCandidate.CreateFunction();
+            SpecInfo.Offset = BestCandidate.OffSet;
+            SpecInfo.ResultText = String.Join(", ", BestCandidate.GetFunctionResults());
+            SpecInfo.Attempts += EInfo.CandidatesPerGen;
+            SpecInfo.Generation++;
+            SpecInfo.OperatorCount = BestCandidate.AllOperators.Count;
+            GInfo.AddTotalAttempts((long)EInfo.CandidatesPerGen);
+            SpecEnviroment.CheckBestCandidate();
         }
 
         protected void InitializeUpdateInfo()
         {
             IEnumerable<string> SeqText = (from x in EInfo.Goal
                                                select x.Y.ToString(Info.SRounding));
-                ShouldBeNumbers = String.Join(", ", SeqText);
-                SpecInfo.SequenceText = ShouldBeNumbers;
+                SpecInfo.SequenceText = String.Join(", ", SeqText);
         }
 
         public void ResetEquations(Equation[] NextGen)

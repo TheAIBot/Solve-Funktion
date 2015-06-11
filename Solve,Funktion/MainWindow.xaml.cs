@@ -72,6 +72,9 @@ namespace Solve_Funktion
             //const string SequenceX = "1,2,3,      4, 5,    6, 7,          8, 9,10";
             //const string SequenceY = "2,4,6,2342238,10,23432,14,12223332116,18,20";
 
+            //const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
+            //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+
             const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
             const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
@@ -118,17 +121,17 @@ namespace Solve_Funktion
             //new NOT()
         };
             EvolutionInfo EInfo = new EvolutionInfo(
-                Seq,    // Sequence
-                40,    // MaxSize
-                5,     // MaxChange
-                30000,  // CandidatesPerGen
-                102,    // NumberRangeMax
-                0,      // NumberRangeMin
-                1,      // SpeciesAmount
-                100,    // MaxStuckGens
-                0.8,    // EvolvedCandidatesPerGen
-                0,      // RandomCandidatesPerGen
-                0.2,    // SmartCandidatesPerGen
+                Seq,      // Sequence
+                40,       // MaxSize
+                5,        // MaxChange
+                30000,    // CandidatesPerGen
+                102,      // NumberRangeMax
+                0,        // NumberRangeMin
+                1,        // SpeciesAmount
+                100,      // MaxStuckGens
+                0.8,      // EvolvedCandidatesPerGen
+                0,        // RandomCandidatesPerGen
+                0.2,      // SmartCandidatesPerGen
                 Operators // Operatres that can be used in an equation
                 );
 
