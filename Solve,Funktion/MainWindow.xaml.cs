@@ -96,7 +96,7 @@ namespace Solve_Funktion
             //const string SequenceY = "276";
 
             List<Point> Seqs = new List<Point>();
-            for (double i = -4; i < 4; i += 0.1)
+            for (double i = -Math.PI; i < Math.PI; i += 0.1)
             {
                 Seqs.Add(new Point(i, Math.Sin(i)));
             }
@@ -140,9 +140,14 @@ namespace Solve_Funktion
             //new XNOR(),
             //new NOT()
         };
+            System.Numerics.Vector<double> fisk = new Vector<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+            System.Numerics.Vector<double> derp = new Vector<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+            Vector<double> lol = fisk + derp;
+            System.Numerics.Vector.
+            fisk.
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
-                20,       // MaxSize
+                10,       // MaxSize
                 7,        // MaxChange
                 30000,    // CandidatesPerGen
                 10,       // NumberRangeMax
