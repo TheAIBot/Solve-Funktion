@@ -42,7 +42,6 @@ namespace Solve_Funktion
             {
                 EBrother = Tools.DeepCopy<Equation>(Father.BestCandidate);
                 ESister = Tools.DeepCopy<Equation>(Mother.BestCandidate);
-                sdfsdfsdfsdfdsfsdfsdfsdfdsfdsfdsfs
 
             } while (Tools.IsANumber(Mother.BestCandidate.OffSet) && 
                      Tools.IsANumber(Father.BestCandidate.OffSet));

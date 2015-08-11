@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Concurrent;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -34,6 +35,7 @@ namespace Solve_Funktion
         {
             SpecControls = new ConcurrentStack<SpecieInfoControl>(new[] { SC8, SC7, SC6, SC5, SC4, SC3, SC2, SC1 });
             Task.Factory.StartNew(() =>             FindFunctionWithSpecies());
+            
         }
 
         private Point[] GetSequence(string SequenceX, string SequenceY)
@@ -75,14 +77,32 @@ namespace Solve_Funktion
             //const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
             //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
-            const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
-            const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+            //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
+            //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0";
+
+            //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
+            //const string SequenceY = "0.0,0.1,0.2,0.7,0.8,0.9,0.0,0.6,0.7,0.8,0.9,0.0,0.1,0.2,0.3,0.9,0.0";
+
+            //const string SequenceX = "0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.999,1.0,1.001,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,1.999,2.0,2.001,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3.0";
+            //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,  1.0,1.0,  1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,  1.0,0.0,  0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0";
+
+            //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
+            //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0";
+
+            //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0,3.1,3.2,3.7,3.8,3.9,4.0,4.6,4.7,4.8,4.9,5.0,5.1,5.2,5.3,5.9,6.0,6.1,6.2,6.3,6.9,7.0,7.1,7.2,7.7,7.8,7.9,8.0";
+            //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0";
 
             //const string SequenceX = "  1";
             //const string SequenceY = "276";
 
-            Point[] Seq = GetSequence(SequenceX,
-                                      SequenceY);
+            List<Point> Seqs = new List<Point>();
+            for (double i = -4; i < 4; i += 0.1)
+            {
+                Seqs.Add(new Point(i, Math.Sin(i)));
+            }
+            Point[] Seq = Seqs.ToArray();
+            //Point[] Seq = GetSequence(SequenceX,
+                                      //SequenceY);
 
             MathFunction[] Operators = new MathFunction[]
         {
@@ -92,10 +112,10 @@ namespace Solve_Funktion
             new Divide(),
 
             new PowerOf(),
-            new Root(),
-            new Exponent(),
-            new NaturalLog(),
-            new Log(),
+            //new Root(),
+            //new Exponent(),
+            //new NaturalLog(),
+            //new Log(),
 
             //new Modulos(),
             //new Floor(),
@@ -122,17 +142,17 @@ namespace Solve_Funktion
         };
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
-                40,       // MaxSize
-                5,        // MaxChange
+                20,       // MaxSize
+                7,        // MaxChange
                 30000,    // CandidatesPerGen
-                102,      // NumberRangeMax
-                0,        // NumberRangeMin
-                1,        // SpeciesAmount
-                100,      // MaxStuckGens
+                10,       // NumberRangeMax
+                -10,      // NumberRangeMin
+                8,        // SpeciesAmount
+                50,       // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen
                 0.2,      // SmartCandidatesPerGen
-                Operators // Operatres that can be used in an equation
+                Operators // Operators that can be used in an equation
                 );
 
             GeneralInfo GInfo = SpecieEnviroment.SetupEviroment(EInfo);

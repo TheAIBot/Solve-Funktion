@@ -31,7 +31,7 @@ namespace Solve_Funktion
             InitializeComponent();
         }
 
-        void AttempsTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void AttempsTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             long Change = GInfo.TotalAttempts - OldTotalAttemps;
             OldTotalAttemps = GInfo.TotalAttempts;
@@ -40,9 +40,20 @@ namespace Solve_Funktion
             {
                 OldAttempsSec.RemoveAt(0);
             }
+            RemoveIncorrectAttemps();
             if (OldAttempsSec.Count > 0)
             {
                 this.Dispatcher.Invoke(() => AttempsSec.Text = OldAttempsSec.Average().ToString("N0") + " Attemps/Sec");
+            }
+        }
+
+        private void RemoveIncorrectAttemps()
+        {
+            if (OldAttempsSec.Count > 3)
+            {
+                double average = OldAttempsSec.Average();
+                double percentOffset = 0.333;
+                OldAttempsSec.RemoveAll(x => x < average * ( 1 - percentOffset) || x > average * (1 + percentOffset));
             }
         }
 

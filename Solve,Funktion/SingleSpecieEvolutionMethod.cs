@@ -11,15 +11,15 @@ namespace Solve_Funktion
         public override Genome EvolveSolution()
         {
             StartFinding();
-            if (BestCandidate == null)
-            {
+            //if (BestCandidate == null)
+            //{
                 BestCandidate = new Equation(EInfo);
                 do
                 {
                     ResetSingle(BestCandidate);
                     RandomCand.MakeRandomEquation(BestCandidate);
                 } while (!Tools.IsANumber(BestCandidate.OffSet));
-            }
+            //}
             Equation EvolvedEquation = new Equation(EInfo) { OffSet = Double.NaN };
             Equation OldEquation = new Equation(EInfo) { OffSet = Double.NaN };
             int StuckCounter = 0;
@@ -27,12 +27,9 @@ namespace Solve_Funktion
             do
             {
                 BestCandEvolved = GetNextGen(EvolvedEquation, OldEquation);
-
                 StuckCounter = SetStuckCounter(StuckCounter, BestCandEvolved);
-
                 UpdateInfo();
-            } while (BestCandidate.OffSet != 0 && StuckCounter < EInfo.MaxStuckGens);
-            //} while (BestCandidate.OffSet != 0 && StuckCounter < Info.MaxStuckGens || BestCandidate.OperatorsLeft != 0);
+            } while (StuckCounter <= EInfo.MaxStuckGens);
             return this;
         }
 
@@ -81,7 +78,7 @@ namespace Solve_Funktion
         {
             if (Tools.IsANumber(Eq.OffSet))
             {
-                if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft > BestEvolvedCand.OperatorsLeft)
+                if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.AllOperators.Count < BestEvolvedCand.AllOperators.Count)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 {

@@ -466,52 +466,22 @@ namespace Solve_Funktion
             {
                 OP.ShowOperator(x, PForwards, PBackwards);
             }
-            StringBuilder Result = new StringBuilder(PBackwards.Length + PForwards.Length);
-            for (int i = PBackwards.Length - 1; i >= 0; i--)
+            if (Oper.ResultOnRightSide)
             {
-                Result.Append(PBackwards[i]);
+                StringBuilder Result = ReverseStringBuilder(PForwards, PBackwards.Length + PForwards.Length);
+                Result.Append(PBackwards);
+                Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
             }
-            Result.Append(PForwards);
-            Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            //////////StringBuilder Forwards = new StringBuilder();
-            //////////StringBuilder Backwards = new StringBuilder();
-            //////////const string Variable = "x";
-            //////////Forwards.Append(Variable);
-            //////////foreach (Operator EquationPart in EquationParts)
-            //////////{
-            //////////    EquationPart.ShowOperator(Variable, Forwards, Backwards);
-            //////////}
-            //////////StringBuilder Result = new StringBuilder(Backwards.Length + Forwards.Length);
-            //////////for (int i = Backwards.Length - 1; i >= 0; i--)
-            //////////{
-            //////////    Result.Append(Backwards[i]);
-            //////////}
-            //////////Result.Append(Forwards.ToString());
-            //////////return Result.ToString();
-            //if (Oper.ResultOnRightSide)
-            //{
-            //    Result.Append(PForwards);
-            //    for (int i = PBackwards.Length - 1; i >= 0; i--)
-            //    {
-            //        Result.Append(PBackwards[i]);
-            //    }
-            //    Result.Append(PForwards);
-            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            //}
-            //else
-            //{
-            //    Result.Append(PBackwards);
-            //    for (int i = PForwards.Length - 1; i >= 0; i--)
-            //    {
-            //        Result.Append(PForwards[i]);
-            //    }
-            //    Result.Append(PBackwards);
-            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            //}
+            else
+            {
+                StringBuilder Result = ReverseStringBuilder(PBackwards, PBackwards.Length + PForwards.Length);
+                Result.Append(PForwards);
+                Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+            }
         }
-        private StringBuilder ReverseStringBuilder(StringBuilder ToReverse)
+        private StringBuilder ReverseStringBuilder(StringBuilder ToReverse, int TextLength)
         {
-            StringBuilder Result = new StringBuilder(ToReverse.Length);
+            StringBuilder Result = new StringBuilder(TextLength);
             for (int i = ToReverse.Length - 1; i >= 0; i--)
             {
                 Result.Append(ToReverse[i]);
