@@ -140,11 +140,6 @@ namespace Solve_Funktion
             //new XNOR(),
             //new NOT()
         };
-            System.Numerics.Vector<double> fisk = new Vector<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            System.Numerics.Vector<double> derp = new Vector<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            Vector<double> lol = fisk + derp;
-            System.Numerics.Vector.
-            fisk.
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
                 10,       // MaxSize
