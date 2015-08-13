@@ -78,7 +78,6 @@
     <Compile Include="IndividualSpecieEnviroment.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="RandomCand.cs" />
-    <Compile Include="SingleSpecieEvolution.cs" />
     <Compile Include="SingleSpecieEvolutionMethod.cs" />
     <Compile Include="SmartCand.cs" />
     <Compile Include="SingleParentEvolution.cs" />

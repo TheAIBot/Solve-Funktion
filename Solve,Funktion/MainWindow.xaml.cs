@@ -50,7 +50,7 @@ namespace Solve_Funktion
 
         private void FindFunctionWithSpecies()
         {
-            var SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
+            var SpecieEnviroment = new IndividualSpecieEnviroment<SingleParentEvolution>();
             SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
             SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
