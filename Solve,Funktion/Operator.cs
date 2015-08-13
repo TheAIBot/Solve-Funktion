@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -11,7 +12,7 @@ namespace Solve_Funktion
     {
         public bool ResultOnRightSide;
         public MathFunction MFunction;
-        public double Number;
+        public Vector<double> Number;
         public bool UseNumber;
         public Equation Eq;
         public List<Operator> ContainedList;

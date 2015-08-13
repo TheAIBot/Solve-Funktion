@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -26,6 +27,7 @@ namespace Solve_Funktion
 
         public Equation(EvolutionInfo einfo)
         {
+            int fisk = 10;
             EInfo = einfo;
             SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
             AllOperators = new List<Operator>(EInfo.MaxSize);
@@ -66,7 +68,8 @@ namespace Solve_Funktion
                 Results[Index] = FunctionResult;
                 Index++;
             }
-            this.OffSet = Math.Abs((offset / (double)EInfo.Goal.Length));
+            //this.OffSet = Math.Abs((offset / (double)EInfo.Goal.Length));
+            this.OffSet = offset;
         }
 
         //private void SetResults(int SeqLength)
