@@ -11,6 +11,7 @@ namespace Solve_Funktion
         public GeneralInfo GInfo;
         public EvolutionInfo EInfo;
         public SpecieEnviromentBase SpecEnviroment;
+        public int _toCalc = 3;
         public event SpecieCreatedEventHandler OnSpecieCreated;
 
         public virtual void Startup(SpecieEnviromentBase Env, GeneralInfo ginfo, EvolutionInfo einfo)

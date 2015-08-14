@@ -67,6 +67,7 @@ namespace Solve_Funktion
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
                 SmartChangeNumber(EInfo, Copys[i], BCand, OCand, Indexes);
+                Copys[i].CalcTotalOffSet();
             }
         }
         private static void SmartChangeNumber(EvolutionInfo EInfo, Equation Eq, Equation BCand, Equation OCand, List<int> Indexes)
@@ -83,7 +84,6 @@ namespace Solve_Funktion
                 {
                     Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble((int)BCandOper.Number, EInfo.NumberRangeMax);
                 }
-                Eq.CalcTotalOffSet();
             }
         }
 
@@ -92,6 +92,7 @@ namespace Solve_Funktion
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
                 StupidChangeNumber(EInfo, Copys[i]);
+                Copys[i].CalcTotalOffSet();
             }
         }
         private static void StupidChangeNumber(EvolutionInfo EInfo, Equation Eq)
@@ -106,7 +107,6 @@ namespace Solve_Funktion
                 int Index = SynchronizedRandom.Next(0, Eq.EquationParts.Count);
                 Eq.EquationParts[Index].Number = SynchronizedRandom.NextDouble(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
             }
-            Eq.CalcTotalOffSet();
         }
     }
 }

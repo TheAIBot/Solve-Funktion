@@ -27,7 +27,6 @@ namespace Solve_Funktion
 
         public Equation(EvolutionInfo einfo)
         {
-            int fisk = 10;
             EInfo = einfo;
             SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
             AllOperators = new List<Operator>(EInfo.MaxSize);
@@ -54,47 +53,46 @@ namespace Solve_Funktion
 
         public void CalcTotalOffSet()
         {
+            CalcTotalOffSet(EInfo.Goal.Length);
+        }
+
+        public void CalcTotalOffSet(int toCalc)
+        {
             double offset = 0;
-            int Index = 0;
-            foreach (Point Coord in EInfo.Goal)
+            for (int i = 0; i < toCalc ; i++)
             {
-                double FunctionResult = GetFunctionResult(Coord.X);
-                offset += Math.Pow((Math.Abs(FunctionResult - Coord.Y) + 1), 2) - 1;
+                VectorPoint Coord = EInfo.Goal[i];
+                Vector<double> FunctionResult = GetFunctionResult(Coord.X);
+                offset += CalcOffset(FunctionResult, Coord.Y);
                 if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
                     return;
                 }
-                Results[Index] = FunctionResult;
-                Index++;
+                Results[i] = FunctionResult;
             }
-            //this.OffSet = Math.Abs((offset / (double)EInfo.Goal.Length));
             this.OffSet = offset;
         }
 
-        //private void SetResults(int SeqLength)
-        //{
-        //    //if it's not set or if the length is not correct then
-        //    //a new array is created with the correct length
-        //    if (Results == null)
-        //    {
-        //        Results = new double[SeqLength];
-        //    }
-        //    else if (Results.Length != SeqLength)
-        //    {
-        //        Results = new double[SeqLength]; ;
-        //    }
-        //}
-        
-        private double GetFunctionResult(double x)
+        private double CalcOffset(Vector<double> functionResult, Vector<double> coordY)
         {
-            double Result = x;
+            Vector<double> diff = System.Numerics.Vector.Abs<double>(functionResult - coordY) + Vector<double>.One;
+            Vector<double> vectorOffset = (diff * diff) - Vector<double>.One;
+            //return vectorOffset;
+            double[] vectorOffsets = new double[Vector<double>.Count];
+            vectorOffset.CopyTo(vectorOffsets);
+            return vectorOffsets.Sum();
+        }
+
+        private Vector<double> GetFunctionResult(Vector<double> x)
+        {
+            Vector<double> Result = x;
             foreach (Operator EquationPart in EquationParts)
             {
                 Result = EquationPart.Calculate(Result, x);
                 if (!Tools.IsANumber(Result))
                 {
-                    return double.NaN;
+                    return Constants.NAN_VECTOR;
                 }
             }
             return Result;
@@ -124,7 +122,7 @@ namespace Solve_Funktion
             string[] TextResults = new string[EInfo.Goal.Length];
             for (int i = 0; i < EInfo.Goal.Length; i++)
             {
-                TextResults[i] = Results[i].ToString(Info.SRounding);
+                TextsdsdsdResults[i] = Results[i].ToString(Info.SRounding);
             }
             return TextResults;
         }

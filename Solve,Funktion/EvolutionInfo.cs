@@ -9,7 +9,7 @@ namespace Solve_Funktion
 {
     public class EvolutionInfo
     {
-        public Point[] Goal;
+        public VectorPoint[] Goal;
         public readonly int MaxSize;
         public readonly int MaxChange;
         public readonly double CandidatesPerGen;
@@ -22,7 +22,7 @@ namespace Solve_Funktion
         public readonly double SmartCandidatesPerGen;
         public MathFunction[] Operators;
 
-        public EvolutionInfo(Point[] goal, int maxsize, int maxchange, double candidatespergen, int numberrangemax, int numberrangemin,
+        public EvolutionInfo(VectorPoint[] goal, int maxsize, int maxchange, double candidatespergen, int numberrangemax, int numberrangemin,
                              int speciesamount, int maxstuckgens, double evolvedcandidatespergen, double randomcandidatespergen,
                              double smartcandidatespergen, MathFunction[] operators)
         {

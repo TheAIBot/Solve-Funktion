@@ -34,18 +34,18 @@ namespace Solve_Funktion
         private void Window_ContentRendered_1(object sender, EventArgs e)
         {
             SpecControls = new ConcurrentStack<SpecieInfoControl>(new[] { SC8, SC7, SC6, SC5, SC4, SC3, SC2, SC1 });
-            Task.Factory.StartNew(() =>             FindFunctionWithSpecies());
+            Task.Factory.StartNew(() => FindFunctionWithSpecies());
             
         }
 
-        private Point[] GetSequence(string SequenceX, string SequenceY)
+        private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
         {
             double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            Point[] Seq = new Point[SeqRX.Length];
-            for (int i = 0; i < SeqRX.Length; i++)
+            VectorPoint[] Seq = new VectorPoint[SeqRX.Length];
+            for (int i = 0; i < SeqRX.Length; i += Vector<double>.Count)
             {
-                Seq[i] = new Point(SeqRX[i], SeqRY[i]);
+                Seq[i] = new VectorPoint(new Vector<double>(SeqRX, i), new Vector<double>(SeqRY, i));
             }
             return Seq;
         }
@@ -56,8 +56,8 @@ namespace Solve_Funktion
             SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
             SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-            //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
-            //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
+            const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
+            const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
 
             //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10";
             //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
@@ -95,24 +95,24 @@ namespace Solve_Funktion
             //const string SequenceX = "  1";
             //const string SequenceY = "276";
 
-            List<Point> Seqs = new List<Point>();
-            for (double i = -Math.PI; i < Math.PI; i += 0.1)
-            {
-                Seqs.Add(new Point(i, Math.Sin(i)));
-            }
-            Point[] Seq = Seqs.ToArray();
-            //Point[] Seq = GetSequence(SequenceX,
-                                      //SequenceY);
+            //List<Point> Seqs = new List<Point>();
+            //for (double i = -Math.PI; i < Math.PI; i += 0.1)
+            //{
+            //    Seqs.Add(new Point(i, Math.Sin(i)));
+            //}
+            //Point[] Seq = Seqs.ToArray();
+            VectorPoint[] Seq = GetSequence(SequenceX,
+                                            SequenceY);
 
             MathFunction[] Operators = new MathFunction[]
         {
-            new Plus(),
-            new Subtract(),
-            new Multiply(),
-            new Divide(),
+            new Plus(), //SIMD
+            new Subtract(), //SIMD
+            new Multiply(), //SIMD
+            new Divide(), //SIMD
 
-            new PowerOf(),
-            //new Root(),
+            //new PowerOf(),
+            //new Root(), //SIMD
             //new Exponent(),
             //new NaturalLog(),
             //new Log(),
@@ -129,26 +129,26 @@ namespace Solve_Funktion
             //new ACos(),
             //new ATan(),
 
-            new Parentheses(),
-            //new Absolute(),
+            new Parentheses(), //SIMD
+            new Absolute(), //SIMD
 
-            //new AND(),
-            //new NAND(),
-            //new OR(),
-            //new NOR(),
-            //new XOR(),
-            //new XNOR(),
-            //new NOT()
+            //new AND(), //SIMD
+            //new NAND(), //SIMD
+            //new OR(), //SIMD
+            //new NOR(), //SIMD
+            //new XOR(), //SIMD
+            //new XNOR(), //SIMD
+            //new NOT() //SIMD
         };
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
                 10,       // MaxSize
-                7,        // MaxChange
+                4,        // MaxChange
                 30000,    // CandidatesPerGen
-                10,       // NumberRangeMax
-                -10,      // NumberRangeMin
+                101,      // NumberRangeMax
+                -101,     // NumberRangeMin
                 8,        // SpeciesAmount
-                50,       // MaxStuckGens
+                100,      // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen
                 0.2,      // SmartCandidatesPerGen

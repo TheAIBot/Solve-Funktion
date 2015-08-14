@@ -1,10 +1,22 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
     public static class Tools
     {
+        public static bool IsANumber(Vector<double> ToDecide)
+        {
+            for (int i = 0; i < Vector<double>.Count; i++)
+            {
+                if (double.IsNaN(ToDecide[i]) || double.IsInfinity(ToDecide[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         public static bool IsANumber(double ToDecide)
         {
             if (double.IsNaN(ToDecide) || double.IsInfinity(ToDecide))
@@ -44,6 +56,16 @@ namespace Solve_Funktion
                 }
             }
             return true;
+        }
+
+        public static Vector<double> CreateVector(double number)
+        {
+            double[] vectorValues = new double[Vector<double>.Count];
+            for (int i = 0; i < Vector<double>.Count; i++)
+            {
+                vectorValues[i] = number;
+            }
+            return new Vector<double>(vectorValues);
         }
     }
 }

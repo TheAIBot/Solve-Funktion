@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -32,7 +33,8 @@ namespace Solve_Funktion
             if (OnBestEquationChanged != null)
             {
                 List<Genome> SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
-                                        .OrderBy(x => x.BestCandidate.OffSet)
+                                        .OrderByDescending(x => x._toCalc)
+                                        .ThenBy(x => x.BestCandidate.OffSet)
                                         .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToList();
                 if (SpecInfos.Count > 0)
                 {
@@ -62,5 +64,17 @@ namespace Solve_Funktion
     {
         public GeneralInfo GInfo;
         public Genome Specie;
+    }
+
+    public sealed class VectorPoint
+    {
+        public Vector<double> X;
+        public Vector<double> Y;
+
+        public VectorPoint(Vector<double> x, Vector<double> y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }
