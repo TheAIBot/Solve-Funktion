@@ -111,7 +111,7 @@ namespace Solve_Funktion
             new Multiply(),
             new Divide(),
 
-            new PowerOf(),
+            //new PowerOf(),
             //new Root(),
             //new Exponent(),
             //new NaturalLog(),
@@ -130,7 +130,7 @@ namespace Solve_Funktion
             //new ATan(),
 
             new Parentheses(),
-            //new Absolute(),
+            new Absolute(),
 
             //new AND(),
             //new NAND(),
@@ -143,12 +143,12 @@ namespace Solve_Funktion
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
                 10,       // MaxSize
-                7,        // MaxChange
+                4,        // MaxChange
                 30000,    // CandidatesPerGen
-                10,       // NumberRangeMax
-                -10,      // NumberRangeMin
-                4,        // SpeciesAmount
-                50,       // MaxStuckGens
+                101,       // NumberRangeMax
+                -101,      // NumberRangeMin
+                8,        // SpeciesAmount
+                100,       // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen
                 0.2,      // SmartCandidatesPerGen
