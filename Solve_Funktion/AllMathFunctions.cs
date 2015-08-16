@@ -23,7 +23,6 @@ namespace Solve_Funktion
         }
         public virtual bool CanUseOperator(Operator Oper)
         {
-            int fisk = 0;
             return true;
         }
         public virtual int GetOperatorCount(Operator Oper)

@@ -56,8 +56,8 @@ namespace Solve_Funktion
             SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
             SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-            //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
-            //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
+            const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
+            const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
 
             //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10";
             //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
@@ -95,14 +95,14 @@ namespace Solve_Funktion
             //const string SequenceX = "  1";
             //const string SequenceY = "276";
 
-            List<Point> Seqs = new List<Point>();
-            for (double i = -Math.PI; i < Math.PI; i += 0.1)
-            {
-                Seqs.Add(new Point(i, Math.Sin(i)));
-            }
-            Point[] Seq = Seqs.ToArray();
-            //Point[] Seq = GetSequence(SequenceX,
-                                      //SequenceY);
+            //List<Point> Seqs = new List<Point>();
+            //for (double i = -Math.PI; i < Math.PI; i += 0.1)
+            //{
+            //    Seqs.Add(new Point(i, Math.Sin(i)));
+            //}
+            //Point[] Seq = Seqs.ToArray();
+            Point[] Seq = GetSequence(SequenceX,
+                                      SequenceY);
 
             MathFunction[] Operators = new MathFunction[]
         {
@@ -147,7 +147,7 @@ namespace Solve_Funktion
                 30000,    // CandidatesPerGen
                 10,       // NumberRangeMax
                 -10,      // NumberRangeMin
-                8,        // SpeciesAmount
+                4,        // SpeciesAmount
                 50,       // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen

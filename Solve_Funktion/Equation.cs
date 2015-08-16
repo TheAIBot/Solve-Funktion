@@ -27,7 +27,6 @@ namespace Solve_Funktion
 
         public Equation(EvolutionInfo einfo)
         {
-            int fisk = 10;
             EInfo = einfo;
             SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
             AllOperators = new List<Operator>(EInfo.MaxSize);
