@@ -7,7 +7,6 @@ using System.Numerics;
 
 namespace Solve_Funktion
 {
-    [Serializable]
     public class Equation
     {
         public List<List<Operator>> SortedOperators;

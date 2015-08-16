@@ -15,11 +15,12 @@ namespace Solve_Funktion
         public int _toCalc = 3;
         public event SpecieCreatedEventHandler OnSpecieCreated;
 
+
         public virtual void Startup(SpecieEnviromentBase Env, GeneralInfo ginfo, EvolutionInfo einfo)
         {
             SpecEnviroment = Env;
             GInfo = ginfo;
-            EInfo = einfo;
+            EInfo = einfo
         }
 
         public abstract Genome EvolveSolution();
