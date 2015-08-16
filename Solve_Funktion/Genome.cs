@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -52,8 +53,13 @@ namespace Solve_Funktion
 
         protected void InitializeUpdateInfo()
         {
-            IEnumerable<string> SeqText = (from x in EInfo.Goal
-                                               select x.Y.ToString(Info.SRounding));
+            List<double> seqNum = new List<double>(EInfo.GoalLength);
+            foreach (VectorPoint vecP in EInfo.Goal)
+            {
+                seqNum.AddRange(Tools.GetPartOfVectorResult(vecP.Y, vecP.Count));
+            }
+            IEnumerable<string> SeqText = (from x in seqNum
+                                           select x.ToString(Info.SRounding));
                 SpecInfo.SequenceText = String.Join(", ", SeqText);
         }
 

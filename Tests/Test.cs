@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
 using System.Windows;
+using System.Numerics;
 
 namespace Tests
 {
@@ -216,8 +217,8 @@ namespace Tests
             const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
             const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
-            Point[] Seq = GetSequence(SequenceX,
-                                      SequenceY);
+            VectorPoint[] Seq = GetSequence(SequenceX,
+                                            SequenceY);
 
             MathFunction[] Operators = new MathFunction[]
             {
@@ -226,23 +227,23 @@ namespace Tests
                 new Multiply(),
                 new Divide(),
 
-                new PowerOf(),
+                //new PowerOf(),
                 new Root(),
-                new Exponent(),
-                new NaturalLog(),
-                new Log(),
+                //new Exponent(),
+                //new NaturalLog(),
+                //new Log(),
 
-                new Modulos(),
-                new Floor(),
-                new Ceil(),
-                new Round(),
+                //new Modulos(),
+                //new Floor(),
+                //new Ceil(),
+                //new Round(),
 
-                new Sin(),
-                new Cos(),
-                new Tan(),
-                new ASin(),
-                new ACos(),
-                new ATan(),
+                //new Sin(),
+                //new Cos(),
+                //new Tan(),
+                //new ASin(),
+                //new ACos(),
+                //new ATan(),
 
                 new Parentheses(),
                 new Absolute(),
@@ -272,14 +273,44 @@ namespace Tests
                 );
         }
 
-        private Point[] GetSequence(string SequenceX, string SequenceY)
+        private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
         {
             double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            Point[] Seq = new Point[SeqRX.Length];
-            for (int i = 0; i < SeqRX.Length; i++)
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Vector<double>.Count)];
+            int index = 0;
+            for (int i = 0; i < SeqRX.Length; i += Vector<double>.Count)
             {
-                Seq[i] = new Point(SeqRX[i], SeqRY[i]);
+                int sizeLeft = SeqRX.Length - i;
+                Vector<double> sRX;
+                Vector<double> sRY;
+                int vectorSize;
+                if (sizeLeft >= Vector<double>.Count)
+                {
+                    sRX = new Vector<double>(SeqRX, i);
+                    sRY = new Vector<double>(SeqRY, i);
+                    vectorSize = Vector<double>.Count;
+                }
+                else
+                {
+                    vectorSize = sizeLeft;
+                    double[] rXData = new double[Vector<double>.Count];
+                    double[] rYData = new double[Vector<double>.Count];
+
+                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
+                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
+
+                    int missingNumbers = Vector<double>.Count - sizeLeft;
+                    for (int y = 1; y < missingNumbers + 1; y++)
+                    {
+                        rXData[y] = rXData[0];
+                        rYData[y] = rYData[0];
+                    }
+                    sRX = new Vector<double>(rXData);
+                    sRY = new Vector<double>(rYData);
+                }
+                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
+                index++;
             }
             return Seq;
         }

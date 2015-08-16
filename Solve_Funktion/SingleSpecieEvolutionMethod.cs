@@ -16,12 +16,13 @@ namespace Solve_Funktion
             {
                 ResetSingle(BestCandidate);
                 RandomCand.MakeRandomEquation(BestCandidate);
+                BestCandidate.CalcTotalOffSet();
             } while (!Tools.IsANumber(BestCandidate.OffSet));
             Equation EvolvedEquation = new Equation(EInfo) { OffSet = Double.NaN };
             Equation OldEquation = new Equation(EInfo) { OffSet = Double.NaN };
             bool BestCandEvolved = false;
-            _toCalc = EInfo.Goal.Length;
-            while (_toCalc <= EInfo.Goal.Length)
+            _toCalc = EInfo.GoalLength;
+            while (_toCalc <= EInfo.GoalLength)
             {
                 int StuckCounter = 0;
                 do

@@ -21,7 +21,7 @@ namespace Solve_Funktion
             }
         }
         public Stack<Operator> OPStorage;
-        public EvolutionInfo EInfo;
+        public readonly EvolutionInfo EInfo;
         public double OffSet;
         public double[] Results;
 
@@ -37,7 +37,7 @@ namespace Solve_Funktion
                 OPStorage.Push(new Operator(this));
             }
             SortedOperators.Add(EquationParts);
-            Results = new double[EInfo.Goal.Length];
+            Results = new double[EInfo.GoalLength];
         }
 
         public void MakeRandom()
@@ -53,35 +53,47 @@ namespace Solve_Funktion
 
         public void CalcTotalOffSet()
         {
-            CalcTotalOffSet(EInfo.Goal.Length);
+            CalcTotalOffSet(EInfo.GoalLength);
         }
 
         public void CalcTotalOffSet(int toCalc)
         {
+            toCalc = (int)Math.Ceiling((double)toCalc / (double)Vector<double>.Count);
             double offset = 0;
+            int index = 0;
             for (int i = 0; i < toCalc ; i++)
             {
                 VectorPoint Coord = EInfo.Goal[i];
                 Vector<double> FunctionResult = GetFunctionResult(Coord.X);
-                offset += CalcOffset(FunctionResult, Coord.Y);
+                offset += CalcOffset(FunctionResult, Coord.Y, Coord.Count);
                 if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
                     return;
                 }
-                Results[i] = FunctionResult;
+                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, Coord.Count);
+                Array.Copy(partResult, 0, Results, index, partResult.Length);
+
+                index += Coord.Count;
             }
             this.OffSet = offset;
         }
 
-        private double CalcOffset(Vector<double> functionResult, Vector<double> coordY)
+        private double CalcOffset(Vector<double> functionResult, Vector<double> coordY, int count)
         {
+            //return (((y - y1) + 1) ^ 2) - 1
             Vector<double> diff = System.Numerics.Vector.Abs<double>(functionResult - coordY) + Vector<double>.One;
             Vector<double> vectorOffset = (diff * diff) - Vector<double>.One;
-            //return vectorOffset;
-            double[] vectorOffsets = new double[Vector<double>.Count];
-            vectorOffset.CopyTo(vectorOffsets);
-            return vectorOffsets.Sum();
+            if (count == Vector<double>.Count)
+            {
+                double[] vectorOffsets = new double[Vector<double>.Count];
+                vectorOffset.CopyTo(vectorOffsets);
+                return vectorOffsets.Sum();
+            }
+            else
+            {
+                return Tools.GetPartOfVectorResult(vectorOffset, count).Sum();
+            }
         }
 
         private Vector<double> GetFunctionResult(Vector<double> x)
@@ -119,10 +131,10 @@ namespace Solve_Funktion
 
         public string[] GetFunctionResults()
         {
-            string[] TextResults = new string[EInfo.Goal.Length];
-            for (int i = 0; i < EInfo.Goal.Length; i++)
+            string[] TextResults = new string[Results.Length];
+            for (int i = 0; i < Results.Length; i++)
             {
-                TextsdsdsdResults[i] = Results[i].ToString(Info.SRounding);
+                TextResults[i] = Results[i].ToString(Info.SRounding);
             }
             return TextResults;
         }

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Numerics;
+using System;
 
 namespace Solve_Funktion
 {
@@ -66,6 +67,15 @@ namespace Solve_Funktion
                 vectorValues[i] = number;
             }
             return new Vector<double>(vectorValues);
+        }
+
+        public static double[] GetPartOfVectorResult(Vector<double> vec, int count)
+        {
+            double[] result = new double[Vector<double>.Count];
+            vec.CopyTo(result);
+            double[] toReturn = new double[count];
+            Array.Copy(result, toReturn, count);
+            return toReturn;
         }
     }
 }

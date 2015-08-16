@@ -42,10 +42,40 @@ namespace Solve_Funktion
         {
             double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            VectorPoint[] Seq = new VectorPoint[SeqRX.Length];
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Vector<double>.Count)];
+            int index = 0;
             for (int i = 0; i < SeqRX.Length; i += Vector<double>.Count)
             {
-                Seq[i] = new VectorPoint(new Vector<double>(SeqRX, i), new Vector<double>(SeqRY, i));
+                int sizeLeft = SeqRX.Length - i;
+                Vector<double> sRX;
+                Vector<double> sRY;
+                int vectorSize;
+                if (sizeLeft >= Vector<double>.Count)
+                {
+                    sRX = new Vector<double>(SeqRX, i);
+                    sRY = new Vector<double>(SeqRY, i);
+                    vectorSize = Vector<double>.Count;
+                }
+                else
+                {
+                    vectorSize = sizeLeft;
+                    double[] rXData = new double[Vector<double>.Count];
+                    double[] rYData = new double[Vector<double>.Count];
+
+                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
+                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
+
+                    int missingNumbers = Vector<double>.Count - sizeLeft;
+                    for (int y = 1; y <  missingNumbers + 1; y++)
+                    {
+                        rXData[y] = rXData[0];
+                        rYData[y] = rYData[0];
+                    }
+                    sRX = new Vector<double>(rXData);
+                    sRY = new Vector<double>(rYData);
+                }
+                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
+                index++;
             }
             return Seq;
         }

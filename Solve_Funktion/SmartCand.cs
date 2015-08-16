@@ -76,13 +76,13 @@ namespace Solve_Funktion
             {
                 Operator BCandOper = BCand.AllOperators[Index];
                 Operator OCandOper = OCand.AllOperators[Index];
-                if (BCandOper.Number > OCandOper.Number)
+                if (BCandOper.Number[0] > OCandOper.Number[0])
                 {
-                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble(EInfo.NumberRangeMin, (int)BCandOper.Number + 1);
+                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.Number[0] + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextDouble((int)BCandOper.Number, EInfo.NumberRangeMax);
+                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextVector((int)BCandOper.Number[0], EInfo.NumberRangeMax);
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace Solve_Funktion
             for (int i = 0; i < AmountToChange; i++)
             {
                 int Index = SynchronizedRandom.Next(0, Eq.EquationParts.Count);
-                Eq.EquationParts[Index].Number = SynchronizedRandom.NextDouble(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                Eq.EquationParts[Index].Number = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
             }
         }
     }

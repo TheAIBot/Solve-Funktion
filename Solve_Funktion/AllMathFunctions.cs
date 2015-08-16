@@ -24,7 +24,6 @@ namespace Solve_Funktion
         }
         public virtual bool CanUseOperator(Operator Oper)
         {
-            int fisk = 0;
             return true;
         }
         public virtual int GetOperatorCount(Operator Oper)
@@ -74,7 +73,7 @@ namespace Solve_Funktion
             //Forward.Append(Num);
             //Forward.Append(")");
             //Forward.Append(PostFix);
-            string Num = (Oper.UseNumber) ? Oper.Number.ToString() : x;
+            string Num = (Oper.UseNumber) ? Oper.Number[0].ToString() : x;
             if (Oper.ResultOnRightSide)
             {
                 Backwards.Append(ReversedMiddleFix);
