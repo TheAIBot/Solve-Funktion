@@ -20,7 +20,7 @@ namespace Solve_Funktion
         {
             SpecEnviroment = Env;
             GInfo = ginfo;
-            EInfo = einfo
+            EInfo = einfo;
         }
 
         public abstract Genome EvolveSolution();
