@@ -17,6 +17,7 @@ namespace Solve_Funktion
         private string resulttext;
         private double attemts = 0;
         private double offset;
+        public int toCalc { get; set; } = 0;
 
 
         public string TitleText

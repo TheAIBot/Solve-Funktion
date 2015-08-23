@@ -23,6 +23,7 @@ namespace Solve_Funktion
         public readonly EvolutionInfo EInfo;
         public double OffSet;
         public double[] Results;
+        public int _toCalc;
 
         public Equation(EvolutionInfo einfo)
         {
@@ -52,12 +53,13 @@ namespace Solve_Funktion
 
         public void CalcTotalOffSet()
         {
-            CalcTotalOffSet(EInfo.GoalLength);
+            CalcPartialOffSet(EInfo.GoalLength);
         }
 
-        public void CalcTotalOffSet(int toCalc)
+        public void CalcPartialOffSet(int toCalc)
         {
-            toCalc = (int)Math.Ceiling((double)toCalc / (double)Vector<double>.Count);
+            _toCalc = toCalc;
+            toCalc = (int)Math.Ceiling((double)toCalc / (double)Constants.VECTOR_LENGTH);
             double offset = 0;
             int index = 0;
             for (int i = 0; i < toCalc ; i++)
@@ -83,10 +85,10 @@ namespace Solve_Funktion
             //return (((y - y1) + 1) ^ 2) - 1
             Vector<double> diff = System.Numerics.Vector.Abs<double>(functionResult - coordY) + Vector<double>.One;
             Vector<double> vectorOffset = (diff * diff) - Vector<double>.One;
-            if (count == Vector<double>.Count)
+            if (count == Constants.VECTOR_LENGTH)
             {
-                double[] vectorOffsets = new double[Vector<double>.Count];
-                vectorOffset.CopyTo(vectorOffsets);
+                double[] vectorOffsets = new double[Constants.VECTOR_LENGTH];
+                vectorOffset.CopyTo(vectorOffsets); // this branch is probably not needed as Tools.GetPartOfVectorFunction could be used for both
                 return vectorOffsets.Sum();
             }
             else

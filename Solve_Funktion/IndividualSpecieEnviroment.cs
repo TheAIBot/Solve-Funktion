@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Solve_Funktion
 {
@@ -27,10 +28,18 @@ namespace Solve_Funktion
             Parallel.For(0, Species.Length, (i, LoopState) =>
             {
                 Genome FinishedSpecie;
-                do
+                try
                 {
-                    FinishedSpecie = Species[i].EvolveSolution();
-                } while (FinishedSpecie.BestCandidate.OffSet != 0);
+                    do
+                    {
+                        FinishedSpecie = Species[i].EvolveSolution();
+                    } while (FinishedSpecie.BestCandidate.OffSet != 0);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message + Environment.NewLine + e.StackTrace);
+                }
+
                 LoopState.Stop();
             });
         }

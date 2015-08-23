@@ -9,6 +9,7 @@ namespace Solve_Funktion
 {
     public static class Constants
     {
-        public readonly static Vector<double> NAN_VECTOR = Tools.CreateVector(double.NaN);
+        public static readonly Vector<double> NAN_VECTOR = Tools.CreateVector(double.NaN);
+        public static readonly int VECTOR_LENGTH = 2;//Vector<double>.Count;
     }
 }

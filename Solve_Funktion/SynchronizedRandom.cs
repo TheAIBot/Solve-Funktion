@@ -10,7 +10,7 @@ namespace Solve_Funktion
 {
     public static class SynchronizedRandom
     {
-        private static int seedCounter = new Random().Next();
+        private static int seedCounter = 100; // new Random().Next();
 
         [ThreadStatic]
         private static Random RDom;
@@ -31,9 +31,9 @@ namespace Solve_Funktion
 
         public static Vector<double> NextVector(int Start, int End)
         {
-            double[] randomVectorValues = new double[Vector<double>.Count];
+            double[] randomVectorValues = new double[Constants.VECTOR_LENGTH];
             randomVectorValues[0] = RDom.Next(Start, End);
-            for (int i = 1; i < Vector<double>.Count; i++)
+            for (int i = 1; i < Constants.VECTOR_LENGTH; i++)
             {
                 randomVectorValues[i] = randomVectorValues[0];
             }

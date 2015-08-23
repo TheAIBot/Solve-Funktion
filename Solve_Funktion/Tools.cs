@@ -9,7 +9,7 @@ namespace Solve_Funktion
     {
         public static bool IsANumber(Vector<double> ToDecide)
         {
-            for (int i = 0; i < Vector<double>.Count; i++)
+            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
             {
                 if (double.IsNaN(ToDecide[i]) || double.IsInfinity(ToDecide[i]))
                 {
@@ -61,8 +61,8 @@ namespace Solve_Funktion
 
         public static Vector<double> CreateVector(double number)
         {
-            double[] vectorValues = new double[Vector<double>.Count];
-            for (int i = 0; i < Vector<double>.Count; i++)
+            double[] vectorValues = new double[Constants.VECTOR_LENGTH];
+            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
             {
                 vectorValues[i] = number;
             }
@@ -71,7 +71,7 @@ namespace Solve_Funktion
 
         public static double[] GetPartOfVectorResult(Vector<double> vec, int count)
         {
-            double[] result = new double[Vector<double>.Count];
+            double[] result = new double[Constants.VECTOR_LENGTH];
             vec.CopyTo(result);
             double[] toReturn = new double[count];
             Array.Copy(result, toReturn, count);

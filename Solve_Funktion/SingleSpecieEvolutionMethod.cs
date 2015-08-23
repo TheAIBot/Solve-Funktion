@@ -51,7 +51,7 @@ namespace Solve_Funktion
             {
                 BestCandidate.MakeClone(EvolvedEquation);
                 EvolveCand.EvolveCandidate(EInfo, EvolvedEquation);
-                EvolvedEquation.CalcTotalOffSet(toCalc);
+                EvolvedEquation.CalcPartialOffSet(toCalc);
                 bool EvolvedToBetter = ChangeIfBetter(EvolvedEquation, OldEquation, BestEvolvedEquation);
                 BestCandEvolved = (EvolvedToBetter) ? true : BestCandEvolved;
                 ResetSingle(EvolvedEquation);
@@ -61,7 +61,7 @@ namespace Solve_Funktion
             {
                 BestCandidate.MakeClone(EvolvedEquation);
                 SmartCand.SmartifyCandidate(EInfo, EvolvedEquation, BestCandidate, OldEquation, Indexes);
-                EvolvedEquation.CalcTotalOffSet(toCalc);
+                EvolvedEquation.CalcPartialOffSet(toCalc);
                 bool EvolvedToBetter = ChangeIfBetter(EvolvedEquation, OldEquation, BestEvolvedEquation);
                 BestCandEvolved = (EvolvedToBetter) ? true : BestCandEvolved;
                 ResetSingle(EvolvedEquation);
@@ -69,7 +69,7 @@ namespace Solve_Funktion
             for (double i = 0; i < EInfo.CandidatesPerGen * EInfo.RandomCandidatesPerGen; i++)
             {
                 RandomCand.MakeRandomEquation(EvolvedEquation);
-                EvolvedEquation.CalcTotalOffSet(toCalc);
+                EvolvedEquation.CalcPartialOffSet(toCalc);
                 bool EvolvedToBetter = ChangeIfBetter(EvolvedEquation, OldEquation, BestEvolvedEquation);
                 BestCandEvolved = (EvolvedToBetter) ? true : BestCandEvolved;
                 ResetSingle(EvolvedEquation);
@@ -86,7 +86,11 @@ namespace Solve_Funktion
         {
             if (Tools.IsANumber(Eq.OffSet))
             {
-                if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.AllOperators.Count < BestEvolvedCand.AllOperators.Count)
+                if (Eq.OffSet < BestEvolvedCand.OffSet &&
+                    Eq._toCalc >= BestEvolvedCand._toCalc ||
+                    Eq.OffSet == BestEvolvedCand.OffSet &&
+                    Eq.AllOperators.Count < BestEvolvedCand.AllOperators.Count &&
+                    Eq._toCalc >= BestEvolvedCand._toCalc)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 {

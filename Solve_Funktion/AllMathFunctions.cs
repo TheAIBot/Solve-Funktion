@@ -194,23 +194,23 @@ namespace Solve_Funktion
     //        DrawOperator(x, Oper, Forwards, Backwards);
     //    }
     //}
-    //public class PowerOf : MathFunction
-    //{
-    //    public PowerOf()
-    //    {
-    //        MiddleFix = " ^ ";
-    //        CreateReversedStrings();
-    //    }
-    //    public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
-    //    {
-    //        double Num = (Oper.UseNumber) ? Oper.Number : x;
-    //        return (Oper.ResultOnRightSide) ? Math.Pow(Num, Result) : Math.Pow(Result, Num);
-    //    }
-    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-    //    {
-    //        DrawOperator(x, Oper, Forwards, Backwards);
-    //    }
-    //}
+    public class PowerOf : MathFunction
+    {
+        public PowerOf()
+        {
+            MiddleFix = " ^ ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Oper.ResultOnRightSide) ? VectorMath.Pow(Num, Result) : VectorMath.Pow(Result, Num);
+        }
+        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(x, Oper, Forwards, Backwards);
+        }
+    }
     public sealed class Root : MathFunction
     {
         public Root()
@@ -459,34 +459,41 @@ namespace Solve_Funktion
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            StringBuilder PForwards = new StringBuilder();
-            StringBuilder PBackwards = new StringBuilder();
-            PForwards.Append(x);
+            string currentFunction = ReverseAddStringBuilder(Backwards, Forwards);
+            Forwards.Clear();
+            Forwards.Append(currentFunction);
+            Backwards.Clear();
+
+            //StringBuilder PForwards = new StringBuilder();
+            //StringBuilder PBackwards = new StringBuilder();
+            //PForwards.Append(x);
             foreach (Operator OP in Oper.Operators)
             {
-                OP.ShowOperator(x, PForwards, PBackwards);
+                OP.ShowOperator(x, Forwards, Backwards);
             }
-            if (Oper.ResultOnRightSide)
-            {
-                StringBuilder Result = ReverseStringBuilder(PForwards, PBackwards.Length + PForwards.Length);
-                Result.Append(PBackwards);
-                Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            }
-            else
-            {
-                StringBuilder Result = ReverseStringBuilder(PBackwards, PBackwards.Length + PForwards.Length);
-                Result.Append(PForwards);
-                Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            }
+            //if (Oper.ResultOnRightSide)
+            //{
+            //    StringBuilder Result = ReverseStringBuilder(PForwards, PBackwards.Length + PForwards.Length);
+            //    Result.Append(PBackwards);
+            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+            //}
+            //else
+            //{
+            //    StringBuilder Result = ReverseStringBuilder(PBackwards, PBackwards.Length + PForwards.Length);
+            //    Result.Append(PForwards);
+            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+            //}
         }
-        private StringBuilder ReverseStringBuilder(StringBuilder ToReverse, int TextLength)
+        private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
-            StringBuilder Result = new StringBuilder(TextLength);
-            for (int i = ToReverse.Length - 1; i >= 0; i--)
-            {
-                Result.Append(ToReverse[i]);
-            }
-            return Result;
+            //reverse
+            char[] toReverseAdd = new char[toReverse.Length + toAdd.Length];
+            toReverse.CopyTo(0, toReverseAdd, toAdd.Length - 1, toReverse.Length);
+            Array.Reverse(toReverseAdd);
+
+            //add
+            toAdd.CopyTo(0, toReverseAdd, toAdd.Length, toAdd.Length);
+            return new String(toReverseAdd);
         }
 
         public override void MakeRandom(Operator Oper)
@@ -575,8 +582,8 @@ namespace Solve_Funktion
 
     public class LogicBase : MathFunction
     {
-        protected Vector<double> _one = Vector<double>.One;
-        protected Vector<double> _zero = Vector<double>.Zero;
+        protected readonly Vector<double> _one = Vector<double>.One;
+        protected readonly Vector<double> _zero = Vector<double>.Zero;
 
         public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {

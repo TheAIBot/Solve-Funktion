@@ -42,31 +42,70 @@ namespace Solve_Funktion
         {
             double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Vector<double>.Count)];
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Constants.VECTOR_LENGTH)];
             int index = 0;
-            for (int i = 0; i < SeqRX.Length; i += Vector<double>.Count)
+            for (int i = 0; i < SeqRX.Length; i += Constants.VECTOR_LENGTH)
             {
                 int sizeLeft = SeqRX.Length - i;
                 Vector<double> sRX;
                 Vector<double> sRY;
                 int vectorSize;
-                if (sizeLeft >= Vector<double>.Count)
+                if (sizeLeft >= Constants.VECTOR_LENGTH)
                 {
                     sRX = new Vector<double>(SeqRX, i);
                     sRY = new Vector<double>(SeqRY, i);
-                    vectorSize = Vector<double>.Count;
+                    vectorSize = Constants.VECTOR_LENGTH;
                 }
                 else
                 {
                     vectorSize = sizeLeft;
-                    double[] rXData = new double[Vector<double>.Count];
-                    double[] rYData = new double[Vector<double>.Count];
+                    double[] rXData = new double[Constants.VECTOR_LENGTH];
+                    double[] rYData = new double[Constants.VECTOR_LENGTH];
 
                     Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
                     Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
 
-                    int missingNumbers = Vector<double>.Count - sizeLeft;
+                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
                     for (int y = 1; y <  missingNumbers + 1; y++)
+                    {
+                        rXData[y] = rXData[0];
+                        rYData[y] = rYData[0];
+                    }
+                    sRX = new Vector<double>(rXData);
+                    sRY = new Vector<double>(rYData);
+                }
+                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
+                index++;
+            }
+            return Seq;
+        }
+        private VectorPoint[] GetSequence(double[] SeqRX, double[] SeqRY)
+        {
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Constants.VECTOR_LENGTH)];
+            int index = 0;
+            for (int i = 0; i < SeqRX.Length; i += Constants.VECTOR_LENGTH)
+            {
+                int sizeLeft = SeqRX.Length - i;
+                Vector<double> sRX;
+                Vector<double> sRY;
+                int vectorSize;
+                if (sizeLeft >= Constants.VECTOR_LENGTH)
+                {
+                    sRX = new Vector<double>(SeqRX, i);
+                    sRY = new Vector<double>(SeqRY, i);
+                    vectorSize = Constants.VECTOR_LENGTH;
+                }
+                else
+                {
+                    vectorSize = sizeLeft;
+                    double[] rXData = new double[Constants.VECTOR_LENGTH];
+                    double[] rYData = new double[Constants.VECTOR_LENGTH];
+
+                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
+                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
+
+                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
+                    for (int y = 1; y < missingNumbers + 1; y++)
                     {
                         rXData[y] = rXData[0];
                         rYData[y] = rYData[0];
@@ -125,12 +164,19 @@ namespace Solve_Funktion
             //const string SequenceX = "  1";
             //const string SequenceY = "276";
 
-            //List<Point> Seqs = new List<Point>();
-            //for (double i = -Math.PI; i < Math.PI; i += 0.1)
+            //List<double> SeqRX = new List<double>();
+            //List<double> SeqRY = new List<double>();
+            ////for (double i = -Math.PI; i < Math.PI; i += 0.1)
+            ////{
+            ////    SeqRX.Add(i);
+            ////    SeqRY.Add(Math.Sin(i));
+            ////}
+            //for (double i = -30; i < 150; i += 10)
             //{
-            //    Seqs.Add(new Point(i, Math.Sin(i)));
+            //    SeqRX.Add(i);
+            //    SeqRY.Add(Math.Exp(i));
             //}
-            //Point[] Seq = Seqs.ToArray();
+            //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
             VectorPoint[] Seq = GetSequence(SequenceX,
                                             SequenceY);
 
@@ -141,7 +187,7 @@ namespace Solve_Funktion
             new Multiply(), //SIMD
             new Divide(), //SIMD
 
-            //new PowerOf(),
+            //new PowerOf(), //SIMD
             //new Root(), //SIMD
             //new Exponent(),
             //new NaturalLog(),
@@ -172,13 +218,13 @@ namespace Solve_Funktion
         };
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
-                10,       // MaxSize
-                4,        // MaxChange
+                20,       // MaxSize
+                5,        // MaxChange
                 30000,    // CandidatesPerGen
-                101,      // NumberRangeMax
-                -101,     // NumberRangeMin
-                8,        // SpeciesAmount
-                100,      // MaxStuckGens
+                150,      // NumberRangeMax
+                -30,     // NumberRangeMin
+                1,        // SpeciesAmount
+                50,      // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen
                 0.2,      // SmartCandidatesPerGen

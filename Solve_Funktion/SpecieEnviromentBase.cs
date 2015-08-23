@@ -38,11 +38,19 @@ namespace Solve_Funktion
                                         .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
                 if (SpecInfos.Length > 0)
                 {
-                    SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
-                    OnBestEquationChanged(new BestEquationEventArgs
+                    if (BestEquationInfo == null ||
+                        BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
+                        BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc || 
+                        BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset && 
+                        BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
+                        BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
                     {
-                        BestEquationInfo = SpecInfo
-                    });
+                        SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
+                        OnBestEquationChanged(new BestEquationEventArgs
+                        {
+                            BestEquationInfo = SpecInfo
+                        });
+                    }
                 }
             }
         }
