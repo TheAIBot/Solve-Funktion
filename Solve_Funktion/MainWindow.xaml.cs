@@ -249,13 +249,7 @@ namespace Solve_Funktion
 
         public void SpecieEnviroment_OnBestEquationChanged(BestEquationEventArgs e)
         {
-            if (BCandControl.BestFunction == null ||
-                BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset ||
-                BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset && 
-                BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
-            {
-                BCandControl.InsertInfo(e.BestEquationInfo);
-            }
+            BCandControl.InsertInfo(e.BestEquationInfo);
         }
     }
 }
