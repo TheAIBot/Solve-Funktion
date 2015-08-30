@@ -77,7 +77,7 @@ namespace Solve_Funktion
             if (Oper.ResultOnRightSide)
             {
                 Backwards.Append(ReversedMiddleFix);
-                Backwards.Append(Num);
+                Backwards.Append(String.Concat(Num.Reverse()));
                 Backwards.Append("(");
                 Backwards.Append(ReversedPreFix);
                 Forwards.Append(")");
@@ -194,7 +194,7 @@ namespace Solve_Funktion
     //        DrawOperator(x, Oper, Forwards, Backwards);
     //    }
     //}
-    public class PowerOf : MathFunction
+    public sealed class PowerOf : MathFunction
     {
         public PowerOf()
         {
@@ -488,11 +488,11 @@ namespace Solve_Funktion
         {
             //reverse
             char[] toReverseAdd = new char[toReverse.Length + toAdd.Length];
-            toReverse.CopyTo(0, toReverseAdd, toAdd.Length - 1, toReverse.Length);
+            toReverse.CopyTo(0, toReverseAdd, toAdd.Length, toReverse.Length);
             Array.Reverse(toReverseAdd);
 
             //add
-            toAdd.CopyTo(0, toReverseAdd, toAdd.Length, toAdd.Length);
+            toAdd.CopyTo(0, toReverseAdd, toReverse.Length, toAdd.Length);
             return new String(toReverseAdd);
         }
 

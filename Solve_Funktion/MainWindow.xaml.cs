@@ -35,49 +35,13 @@ namespace Solve_Funktion
         {
             SpecControls = new ConcurrentStack<SpecieInfoControl>(new[] { SC8, SC7, SC6, SC5, SC4, SC3, SC2, SC1 });
             Task.Factory.StartNew(() => FindFunctionWithSpecies());
-            
         }
 
         private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
         {
             double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Constants.VECTOR_LENGTH)];
-            int index = 0;
-            for (int i = 0; i < SeqRX.Length; i += Constants.VECTOR_LENGTH)
-            {
-                int sizeLeft = SeqRX.Length - i;
-                Vector<double> sRX;
-                Vector<double> sRY;
-                int vectorSize;
-                if (sizeLeft >= Constants.VECTOR_LENGTH)
-                {
-                    sRX = new Vector<double>(SeqRX, i);
-                    sRY = new Vector<double>(SeqRY, i);
-                    vectorSize = Constants.VECTOR_LENGTH;
-                }
-                else
-                {
-                    vectorSize = sizeLeft;
-                    double[] rXData = new double[Constants.VECTOR_LENGTH];
-                    double[] rYData = new double[Constants.VECTOR_LENGTH];
-
-                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
-                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
-
-                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
-                    for (int y = 1; y <  missingNumbers + 1; y++)
-                    {
-                        rXData[y] = rXData[0];
-                        rYData[y] = rYData[0];
-                    }
-                    sRX = new Vector<double>(rXData);
-                    sRY = new Vector<double>(rYData);
-                }
-                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
-                index++;
-            }
-            return Seq;
+            return GetSequence(SeqRX, SeqRY);
         }
         private VectorPoint[] GetSequence(double[] SeqRX, double[] SeqRY)
         {
