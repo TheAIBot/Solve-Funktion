@@ -66,13 +66,13 @@ namespace Solve_Funktion
             {
                 VectorPoint Coord = EInfo.Goal[i];
                 Vector<double> FunctionResult = GetFunctionResult(Coord.X);
-                offset += CalcOffset(FunctionResult, Coord.Y, Coord.Count);
+                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, Coord.Count);
+                offset += CalcOffset(partResult, Coord.Y, Coord.Count);
                 if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
                     return;
                 }
-                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, Coord.Count);
                 Array.Copy(partResult, 0, Results, index, partResult.Length);
 
                 index += Coord.Count;
@@ -80,22 +80,46 @@ namespace Solve_Funktion
             this.OffSet = offset;
         }
 
-        private double CalcOffset(Vector<double> functionResult, Vector<double> coordY, int count)
+        private double CalcOffset(double[] functionResult, Vector<double> coordY, int count)
         {
-            //return (((y - y1) + 1) ^ 2) - 1
-            Vector<double> diff = System.Numerics.Vector.Abs<double>(functionResult - coordY) + Vector<double>.One;
-            Vector<double> vectorOffset = (diff * diff) - Vector<double>.One;
-            if (count == Constants.VECTOR_LENGTH)
+
+            double offset = 0;
+            for (int i = 0; i < count; i++)
             {
-                double[] vectorOffsets = new double[Constants.VECTOR_LENGTH];
-                vectorOffset.CopyTo(vectorOffsets); // this branch is probably not needed as Tools.GetPartOfVectorFunction could be used for both
-                return vectorOffsets.Sum();
+                double fResult = functionResult[i];
+                if (fResult == 0)
+                {
+                    offset++;
+                }
+                else if (fResult < coordY[i])
+                {
+                    offset += (1 - (fResult / coordY[i]));
+                }
+                else
+                {
+                    offset += (1 - (coordY[i] / fResult));
+                }
             }
-            else
-            {
-                return Tools.GetPartOfVectorResult(vectorOffset, count).Sum();
-            }
+            return offset;
         }
+
+        //private double CalcOffset(Vector<double> functionResult, Vector<double> coordY, int count)
+        //{
+
+        //    //////return (((y - y1) + 1) ^ 2) - 1
+        //    ////Vector<double> diff = System.Numerics.Vector.Abs<double>(functionResult - coordY) + Vector<double>.One;
+        //    ////Vector<double> vectorOffset = (diff * diff) - Vector<double>.One;
+        //    ////if (count == Constants.VECTOR_LENGTH)
+        //    ////{
+        //    ////    double[] vectorOffsets = new double[Constants.VECTOR_LENGTH];
+        //    ////    vectorOffset.CopyTo(vectorOffsets); // this branch is probably not needed as Tools.GetPartOfVectorFunction could be used for both
+        //    ////    return vectorOffsets.Sum();
+        //    ////}
+        //    ////else
+        //    ////{
+        //    ////    return Tools.GetPartOfVectorResult(vectorOffset, count).Sum();
+        //    ////}
+        //}
 
         private Vector<double> GetFunctionResult(Vector<double> x)
         {

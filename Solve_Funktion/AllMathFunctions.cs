@@ -464,25 +464,10 @@ namespace Solve_Funktion
             Forwards.Append(currentFunction);
             Backwards.Clear();
 
-            //StringBuilder PForwards = new StringBuilder();
-            //StringBuilder PBackwards = new StringBuilder();
-            //PForwards.Append(x);
             foreach (Operator OP in Oper.Operators)
             {
                 OP.ShowOperator(x, Forwards, Backwards);
             }
-            //if (Oper.ResultOnRightSide)
-            //{
-            //    StringBuilder Result = ReverseStringBuilder(PForwards, PBackwards.Length + PForwards.Length);
-            //    Result.Append(PBackwards);
-            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            //}
-            //else
-            //{
-            //    StringBuilder Result = ReverseStringBuilder(PBackwards, PBackwards.Length + PForwards.Length);
-            //    Result.Append(PForwards);
-            //    Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            //}
         }
         private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
