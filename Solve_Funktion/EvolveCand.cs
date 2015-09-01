@@ -15,6 +15,7 @@ namespace Solve_Funktion
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
                 EvolveCandidate(EInfo, Copys[i]);
+                Copys[i].CalcTotalOffSet();
             }
         }
 
@@ -43,7 +44,6 @@ namespace Solve_Funktion
                 }
 # endif
             }
-            Cand.CalcTotalOffSet();
         }
 
         private static void ChangeOPS(Equation Cand, int MaxChange)

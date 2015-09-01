@@ -7,7 +7,6 @@ using System.Numerics;
 
 namespace Solve_Funktion
 {
-    [Serializable]
     public class Equation
     {
         public List<List<Operator>> SortedOperators;
@@ -21,9 +20,10 @@ namespace Solve_Funktion
             }
         }
         public Stack<Operator> OPStorage;
-        public EvolutionInfo EInfo;
+        public readonly EvolutionInfo EInfo;
         public double OffSet;
         public double[] Results;
+        public int _toCalc;
 
         public Equation(EvolutionInfo einfo)
         {
@@ -37,7 +37,7 @@ namespace Solve_Funktion
                 OPStorage.Push(new Operator(this));
             }
             SortedOperators.Add(EquationParts);
-            Results = new double[EInfo.Goal.Length];
+            Results = new double[EInfo.GoalLength];
         }
 
         public void MakeRandom()
@@ -53,47 +53,65 @@ namespace Solve_Funktion
 
         public void CalcTotalOffSet()
         {
+            CalcPartialOffSet(EInfo.GoalLength);
+        }
+
+        public void CalcPartialOffSet(int toCalc)
+        {
+            _toCalc = toCalc;
+            toCalc = (int)Math.Ceiling((double)toCalc / (double)Constants.VECTOR_LENGTH);
             double offset = 0;
-            int Index = 0;
-            foreach (Point Coord in EInfo.Goal)
+            int index = 0;
+            for (int i = 0; i < toCalc ; i++)
             {
-                double FunctionResult = GetFunctionResult(Coord.X);
-                offset += Math.Pow((Math.Abs(FunctionResult - Coord.Y) + 1), 2) - 1;
+                VectorPoint Coord = EInfo.Goal[i];
+                Vector<double> FunctionResult = GetFunctionResult(Coord.X);
+                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, Coord.Count);
+                offset += CalcOffset(partResult, Coord.Y, Coord.Count);
                 if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
                     return;
                 }
-                Results[Index] = FunctionResult;
-                Index++;
+                Array.Copy(partResult, 0, Results, index, partResult.Length);
+
+                index += Coord.Count;
             }
-            //this.OffSet = Math.Abs((offset / (double)EInfo.Goal.Length));
             this.OffSet = offset;
         }
 
-        //private void SetResults(int SeqLength)
-        //{
-        //    //if it's not set or if the length is not correct then
-        //    //a new array is created with the correct length
-        //    if (Results == null)
-        //    {
-        //        Results = new double[SeqLength];
-        //    }
-        //    else if (Results.Length != SeqLength)
-        //    {
-        //        Results = new double[SeqLength]; ;
-        //    }
-        //}
-        
-        private double GetFunctionResult(double x)
+        private double CalcOffset(double[] functionResult, Vector<double> coordY, int count)
         {
-            double Result = x;
+
+            double offset = 0;
+            for (int i = 0; i < count; i++)
+            {
+                double fResult = functionResult[i];
+                if (fResult == 0)
+                {
+                    offset++;
+                }
+                else if (fResult < coordY[i])
+                {
+                    offset += (1 - (fResult / coordY[i]));
+                }
+                else
+                {
+                    offset += (1 - (coordY[i] / fResult));
+                }
+            }
+            return offset;
+        }
+
+        private Vector<double> GetFunctionResult(Vector<double> x)
+        {
+            Vector<double> Result = x;
             foreach (Operator EquationPart in EquationParts)
             {
                 Result = EquationPart.Calculate(Result, x);
                 if (!Tools.IsANumber(Result))
                 {
-                    return double.NaN;
+                    return Constants.NAN_VECTOR;
                 }
             }
             return Result;
@@ -120,8 +138,8 @@ namespace Solve_Funktion
 
         public string[] GetFunctionResults()
         {
-            string[] TextResults = new string[EInfo.Goal.Length];
-            for (int i = 0; i < EInfo.Goal.Length; i++)
+            string[] TextResults = new string[Results.Length];
+            for (int i = 0; i < Results.Length; i++)
             {
                 TextResults[i] = Results[i].ToString(Info.SRounding);
             }

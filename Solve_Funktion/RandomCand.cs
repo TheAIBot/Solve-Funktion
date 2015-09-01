@@ -16,13 +16,13 @@ namespace Solve_Funktion
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
                 MakeRandomEquation(Candidates[i]);
+                Candidates[i].CalcTotalOffSet();
             }
         }
 
         public static void MakeRandomEquation(Equation Cand)
         {
             Cand.MakeRandom();
-            Cand.CalcTotalOffSet();
         }
     }
 }

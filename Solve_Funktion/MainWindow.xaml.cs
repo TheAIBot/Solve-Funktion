@@ -34,30 +34,63 @@ namespace Solve_Funktion
         private void Window_ContentRendered_1(object sender, EventArgs e)
         {
             SpecControls = new ConcurrentStack<SpecieInfoControl>(new[] { SC8, SC7, SC6, SC5, SC4, SC3, SC2, SC1 });
-            Task.Factory.StartNew(() =>             FindFunctionWithSpecies());
-            
+            Task.Factory.StartNew(() => FindFunctionWithSpecies());
         }
 
-        private Point[] GetSequence(string SequenceX, string SequenceY)
+        private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
         {
             double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            Point[] Seq = new Point[SeqRX.Length];
-            for (int i = 0; i < SeqRX.Length; i++)
+            return GetSequence(SeqRX, SeqRY);
+        }
+        private VectorPoint[] GetSequence(double[] SeqRX, double[] SeqRY)
+        {
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Constants.VECTOR_LENGTH)];
+            int index = 0;
+            for (int i = 0; i < SeqRX.Length; i += Constants.VECTOR_LENGTH)
             {
-                Seq[i] = new Point(SeqRX[i], SeqRY[i]);
+                int sizeLeft = SeqRX.Length - i;
+                Vector<double> sRX;
+                Vector<double> sRY;
+                int vectorSize;
+                if (sizeLeft >= Constants.VECTOR_LENGTH)
+                {
+                    sRX = new Vector<double>(SeqRX, i);
+                    sRY = new Vector<double>(SeqRY, i);
+                    vectorSize = Constants.VECTOR_LENGTH;
+                }
+                else
+                {
+                    vectorSize = sizeLeft;
+                    double[] rXData = new double[Constants.VECTOR_LENGTH];
+                    double[] rYData = new double[Constants.VECTOR_LENGTH];
+
+                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
+                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
+
+                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
+                    for (int y = 1; y < missingNumbers + 1; y++)
+                    {
+                        rXData[y] = rXData[0];
+                        rYData[y] = rYData[0];
+                    }
+                    sRX = new Vector<double>(rXData);
+                    sRY = new Vector<double>(rYData);
+                }
+                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
+                index++;
             }
             return Seq;
         }
 
         private void FindFunctionWithSpecies()
         {
-            var SpecieEnviroment = new IndividualSpecieEnviroment<SingleParentEvolution>();
+            var SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
             SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
             SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-            const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
-            const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
+            //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
+            //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
 
             //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10";
             //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
@@ -74,8 +107,8 @@ namespace Solve_Funktion
             //const string SequenceX = "1,2,3,      4, 5,    6, 7,          8, 9,10";
             //const string SequenceY = "2,4,6,2342238,10,23432,14,12223332116,18,20";
 
-            //const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
-            //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+            const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
+            const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
             //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
             //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0";
@@ -95,24 +128,31 @@ namespace Solve_Funktion
             //const string SequenceX = "  1";
             //const string SequenceY = "276";
 
-            //List<Point> Seqs = new List<Point>();
-            //for (double i = -Math.PI; i < Math.PI; i += 0.1)
+            //List<double> SeqRX = new List<double>();
+            //List<double> SeqRY = new List<double>();
+            ////for (double i = -Math.PI; i < Math.PI; i += 0.1)
+            ////{
+            ////    SeqRX.Add(i);
+            ////    SeqRY.Add(Math.Sin(i));
+            ////}
+            //for (double i = -30; i < 150; i += 10)
             //{
-            //    Seqs.Add(new Point(i, Math.Sin(i)));
+            //    SeqRX.Add(i);
+            //    SeqRY.Add(Math.Exp(i));
             //}
-            //Point[] Seq = Seqs.ToArray();
-            Point[] Seq = GetSequence(SequenceX,
-                                      SequenceY);
+            //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
+            VectorPoint[] Seq = GetSequence(SequenceX,
+                                            SequenceY);
 
             MathFunction[] Operators = new MathFunction[]
         {
-            new Plus(),
-            new Subtract(),
-            new Multiply(),
-            new Divide(),
+            new Plus(), //SIMD
+            new Subtract(), //SIMD
+            new Multiply(), //SIMD
+            new Divide(), //SIMD
 
-            //new PowerOf(),
-            //new Root(),
+            //new PowerOf(), //SIMD
+            //new Root(), //SIMD
             //new Exponent(),
             //new NaturalLog(),
             //new Log(),
@@ -129,26 +169,26 @@ namespace Solve_Funktion
             //new ACos(),
             //new ATan(),
 
-            new Parentheses(),
-            new Absolute(),
+            new Parentheses(), //SIMD
+            new Absolute(), //SIMD
 
-            //new AND(),
-            //new NAND(),
-            //new OR(),
-            //new NOR(),
-            //new XOR(),
-            //new XNOR(),
-            //new NOT()
+            //new AND(), //SIMD
+            //new NAND(), //SIMD
+            //new OR(), //SIMD
+            //new NOR(), //SIMD
+            //new XOR(), //SIMD
+            //new XNOR(), //SIMD
+            //new NOT() //SIMD
         };
             EvolutionInfo EInfo = new EvolutionInfo(
                 Seq,      // Sequence
-                10,       // MaxSize
-                4,        // MaxChange
+                20,       // MaxSize
+                5,        // MaxChange
                 30000,    // CandidatesPerGen
-                101,       // NumberRangeMax
-                -101,      // NumberRangeMin
-                8,        // SpeciesAmount
-                100,       // MaxStuckGens
+                150,      // NumberRangeMax
+                -30,     // NumberRangeMin
+                7,        // SpeciesAmount
+                50,      // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen
                 0.2,      // SmartCandidatesPerGen
@@ -174,8 +214,10 @@ namespace Solve_Funktion
         public void SpecieEnviroment_OnBestEquationChanged(BestEquationEventArgs e)
         {
             if (BCandControl.BestFunction == null ||
-                BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset ||
-                BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset && 
+                BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset && 
+                BCandControl.BestFunction.toCalc >= e.BestEquationInfo.toCalc ||
+                BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
+                BCandControl.BestFunction.toCalc >= e.BestEquationInfo.toCalc &&
                 BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
             {
                 BCandControl.InsertInfo(e.BestEquationInfo);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -14,7 +15,7 @@ namespace Solve_Funktion
         private string ReversedPreFix;
         private string ReversedMiddleFix;
 
-        public abstract double Calculate(double Result, double x, Operator Oper);
+        public abstract Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper);
         public abstract void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
 
         public virtual void MakeRandom(Operator Oper)
@@ -72,11 +73,11 @@ namespace Solve_Funktion
             //Forward.Append(Num);
             //Forward.Append(")");
             //Forward.Append(PostFix);
-            string Num = (Oper.UseNumber) ? Oper.Number.ToString() : x;
+            string Num = (Oper.UseNumber) ? Oper.Number[0].ToString() : x;
             if (Oper.ResultOnRightSide)
             {
                 Backwards.Append(ReversedMiddleFix);
-                Backwards.Append(Num);
+                Backwards.Append(String.Concat(Num.Reverse()));
                 Backwards.Append("(");
                 Backwards.Append(ReversedPreFix);
                 Forwards.Append(")");
@@ -108,16 +109,16 @@ namespace Solve_Funktion
     }
 
     //Standard
-    public class Plus : MathFunction
+    public sealed class Plus : MathFunction
     {
         public Plus()
         {
             MiddleFix = " + ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
             return (Oper.ResultOnRightSide) ? (Num + Result) : (Result + Num);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -125,16 +126,16 @@ namespace Solve_Funktion
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class Subtract : MathFunction
+    public sealed class Subtract : MathFunction
     {
         public Subtract()
         {
             MiddleFix = " - ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
             return (Oper.ResultOnRightSide) ? (Num - Result) : (Result - Num);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -142,16 +143,16 @@ namespace Solve_Funktion
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class Multiply : MathFunction
+    public sealed class Multiply : MathFunction
     {
         public Multiply()
         {
             MiddleFix = " * ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
             return (Oper.ResultOnRightSide) ? (Num * Result) : (Result * Num);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -159,16 +160,16 @@ namespace Solve_Funktion
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class Divide : MathFunction
+    public sealed class Divide : MathFunction
     {
         public Divide()
         {
             MiddleFix = " / ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
             return (Oper.ResultOnRightSide) ? (Num / Result) : (Result / Num);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -176,41 +177,41 @@ namespace Solve_Funktion
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class Modulos : MathFunction
-    {
-        public Modulos()
-        {
-            MiddleFix = " % ";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Oper.ResultOnRightSide) ? (Num % Result) : (Result % Num);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class PowerOf : MathFunction
+    //public class Modulos : MathFunction
+    //{
+    //    public Modulos()
+    //    {
+    //        MiddleFix = " % ";
+    //        CreateReversedStrings();
+    //    }
+    //    public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+    //    {
+    //        Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+    //        return (Oper.ResultOnRightSide) ? (Num % Result) : (Result % Num);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    public sealed class PowerOf : MathFunction
     {
         public PowerOf()
         {
             MiddleFix = " ^ ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Oper.ResultOnRightSide) ? Math.Pow(Num, Result) : Math.Pow(Result, Num);
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Oper.ResultOnRightSide) ? VectorMath.Pow(Num, Result) : VectorMath.Pow(Result, Num);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class Root : MathFunction
+    public sealed class Root : MathFunction
     {
         public Root()
         {
@@ -218,274 +219,266 @@ namespace Solve_Funktion
             PreFix = "Sqrt";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            return Math.Sqrt(Result);
+            return Vector.SquareRoot<double>(Result);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class Exponent : MathFunction
-    {
-        public Exponent()
-        {
-            IsConnecter = false;
-            PreFix = "Exp";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Exp(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class NaturalLog : MathFunction
-    {
-        public NaturalLog()
-        {
-            IsConnecter = false;
-            PreFix = "Ln";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Log(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class Log : MathFunction
-    {
-        public Log()
-        {
-            IsConnecter = false;
-            PreFix = "Log";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Log10(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
+    //public class Exponent : MathFunction
+    //{
+    //    public Exponent()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Exp";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Exp(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class NaturalLog : MathFunction
+    //{
+    //    public NaturalLog()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Ln";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Log(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class Log : MathFunction
+    //{
+    //    public Log()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Log";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Log10(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
 
     //Rounders
-    public class Floor : MathFunction
-    {
-        public Floor()
-        {
-            IsConnecter = false;
-            PreFix = "Floor";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Floor(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class Ceil : MathFunction
-    {
-        public Ceil()
-        {
-            IsConnecter = false;
-            PreFix = "Ceil";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Ceiling(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class Round : MathFunction
-    {
-        public Round()
-        {
-            IsConnecter = false;
-            PreFix = "Round";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Round(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
+    //public class Floor : MathFunction
+    //{
+    //    public Floor()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Floor";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Floor(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class Ceil : MathFunction
+    //{
+    //    public Ceil()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Ceil";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Ceiling(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class Round : MathFunction
+    //{
+    //    public Round()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Round";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Round(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
 
     //Trigonomic
-    public class Sin : MathFunction
-    {
-        public Sin()
-        {
-            IsConnecter = false;
-            PreFix = "Sin";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Sin(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class Cos : MathFunction
-    {
-        public Cos()
-        {
-            IsConnecter = false;
-            PreFix = "Cos";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Cos(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class Tan : MathFunction
-    {
-        public Tan()
-        {
-            IsConnecter = false;
-            PreFix = "Tan";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Tan(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class ASin : MathFunction
-    {
-        public ASin()
-        {
-            IsConnecter = false;
-            PreFix = "ASin";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Asin(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class ACos : MathFunction
-    {
-        public ACos()
-        {
-            IsConnecter = false;
-            PreFix = "ACos";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Acos(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
-    public class ATan : MathFunction
-    {
-        public ATan()
-        {
-            IsConnecter = false;
-            PreFix = "ATan";
-            CreateReversedStrings();
-        }
-        public override double Calculate(double Result, double x, Operator Oper)
-        {
-            return Math.Atan(Result);
-        }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            DrawOperator(x, Oper, Forwards, Backwards);
-        }
-    }
+    //public class Sin : MathFunction
+    //{
+    //    public Sin()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Sin";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Sin(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class Cos : MathFunction
+    //{
+    //    public Cos()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Cos";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Cos(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class Tan : MathFunction
+    //{
+    //    public Tan()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "Tan";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Tan(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class ASin : MathFunction
+    //{
+    //    public ASin()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "ASin";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Asin(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class ACos : MathFunction
+    //{
+    //    public ACos()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "ACos";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Acos(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
+    //public class ATan : MathFunction
+    //{
+    //    public ATan()
+    //    {
+    //        IsConnecter = false;
+    //        PreFix = "ATan";
+    //        CreateReversedStrings();
+    //    }
+    //    public override double Calculate(double Result, double x, Operator Oper)
+    //    {
+    //        return Math.Atan(Result);
+    //    }
+    //    public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+    //    {
+    //        DrawOperator(x, Oper, Forwards, Backwards);
+    //    }
+    //}
 
     //Misc
-    public class Parentheses : MathFunction
+    public sealed class Parentheses : MathFunction
     {
         public Parentheses()
         {
             IsConnecter = false;
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Res = x;
+            Vector<double> Res = x;
             foreach (Operator OP in Oper.Operators)
             {
                 Res = OP.Calculate(Res, x);
                 if (!Tools.IsANumber(Res))
                 {
-                    return double.NaN;
+                    return Constants.NAN_VECTOR;
                 }
             }
             return Oper.ExtraMathFunction.Calculate(Result, Res, Oper);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            StringBuilder PForwards = new StringBuilder();
-            StringBuilder PBackwards = new StringBuilder();
-            PForwards.Append(x);
+            string currentFunction = ReverseAddStringBuilder(Backwards, Forwards);
+            Forwards.Clear();
+            Forwards.Append(currentFunction);
+            Backwards.Clear();
+
             foreach (Operator OP in Oper.Operators)
             {
-                OP.ShowOperator(x, PForwards, PBackwards);
-            }
-            if (Oper.ResultOnRightSide)
-            {
-                StringBuilder Result = ReverseStringBuilder(PForwards, PBackwards.Length + PForwards.Length);
-                Result.Append(PBackwards);
-                Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
-            }
-            else
-            {
-                StringBuilder Result = ReverseStringBuilder(PBackwards, PBackwards.Length + PForwards.Length);
-                Result.Append(PForwards);
-                Oper.ExtraMathFunction.ShowOperator(Result.ToString(), Oper, Forwards, Backwards);
+                OP.ShowOperator(x, Forwards, Backwards);
             }
         }
-        private StringBuilder ReverseStringBuilder(StringBuilder ToReverse, int TextLength)
+        private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
-            StringBuilder Result = new StringBuilder(TextLength);
-            for (int i = ToReverse.Length - 1; i >= 0; i--)
-            {
-                Result.Append(ToReverse[i]);
-            }
-            return Result;
+            //reverse
+            char[] toReverseAdd = new char[toReverse.Length + toAdd.Length];
+            toReverse.CopyTo(0, toReverseAdd, toAdd.Length, toReverse.Length);
+            Array.Reverse(toReverseAdd);
+
+            //add
+            toAdd.CopyTo(0, toReverseAdd, toReverse.Length, toAdd.Length);
+            return new String(toReverseAdd);
         }
 
         public override void MakeRandom(Operator Oper)
@@ -552,7 +545,7 @@ namespace Solve_Funktion
             Oper.ExtraMathFunction = null;
         }
     }
-    public class Absolute : MathFunction
+    public sealed class Absolute : MathFunction
     {
         public Absolute()
         {
@@ -561,9 +554,9 @@ namespace Solve_Funktion
             PostFix = "|";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            return Math.Abs(Result);
+            return Vector.Abs<double>(Result);
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
@@ -571,110 +564,128 @@ namespace Solve_Funktion
         }
     }
 
+
+    public class LogicBase : MathFunction
+    {
+        protected readonly Vector<double> _one = Vector<double>.One;
+        protected readonly Vector<double> _zero = Vector<double>.Zero;
+
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        {
+            throw new NotImplementedException();
+        }
+        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            throw new NotImplementedException();
+        }
+
+
+    }
+
     //Logic Operators
-    public class AND : MathFunction
+    public sealed class AND : LogicBase
     {
         public AND()
         {
             MiddleFix = " AND ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Num == 1 && Result == 1) ? 1 : 0;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Num == _one && Result == _zero) ? _one : _zero;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class NAND : MathFunction
+    public sealed class NAND : LogicBase
     {
         public NAND()
         {
             MiddleFix = " NAND ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Num == 1 && Result == 1) ? 0 : 1;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Num == _one && Result == _zero) ? _zero : _one;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class OR : MathFunction
+    public sealed class OR : LogicBase
     {
         public OR()
         {
             MiddleFix = " OR ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Num == 1 || Result == 1) ? 1 : 0;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Num == _one || Result == _one) ? _one : _zero;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class NOR : MathFunction
+    public sealed class NOR : LogicBase
     {
         public NOR()
         {
             MiddleFix = " NOR ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Num == 1 || Result == 1) ? 0 : 1;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Num == _one || Result == _one) ? _zero : _one;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class XOR : MathFunction
+    public sealed class XOR : LogicBase
     {
         public XOR()
         {
             MiddleFix = " XOR ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Num != Result && (Num == 1 || Result == 1)) ? 1 : 0;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Num != Result && (Num == _one || Result == _one)) ? _one : _zero;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class XNOR : MathFunction
+    public sealed class XNOR : LogicBase
     {
         public XNOR()
         {
             MiddleFix = " XNOR ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            double Num = (Oper.UseNumber) ? Oper.Number : x;
-            return (Num != Result && (Num == 1 || Result == 1)) ? 0 : 1;
+            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            return (Num != Result && (Num == _one || Result == _one)) ? _zero : _one;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(x, Oper, Forwards, Backwards);
         }
     }
-    public class NOT : MathFunction
+    public sealed class NOT : LogicBase
     {
         public NOT()
         {
@@ -682,9 +693,9 @@ namespace Solve_Funktion
             PreFix = " NOT ";
             CreateReversedStrings();
         }
-        public override double Calculate(double Result, double x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
         {
-            return (Result == 0) ? 1 : 0;
+            return (Result == _zero) ? _one : _zero;
         }
         public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {

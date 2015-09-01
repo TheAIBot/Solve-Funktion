@@ -24,7 +24,7 @@ namespace Solve_Funktion
         public GeneralInfo GInfo;
         public long OldTotalAttemps = 0;
         private const int STORED_ATTEMPS_SEC = 100;
-        List<long> OldAttempsSec = new List<long>(STORED_ATTEMPS_SEC);
+        private List<long> OldAttempsSec = new List<long>(STORED_ATTEMPS_SEC);
 
         public GeneralInformationControl()
         {
@@ -52,8 +52,8 @@ namespace Solve_Funktion
             if (OldAttempsSec.Count > 3)
             {
                 double average = OldAttempsSec.Average();
-                double percentOffset = 0.333;
-                OldAttempsSec.RemoveAll(x => x < average * ( 1 - percentOffset) || x > average * (1 + percentOffset));
+                double maxAllowedOffset = 100000; //100.000
+                OldAttempsSec.RemoveAll(x => x < average - maxAllowedOffset || x > average + maxAllowedOffset);
             }
         }
 

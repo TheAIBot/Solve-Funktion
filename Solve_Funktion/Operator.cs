@@ -7,12 +7,11 @@ using System.Numerics;
 
 namespace Solve_Funktion
 {
-    [Serializable]
     public class Operator
     {
         public bool ResultOnRightSide;
         public MathFunction MFunction;
-        public double Number;
+        public Vector<double> Number;
         public bool UseNumber;
         public Equation Eq;
         public List<Operator> ContainedList;
@@ -38,7 +37,7 @@ namespace Solve_Funktion
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseNumber = SynchronizedRandom.RandomBool();
-            Number = SynchronizedRandom.NextDouble(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
+            Number = SynchronizedRandom.NextVector(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
             MFunction.MakeRandom(this);
         }
         public void MakeRandom(List<Operator> containedList, int CIndex)
@@ -54,11 +53,11 @@ namespace Solve_Funktion
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseNumber = SynchronizedRandom.RandomBool();
-            Number = SynchronizedRandom.NextDouble(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
+            Number = SynchronizedRandom.NextVector(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
             MFunction.MakeRandom(this);
         }
 
-        public double Calculate(double Result, double x)
+        public Vector<double> Calculate(Vector<double> Result, Vector<double> x)
         {
             return MFunction.Calculate(Result, x, this);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -31,16 +32,25 @@ namespace Solve_Funktion
         {
             if (OnBestEquationChanged != null)
             {
-                List<Genome> SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
-                                        .OrderBy(x => x.BestCandidate.OffSet)
-                                        .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToList();
-                if (SpecInfos.Count > 0)
+                Genome[] SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
+                                        .OrderByDescending(x => x._toCalc)
+                                        .ThenBy(x => x.BestCandidate.OffSet)
+                                        .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
+                if (SpecInfos.Length > 0)
                 {
-                    SpeciesInfo SpecInfo = SpecInfos.First().SpecInfo;
-                    OnBestEquationChanged(new BestEquationEventArgs
+                    if (BestEquationInfo == null ||
+                        BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
+                        BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc || 
+                        BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset && 
+                        BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
+                        BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
                     {
-                        BestEquationInfo = SpecInfo
-                    });
+                        SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
+                        OnBestEquationChanged(new BestEquationEventArgs
+                        {
+                            BestEquationInfo = SpecInfo
+                        });
+                    }
                 }
             }
         }
@@ -62,5 +72,19 @@ namespace Solve_Funktion
     {
         public GeneralInfo GInfo;
         public Genome Specie;
+    }
+
+    public sealed class VectorPoint
+    {
+        public Vector<double> X;
+        public Vector<double> Y;
+        public int Count;
+
+        public VectorPoint(Vector<double> x, Vector<double> y, int count)
+        {
+            X = x;
+            Y = y;
+            Count = count;
+        }
     }
 }
