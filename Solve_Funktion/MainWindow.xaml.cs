@@ -89,8 +89,8 @@ namespace Solve_Funktion
             SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
             SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-            const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
-            const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
+            //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
+            //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
 
             //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10";
             //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
@@ -107,8 +107,8 @@ namespace Solve_Funktion
             //const string SequenceX = "1,2,3,      4, 5,    6, 7,          8, 9,10";
             //const string SequenceY = "2,4,6,2342238,10,23432,14,12223332116,18,20";
 
-            //const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
-            //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+            const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
+            const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
             //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
             //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0";
@@ -187,7 +187,7 @@ namespace Solve_Funktion
                 30000,    // CandidatesPerGen
                 150,      // NumberRangeMax
                 -30,     // NumberRangeMin
-                1,        // SpeciesAmount
+                7,        // SpeciesAmount
                 50,      // MaxStuckGens
                 0.8,      // EvolvedCandidatesPerGen
                 0,        // RandomCandidatesPerGen
@@ -213,7 +213,15 @@ namespace Solve_Funktion
 
         public void SpecieEnviroment_OnBestEquationChanged(BestEquationEventArgs e)
         {
-            BCandControl.InsertInfo(e.BestEquationInfo);
+            if (BCandControl.BestFunction == null ||
+                BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset && 
+                BCandControl.BestFunction.toCalc >= e.BestEquationInfo.toCalc ||
+                BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
+                BCandControl.BestFunction.toCalc >= e.BestEquationInfo.toCalc &&
+                BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
+            {
+                BCandControl.InsertInfo(e.BestEquationInfo);
+            }
         }
     }
 }

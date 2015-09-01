@@ -103,24 +103,6 @@ namespace Solve_Funktion
             return offset;
         }
 
-        //private double CalcOffset(Vector<double> functionResult, Vector<double> coordY, int count)
-        //{
-
-        //    //////return (((y - y1) + 1) ^ 2) - 1
-        //    ////Vector<double> diff = System.Numerics.Vector.Abs<double>(functionResult - coordY) + Vector<double>.One;
-        //    ////Vector<double> vectorOffset = (diff * diff) - Vector<double>.One;
-        //    ////if (count == Constants.VECTOR_LENGTH)
-        //    ////{
-        //    ////    double[] vectorOffsets = new double[Constants.VECTOR_LENGTH];
-        //    ////    vectorOffset.CopyTo(vectorOffsets); // this branch is probably not needed as Tools.GetPartOfVectorFunction could be used for both
-        //    ////    return vectorOffsets.Sum();
-        //    ////}
-        //    ////else
-        //    ////{
-        //    ////    return Tools.GetPartOfVectorResult(vectorOffset, count).Sum();
-        //    ////}
-        //}
-
         private Vector<double> GetFunctionResult(Vector<double> x)
         {
             Vector<double> Result = x;
