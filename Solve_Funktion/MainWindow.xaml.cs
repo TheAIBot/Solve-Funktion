@@ -215,9 +215,9 @@ namespace Solve_Funktion
         {
             if (BCandControl.BestFunction == null ||
                 BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset && 
-                BCandControl.BestFunction.toCalc >= e.BestEquationInfo.toCalc ||
+                BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc ||
                 BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
-                BCandControl.BestFunction.toCalc >= e.BestEquationInfo.toCalc &&
+                BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
                 BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
             {
                 BCandControl.InsertInfo(e.BestEquationInfo);

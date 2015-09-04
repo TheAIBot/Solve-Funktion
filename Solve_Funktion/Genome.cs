@@ -61,7 +61,7 @@ namespace Solve_Funktion
             }
             IEnumerable<string> SeqText = (from x in seqNum
                                            select x.ToString(Info.SRounding));
-                SpecInfo.SequenceText = String.Join(", ", SeqText);
+            SpecInfo.SequenceText = String.Join(", ", SeqText);
         }
 
         public void ResetEquations(Equation[] NextGen)
