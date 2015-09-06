@@ -9,14 +9,14 @@ namespace Solve_Funktion
 {
     public class Operator
     {
-        public bool ResultOnRightSide;
-        public MathFunction MFunction;
+        public bool ResultOnRightSide; // decides which side the result should be on
+        public MathFunction MFunction; // the operator this operator is using
         public Vector<double> Number;
         public bool UseNumber;
-        public Equation Eq;
-        public List<Operator> ContainedList;
-        public MathFunction ExtraMathFunction;
-        public List<Operator> Operators;
+        public Equation Eq; // the equation this operator is a part of
+        public List<Operator> ContainedList; // the list this operator is contained in in SortedOperators
+        public MathFunction ExtraMathFunction; // extra operator taht can be used if needed by the operator
+        public List<Operator> Operators; // list of other operators this operator contains
 
         public Operator(Equation eq)
         {
@@ -24,6 +24,10 @@ namespace Solve_Funktion
             Operators = new List<Operator>(Eq.EInfo.MaxSize);
         }
 
+        /// <summary>
+        /// makes this operator a random operator and adds it to the equation by itself
+        /// </summary>
+        /// <param name="containedList">the list this operator is contained in</param>
         public void MakeRandom(List<Operator> containedList)
         {
             ContainedList = containedList;
@@ -57,22 +61,40 @@ namespace Solve_Funktion
             MFunction.MakeRandom(this);
         }
 
+        /// <summary>
+        /// calcualtes the next step in an equation using this operator
+        /// </summary>
+        /// <param name="Result">number returned by previous operators or initial number from equation</param>
+        /// <param name="x"> value of x</param>
+        /// <returns>result of Result and this operator</returns>
         public Vector<double> Calculate(Vector<double> Result, Vector<double> x)
         {
             return MFunction.Calculate(Result, x, this);
         }
 
+        /// <summary>
+        /// adds this operator to the currently created equation
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="Forwards"></param>
+        /// <param name="Backwards"></param>
         public void ShowOperator(string x, StringBuilder Forwards, StringBuilder Backwards)
         {
             MFunction.ShowOperator(x, this, Forwards, Backwards);
-            //return MFunction.ShowOperator(Result, x, this);
         }
 
+        /// <summary>
+        /// gets the amount of operators in use by this operator including itself
+        /// </summary>
+        /// <returns>the amount of operators in use by this operator including itself</returns>
         public int GetOperatorCount()
         {
             return MFunction.GetOperatorCount(this);
         }
 
+        /// <summary>
+        /// resets the operator so it can be used to make a new random operator
+        /// </summary>
         public void StoreAndCleanup()
         {
             Eq.OPStorage.Push(this);
@@ -83,6 +105,9 @@ namespace Solve_Funktion
             MFunction = null;
         }
 
+        /// <summary>
+        /// faster way of resetting the operator when all operatos in an equation are reset at once
+        /// </summary>
         public void StoreAndCleaupAll()
         {
             Eq.OPStorage.Push(this);
