@@ -104,7 +104,6 @@ namespace Solve_Funktion
         /// <returns></returns>
         private double CalcOffset(double[] functionResult, Vector<double> coordY, int count)
         {
-
             double offset = 0;
             for (int i = 0; i < count; i++)
             {

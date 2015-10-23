@@ -22,6 +22,10 @@ namespace Solve_Funktion
         public static Vector<double> Pow(Vector<double> num, Vector<double> pow)
         {
             Vector<double> result = num;
+            if (pow[0] > 5)//shitty code
+            {
+                return result * double.NaN;
+            }
             for (double i = 0; i < pow[0]; i++)
             {
                 result = result * pow;
