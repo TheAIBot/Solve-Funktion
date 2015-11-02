@@ -15,8 +15,8 @@ namespace Solve_Funktion
         private string ReversedPreFix;
         private string ReversedMiddleFix;
 
-        public abstract Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper);
-        public abstract void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
+        public abstract Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper);
+        public abstract void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
 
         public virtual void MakeRandom(Operator Oper)
         {
@@ -44,10 +44,10 @@ namespace Solve_Funktion
 
         }
 
-        protected void DrawOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        protected void DrawOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             if (IsConnecter)
-                DrawConnector(x, Oper, Forwards, Backwards);
+                DrawConnector(Oper, Forwards, Backwards);
             else
                 DrawSingle(Forwards, Backwards);
         }
@@ -56,24 +56,9 @@ namespace Solve_Funktion
             ReversedPreFix = RevertString(PreFix);
             ReversedMiddleFix = RevertString(MiddleFix);
         }
-        private void DrawConnector(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        private void DrawConnector(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            //if IsResultOnRight is true
-            //example (2 + Result)
-            //Backward.Append(MiddleFix);
-            //Backward.Append(Num);
-            //Backward.Append("(");
-            //Backward.Append(PreFix);    
-            //Forward.Append(")");
-            //Forward.Append(PostFix);
-            //else (Result + 2)
-            //Backward.Append("(");
-            //Backward.Append(PreFix);
-            //Forward.Append(MiddleFix);
-            //Forward.Append(Num);
-            //Forward.Append(")");
-            //Forward.Append(PostFix);
-            string Num = (Oper.UseNumber) ? Oper.Number[0].ToString() : x;
+            string Num = (Oper.UseRandomNumber) ? Oper.randomNumber[0].ToString() : Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.parameterIndex];
             if (Oper.ResultOnRightSide)
             {
                 Backwards.Append(ReversedMiddleFix);
@@ -116,14 +101,14 @@ namespace Solve_Funktion
             MiddleFix = " + ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Oper.ResultOnRightSide) ? (Num + Result) : (Result + Num);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class Subtract : MathFunction
@@ -133,14 +118,14 @@ namespace Solve_Funktion
             MiddleFix = " - ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Oper.ResultOnRightSide) ? (Num - Result) : (Result - Num);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class Multiply : MathFunction
@@ -150,14 +135,14 @@ namespace Solve_Funktion
             MiddleFix = " * ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Oper.ResultOnRightSide) ? (Num * Result) : (Result * Num);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class Divide : MathFunction
@@ -167,14 +152,14 @@ namespace Solve_Funktion
             MiddleFix = " / ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Oper.ResultOnRightSide) ? (Num / Result) : (Result / Num);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     //public class Modulos : MathFunction
@@ -201,14 +186,14 @@ namespace Solve_Funktion
             MiddleFix = " ^ ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Oper.ResultOnRightSide) ? VectorMath.Pow(Num, Result) : VectorMath.Pow(Result, Num);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class Root : MathFunction
@@ -219,13 +204,13 @@ namespace Solve_Funktion
             PreFix = "Sqrt";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
             return Vector.SquareRoot<double>(Result);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     //public class Exponent : MathFunction
@@ -444,20 +429,24 @@ namespace Solve_Funktion
         {
             IsConnecter = false;
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Res = x;
+            Vector<double> Res = parameters[Oper.parameterIndex];
             foreach (Operator OP in Oper.Operators)
             {
-                Res = OP.Calculate(Res, x);
+                Res = OP.Calculate(Res, parameters);
                 if (!Tools.IsANumber(Res))
                 {
                     return Constants.NAN_VECTOR;
                 }
             }
-            return Oper.ExtraMathFunction.Calculate(Result, Res, Oper);
+            //This is a shitty solution
+            Vector<double>[] parametersCopy = new Vector<double>[parameters.Length];
+            Array.Copy(parameters, parametersCopy, parameters.Length);
+            parametersCopy[0] = Res;
+            return Oper.ExtraMathFunction.Calculate(Result, parametersCopy, Oper);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             string currentFunction = ReverseAddStringBuilder(Backwards, Forwards);
             Forwards.Clear();
@@ -466,7 +455,7 @@ namespace Solve_Funktion
 
             foreach (Operator OP in Oper.Operators)
             {
-                OP.ShowOperator(x, Forwards, Backwards);
+                OP.ShowOperator(Forwards, Backwards);
             }
         }
         private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
@@ -484,7 +473,9 @@ namespace Solve_Funktion
         public override void MakeRandom(Operator Oper)
         {
             Oper.Eq.SortedOperators.Add(Oper.Operators);
-            Oper.UseNumber = false;
+            Oper.UseRandomNumber = false;
+            Oper.parameterIndex = 0;
+
             //the method CanUseOperator makes sure there is atleast 1 available Operator to use in the parentheses
             int AmountToAdd = SynchronizedRandom.Next(0, Oper.Eq.OperatorsLeft - 1);
 
@@ -554,13 +545,13 @@ namespace Solve_Funktion
             PostFix = "|";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
             return Vector.Abs<double>(Result);
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
 
@@ -570,11 +561,11 @@ namespace Solve_Funktion
         protected readonly Vector<double> _one = Vector<double>.One;
         protected readonly Vector<double> _zero = Vector<double>.Zero;
 
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
             throw new NotImplementedException();
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             throw new NotImplementedException();
         }
@@ -590,14 +581,14 @@ namespace Solve_Funktion
             MiddleFix = " AND ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Num == _one && Result == _zero) ? _one : _zero;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class NAND : LogicBase
@@ -607,14 +598,14 @@ namespace Solve_Funktion
             MiddleFix = " NAND ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Num == _one && Result == _zero) ? _zero : _one;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class OR : LogicBase
@@ -624,14 +615,14 @@ namespace Solve_Funktion
             MiddleFix = " OR ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Num == _one || Result == _one) ? _one : _zero;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class NOR : LogicBase
@@ -641,14 +632,14 @@ namespace Solve_Funktion
             MiddleFix = " NOR ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Num == _one || Result == _one) ? _zero : _one;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class XOR : LogicBase
@@ -658,14 +649,14 @@ namespace Solve_Funktion
             MiddleFix = " XOR ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Num != Result && (Num == _one || Result == _one)) ? _one : _zero;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class XNOR : LogicBase
@@ -675,14 +666,14 @@ namespace Solve_Funktion
             MiddleFix = " XNOR ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
-            Vector<double> Num = (Oper.UseNumber) ? Oper.Number : x;
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
             return (Num != Result && (Num == _one || Result == _one)) ? _zero : _one;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
     public sealed class NOT : LogicBase
@@ -693,13 +684,13 @@ namespace Solve_Funktion
             PreFix = " NOT ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double> x, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
         {
             return (Result == _zero) ? _one : _zero;
         }
-        public override void ShowOperator(string x, Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            DrawOperator(x, Oper, Forwards, Backwards);
+            DrawOperator(Oper, Forwards, Backwards);
         }
     }
 }

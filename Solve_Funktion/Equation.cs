@@ -29,6 +29,7 @@ namespace Solve_Funktion
         public double OffSet; // the total offset of the equation
         public double[] Results; // is a list of all the calculated results returned by the equation
         public int _toCalc; // the amount of points that had been used to calcualte the offset
+        //public readonly string parameterNames;
 
         public Equation(EvolutionInfo einfo)
         {
@@ -80,9 +81,9 @@ namespace Solve_Funktion
             for (int i = 0; i < toCalc ; i++)
             {
                 VectorPoint Coord = EInfo.Goal[i];
-                Vector<double> FunctionResult = GetFunctionResult(Coord.X);
+                Vector<double> FunctionResult = GetFunctionResult(Coord.Parameters);
                 double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, Coord.Count);
-                offset += CalcOffset(partResult, Coord.Y, Coord.Count);
+                offset += CalcOffset(partResult, Coord.Result, Coord.Count);
                 if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
@@ -129,12 +130,12 @@ namespace Solve_Funktion
         /// </summary>
         /// <param name="x">x vaules as a vector</param>
         /// <returns>equation result</returns>
-        private Vector<double> GetFunctionResult(Vector<double> x)
+        private Vector<double> GetFunctionResult(Vector<double>[] parameters)
         {
-            Vector<double> Result = x;
+            Vector<double> Result = parameters[0];
             foreach (Operator EquationPart in EquationParts)
             {
-                Result = EquationPart.Calculate(Result, x);
+                Result = EquationPart.Calculate(Result, parameters);
                 if (!Tools.IsANumber(Result))
                 {
                     return Constants.NAN_VECTOR;
@@ -151,11 +152,10 @@ namespace Solve_Funktion
         {
             StringBuilder Forwards = new StringBuilder();
             StringBuilder Backwards = new StringBuilder();
-            const string Variable = "x";
-            Forwards.Append(Variable);
+            Forwards.Append(EInfo.Goal[0].ParameterNames[0]);
             foreach (Operator EquationPart in EquationParts)
             {
-                EquationPart.ShowOperator(Variable, Forwards, Backwards);
+                EquationPart.ShowOperator(Forwards, Backwards);
             }
             StringBuilder Result = new StringBuilder(Backwards.Length + Forwards.Length);
             for (int i = Backwards.Length - 1; i >= 0; i--)

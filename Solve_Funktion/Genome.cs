@@ -80,7 +80,7 @@ namespace Solve_Funktion
             List<double> seqNum = new List<double>(EInfo.GoalLength);
             foreach (VectorPoint vecP in EInfo.Goal)
             {
-                seqNum.AddRange(Tools.GetPartOfVectorResult(vecP.Y, vecP.Count));
+                seqNum.AddRange(Tools.GetPartOfVectorResult(vecP.Result, vecP.Count));
             }
             IEnumerable<string> SeqText = (from x in seqNum
                                            select x.ToString(Info.SRounding));

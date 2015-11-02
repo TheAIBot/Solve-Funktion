@@ -187,10 +187,11 @@ namespace Tests
 
         public void SimpleOPCopyCheck(Operator Original, Operator Copy)
         {
-            Assert.AreEqual(Original.Number, Copy.Number, "Number is not the same");
+            Assert.AreEqual(Original.randomNumber, Copy.randomNumber, "Number is not the same");
+            Assert.AreEqual(Original.parameterIndex, Copy.parameterIndex, "parameter index is not the same");
             Assert.AreEqual(Original.MFunction, Copy.MFunction, "Operator is not the same");
             Assert.AreEqual(Original.ResultOnRightSide, Copy.ResultOnRightSide, "Side is not the same");
-            Assert.AreEqual(Original.UseNumber, Copy.UseNumber, "UseNumber is not the same");
+            Assert.AreEqual(Original.UseRandomNumber, Copy.UseRandomNumber, "UseNumber is not the same");
             Assert.AreEqual(Original.Operators.Count, Copy.Operators.Count, "Operators Count is not the same");
         }
 

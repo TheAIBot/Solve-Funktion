@@ -83,11 +83,11 @@ namespace Solve_Funktion
                 if (sizeLeft >= Constants.VECTOR_LENGTH)
                 {
                     partialParameterVector = new Vector<double>(parameter, i);
-                    vectorSize[i] = Constants.VECTOR_LENGTH;
+                    vectorSize[index] = Constants.VECTOR_LENGTH;
                 }
                 else
                 {
-                    vectorSize[i] = sizeLeft;
+                    vectorSize[index] = sizeLeft;
                     double[] rXData = new double[Constants.VECTOR_LENGTH];
 
                     Array.Copy(parameter, i, rXData, 0, sizeLeft);
