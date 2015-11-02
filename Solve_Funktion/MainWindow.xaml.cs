@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Concurrent;
 using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace Solve_Funktion
 {
@@ -39,48 +40,69 @@ namespace Solve_Funktion
 
         private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
         {
-            double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            string[] lines = Regex.Split(SequenceX, "} *,");
+            string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
+            string[][] namesAndValues = refined.Select(x => x.Split('{')).ToArray();
+            string[] names = namesAndValues.Select(x => x[0]).ToArray();
+            double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            return GetSequence(SeqRX, SeqRY);
+            return GetSequence(names, SeqRX, SeqRY);
         }
-        private VectorPoint[] GetSequence(double[] SeqRX, double[] SeqRY)
+        private VectorPoint[] GetSequence(string[] names, double[][] parameters, double[] functionValues)
         {
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Constants.VECTOR_LENGTH)];
-            int index = 0;
-            for (int i = 0; i < SeqRX.Length; i += Constants.VECTOR_LENGTH)
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)parameters[0].Length / (double)Constants.VECTOR_LENGTH)];
+            int[] counts = new int[parameters.Length];
+            Vector<double>[] functionValuesVector = getParameterValues(functionValues, out counts);
+            Vector<double>[][] splittedParameters = new Vector<double>[parameters.Length][];
+            for (int i = 0; i < parameters.Length; i++)
             {
-                int sizeLeft = SeqRX.Length - i;
-                Vector<double> sRX;
-                Vector<double> sRY;
-                int vectorSize;
+                int[] count;
+                splittedParameters[i] = getParameterValues(parameters[i], out count);
+            }
+            for (int i = 0; i < splittedParameters[0].Length; i++)
+            {
+                Vector<double>[] parameterValues = new Vector<double>[splittedParameters.Length];
+                for (int j = 0; j < splittedParameters.Length; j++)
+                {
+                    parameterValues[j] = splittedParameters[j][i];
+                }
+                Seq[i] = new VectorPoint(parameterValues, names, functionValuesVector[i], counts[i]);
+            }
+            return Seq;
+        }
+
+        private Vector<double>[] getParameterValues(double[] parameter, out int[] vectorSize)
+        {
+            Vector<double>[] parameterValues = new Vector<double>[(int)Math.Ceiling((double)parameter.Length / (double)Constants.VECTOR_LENGTH)];
+            int index = 0;
+            vectorSize = new int[parameterValues.Length];
+            for (int i = 0; i < parameter.Length; i += Constants.VECTOR_LENGTH)
+            {
+                int sizeLeft = parameter.Length - i;
+                Vector<double> partialParameterVector;
                 if (sizeLeft >= Constants.VECTOR_LENGTH)
                 {
-                    sRX = new Vector<double>(SeqRX, i);
-                    sRY = new Vector<double>(SeqRY, i);
-                    vectorSize = Constants.VECTOR_LENGTH;
+                    partialParameterVector = new Vector<double>(parameter, i);
+                    vectorSize[i] = Constants.VECTOR_LENGTH;
                 }
                 else
                 {
-                    vectorSize = sizeLeft;
+                    vectorSize[i] = sizeLeft;
                     double[] rXData = new double[Constants.VECTOR_LENGTH];
-                    double[] rYData = new double[Constants.VECTOR_LENGTH];
 
-                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
-                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
+                    Array.Copy(parameter, i, rXData, 0, sizeLeft);
 
                     int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
-                    for (int y = 1; y < missingNumbers + 1; y++)
+                    for (int y = sizeLeft; y < missingNumbers + sizeLeft; y++)
                     {
                         rXData[y] = rXData[0];
-                        rYData[y] = rYData[0];
                     }
-                    sRX = new Vector<double>(rXData);
-                    sRY = new Vector<double>(rYData);
+                    partialParameterVector = new Vector<double>(rXData);
                 }
-                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
+                parameterValues[index] = partialParameterVector;
                 index++;
             }
-            return Seq;
+            return parameterValues;
         }
 
         private void FindFunctionWithSpecies()
@@ -90,7 +112,7 @@ namespace Solve_Funktion
                 var SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
                 SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
                 SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
-                MessageBox.Show(Vector<double>.Count.ToString());
+                //MessageBox.Show(Vector<double>.Count.ToString());
 
                 //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25";
                 //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
@@ -113,8 +135,10 @@ namespace Solve_Funktion
                 //const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
                 //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
-                const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
-                const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0";
+                const string SequenceX = "x = {1, 4, 3}, y = {1, 1, 3}, z = {1, 2, 3}";
+                const string SequenceY = "3,2,1";
+                //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
+                //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0";
 
                 //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
                 //const string SequenceY = "0.0,0.1,0.2,0.7,0.8,0.9,0.0,0.6,0.7,0.8,0.9,0.0,0.1,0.2,0.3,0.9,0.0";

@@ -86,14 +86,16 @@ namespace Solve_Funktion
 
     public sealed class VectorPoint
     {
-        public Vector<double> X;
-        public Vector<double> Y;
+        public Vector<double>[] Parameters;
+        public string[] ParameterNames;
+        public Vector<double> Result;
         public int Count;
 
-        public VectorPoint(Vector<double> x, Vector<double> y, int count)
+        public VectorPoint(Vector<double>[] parameters, string[] parameterNames, Vector<double> result, int count)
         {
-            X = x;
-            Y = y;
+            Parameters = parameters;
+            ParameterNames = parameterNames;
+            Result = result;
             Count = count;
         }
     }

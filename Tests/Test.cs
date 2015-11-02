@@ -6,6 +6,7 @@ using System.Linq;
 using System.Globalization;
 using System.Windows;
 using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace Tests
 {
@@ -275,44 +276,69 @@ namespace Tests
 
         private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
         {
-            double[] SeqRX = SequenceX.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            string[] lines = Regex.Split(SequenceX, "} *,");
+            string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
+            string[][] namesAndValues = refined.Select(x => x.Split('{')).ToArray();
+            string[] names = namesAndValues.Select(x => x[0]).ToArray();
+            double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)SeqRX.Length / (double)Vector<double>.Count)];
-            int index = 0;
-            for (int i = 0; i < SeqRX.Length; i += Vector<double>.Count)
+            return GetSequence(names, SeqRX, SeqRY);
+        }
+        private VectorPoint[] GetSequence(string[] names, double[][] parameters, double[] functionValues)
+        {
+            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)parameters[0].Length / (double)Constants.VECTOR_LENGTH)];
+            int[] counts = new int[parameters.Length];
+            Vector<double>[] functionValuesVector = getParameterValues(functionValues, out counts);
+            Vector<double>[][] splittedParameters = new Vector<double>[parameters.Length][];
+            for (int i = 0; i < parameters.Length; i++)
             {
-                int sizeLeft = SeqRX.Length - i;
-                Vector<double> sRX;
-                Vector<double> sRY;
-                int vectorSize;
-                if (sizeLeft >= Vector<double>.Count)
+                int[] count;
+                splittedParameters[i] = getParameterValues(parameters[i], out count);
+            }
+            for (int i = 0; i < splittedParameters.Length; i++)
+            {
+                Vector<double>[] parameterValues = new Vector<double>[splittedParameters[0].Length];
+                for (int j = 0; j < splittedParameters[0].Length; j++)
                 {
-                    sRX = new Vector<double>(SeqRX, i);
-                    sRY = new Vector<double>(SeqRY, i);
-                    vectorSize = Vector<double>.Count;
+                    parameterValues[j] = splittedParameters[i][j];
+                }
+                Seq[i] = new VectorPoint(parameterValues, names, functionValuesVector[i], counts[i]);
+            }
+            return Seq;
+        }
+
+        private Vector<double>[] getParameterValues(double[] parameter, out int[] vectorSize)
+        {
+            Vector<double>[] parameterValues = new Vector<double>[(int)Math.Ceiling((double)parameter.Length / (double)Constants.VECTOR_LENGTH)];
+            int index = 0;
+            vectorSize = new int[parameterValues.Length];
+            for (int i = 0; i < parameter.Length; i += Constants.VECTOR_LENGTH)
+            {
+                int sizeLeft = parameter.Length - i;
+                Vector<double> partialParameterVector;
+                if (sizeLeft >= Constants.VECTOR_LENGTH)
+                {
+                    partialParameterVector = new Vector<double>(parameter, i);
+                    vectorSize[i] = Constants.VECTOR_LENGTH;
                 }
                 else
                 {
-                    vectorSize = sizeLeft;
-                    double[] rXData = new double[Vector<double>.Count];
-                    double[] rYData = new double[Vector<double>.Count];
+                    vectorSize[i] = sizeLeft;
+                    double[] rXData = new double[Constants.VECTOR_LENGTH];
 
-                    Array.Copy(SeqRX, i, rXData, 0, sizeLeft);
-                    Array.Copy(SeqRY, i, rYData, 0, sizeLeft);
+                    Array.Copy(parameter, i, rXData, 0, sizeLeft);
 
-                    int missingNumbers = Vector<double>.Count - sizeLeft;
+                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
                     for (int y = 1; y < missingNumbers + 1; y++)
                     {
                         rXData[y] = rXData[0];
-                        rYData[y] = rYData[0];
                     }
-                    sRX = new Vector<double>(rXData);
-                    sRY = new Vector<double>(rYData);
+                    partialParameterVector = new Vector<double>(rXData);
                 }
-                Seq[index] = new VectorPoint(sRX, sRY, vectorSize);
+                parameterValues[index] = partialParameterVector;
                 index++;
             }
-            return Seq;
+            return parameterValues;
         }
     }
 }
