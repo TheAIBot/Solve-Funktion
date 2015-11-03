@@ -19,7 +19,7 @@
         <Border CornerRadius="0,0,0,0" BorderBrush="Black" Grid.ColumnSpan="2" Grid.RowSpan="7" BorderThickness="2" Background="Gray"/>
 
         <TextBlock Grid.Column="0" Grid.Row="0" Margin="5,2,5,2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Function:"/>
-        <TextBox Grid.Column="0" Grid.Row="1" Margin="5,2,5,2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding FunctionText, StringFormat='f(x) = {0}'}"/>
+        <TextBox Grid.Column="0" Grid.Row="1" Margin="5,2,5,2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding FunctionText}"/>
 
         <WrapPanel Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Margin="5,2,5,2" Text="Offset:"/>

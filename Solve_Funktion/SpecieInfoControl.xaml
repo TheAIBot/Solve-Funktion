@@ -24,7 +24,7 @@
 
 
         <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" TextWrapping="NoWrap" Margin="5,2,5,2" Text="Function:"/>
-        <TextBlock Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="NoWrap"  Margin="5,2,5,2" Text="{Binding FunctionText, StringFormat='f(x) = {0}'}"/>
+        <TextBlock Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="NoWrap"  Margin="5,2,5,2" Text="{Binding FunctionText}"/>
 
         <TextBlock Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" TextWrapping="NoWrap" Margin="5,2,5,2" Text="Offset:"/>
         <TextBlock Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" TextWrapping="NoWrap" Margin="5,2,5,2" Text="{Binding  OffsetText}"/>
