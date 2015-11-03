@@ -75,15 +75,13 @@ namespace Solve_Funktion
         public void CalcPartialOffSet(int toCalc)
         {
             _toCalc = toCalc;
-            toCalc = (int)Math.Ceiling((double)toCalc / (double)Constants.VECTOR_LENGTH);
             double offset = 0;
             int index = 0;
-            for (int i = 0; i < toCalc ; i++)
+            foreach (VectorPoint vPoint in EInfo.Goal)
             {
-                VectorPoint Coord = EInfo.Goal[i];
-                Vector<double> FunctionResult = GetFunctionResult(Coord.Parameters);
-                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, Coord.Count);
-                offset += CalcOffset(partResult, Coord.Result, Coord.Count);
+                Vector<double> FunctionResult = GetFunctionResult(vPoint.Parameters);
+                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, vPoint.Count);
+                offset += CalcOffset(partResult, vPoint.Result, vPoint.Count);
                 if (!Tools.IsANumber(offset))
                 {
                     this.OffSet = double.NaN;
@@ -91,7 +89,7 @@ namespace Solve_Funktion
                 }
                 Array.Copy(partResult, 0, Results, index, partResult.Length);
 
-                index += Coord.Count;
+                index += vPoint.Count;
             }
             this.OffSet = offset;
         }
@@ -163,7 +161,7 @@ namespace Solve_Funktion
                 Result.Append(Backwards[i]);
             }
             Result.Append(Forwards.ToString());
-            return Result.ToString();
+            return "f(" + String.Join(", ", EInfo.Goal[0].ParameterNames) +") = " + Result.ToString();
         }
 
         /// <summary>
