@@ -440,11 +440,12 @@ namespace Solve_Funktion
                     return Constants.NAN_VECTOR;
                 }
             }
-            //This is a shitty solution
-            Vector<double>[] parametersCopy = new Vector<double>[parameters.Length];
-            Array.Copy(parameters, parametersCopy, parameters.Length);
-            parametersCopy[0] = Res;
-            return Oper.ExtraMathFunction.Calculate(Result, parametersCopy, Oper);
+            //This is a shitty solution and it doesn't work because the drawn parameter is wrong
+            //Vector<double>[] parametersCopy = new Vector<double>[parameters.Length];
+            //Array.Copy(parameters, parametersCopy, parameters.Length);
+            //parametersCopy[0] = Res;
+            //return Oper.ExtraMathFunction.Calculate(Result, parametersCopy, Oper);
+            return Res;
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
@@ -457,6 +458,7 @@ namespace Solve_Funktion
             {
                 OP.ShowOperator(Forwards, Backwards);
             }
+            //Oper.ExtraMathFunction.ShowOperator(Oper, Forwards, Backwards);
         }
         private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
@@ -485,10 +487,10 @@ namespace Solve_Funktion
                 // by adding the operator now there is space for 1 less operator
                 ToAdd.MakeRandom(Oper.Operators);
             }
-            do
-            {
-                Oper.ExtraMathFunction = Oper.Eq.EInfo.Operators[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Operators.Length)];
-            } while (!Oper.ExtraMathFunction.IsConnecter);
+            //do
+            //{
+            //    Oper.ExtraMathFunction = Oper.Eq.EInfo.Operators[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Operators.Length)];
+            //} while (!Oper.ExtraMathFunction.IsConnecter);
         }
         public override bool CanUseOperator(Operator Oper)
         {
