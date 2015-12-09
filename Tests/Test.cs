@@ -25,9 +25,10 @@ namespace Tests
         }
         public void SingleOPCopyTest()
         {
-            Equation Cand = MakeRandomEquation();
+            Equation Cand = TestTools.MakeRandomEquation();
             Operator Original = Cand.EquationParts.First();
-            Operator Copy = MakeSingleOperator();
+            Operator Copy = TestTools.MakeSingleOperator();
+            Copy.Eq.Cleanup();
             Original.GetCopy(Copy, Cand,Cand.EquationParts);
 
             RecursiveCompareOperators(Original, Copy);
@@ -43,8 +44,8 @@ namespace Tests
         }
         public void CopyEquationInfoTest()
         {
-            Equation Cand = MakeRandomEquation();
-            Equation Derp = MakeRandomEquation();
+            Equation Cand = TestTools.MakeRandomEquation();
+            Equation Derp = TestTools.MakeRandomEquation();
             Derp.Cleanup();
             Equation Copy = Cand.MakeClone(Derp);
 
@@ -61,7 +62,7 @@ namespace Tests
         }
         public void EquationStoreAndCleanupTest()
         {
-            Equation Cand = MakeRandomEquation();
+            Equation Cand = TestTools.MakeRandomEquation();
             int StartOPCount = Cand.EInfo.MaxSize;
             Cand.Cleanup();
 
@@ -81,7 +82,7 @@ namespace Tests
         }
         public void OPStoreAndCleanupTest()
         {
-            Equation Cand = MakeRandomEquation();
+            Equation Cand = TestTools.MakeRandomEquation();
             int OPStorageCount = Cand.OPStorage.Count;
             int AllOperatorsCount = Cand.AllOperators.Count;
             int SortedopreatorsCount = Cand.SortedOperators.Sum(x => x.Count);
@@ -109,7 +110,7 @@ namespace Tests
         public void CheckEquationInfo_OperatorsLeft()
         {
             SynchronizedRandom.CreateRandom();
-            Equation Cand = MakeEquation();
+            Equation Cand = TestTools.MakeEquation();
             Assert.AreEqual(Cand.OperatorsLeft, Cand.EInfo.MaxSize, "OperatorsLeft return wrong value");
             if (Cand.OperatorsLeft > 0)
             {
@@ -130,7 +131,7 @@ namespace Tests
         }
         public void CheckEquationMaking()
         {
-            Equation Cand = MakeRandomEquation();
+            Equation Cand = TestTools.MakeRandomEquation();
             Cand.CalcTotalOffSet();
 
             VerifyEquation(Cand);
@@ -146,7 +147,7 @@ namespace Tests
         }
         public void TestEvolveCand()
         {
-            Equation Cand = MakeRandomEquation();
+            Equation Cand = TestTools.MakeRandomEquation();
             EvolveCand.EvolveCandidate(Cand.EInfo, Cand);
 
             VerifyEquation(Cand);
@@ -195,151 +196,7 @@ namespace Tests
             Assert.AreEqual(Original.Operators.Count, Copy.Operators.Count, "Operators Count is not the same");
         }
 
-        public Equation MakeRandomEquation()
-        {
-            Equation Cand = new Equation(GetEvolutionInfo());
-            SynchronizedRandom.CreateRandom();
-            Cand.MakeRandom();
-            return Cand;
-        }
 
-        public Equation MakeEquation()
-        {
-            Equation Cand = new Equation(GetEvolutionInfo());
-            return Cand;
-        }
 
-        public Operator MakeSingleOperator()
-        {
-            return MakeEquation().OPStorage.Pop();
-        }
-
-        private EvolutionInfo GetEvolutionInfo()
-        {
-            const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
-            const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
-
-            VectorPoint[] Seq = GetSequence(SequenceX,
-                                            SequenceY);
-
-            MathFunction[] Operators = new MathFunction[]
-            {
-                new Plus(),
-                new Subtract(),
-                new Multiply(),
-                new Divide(),
-
-                //new PowerOf(),
-                new Root(),
-                //new Exponent(),
-                //new NaturalLog(),
-                //new Log(),
-
-                //new Modulos(),
-                //new Floor(),
-                //new Ceil(),
-                //new Round(),
-
-                //new Sin(),
-                //new Cos(),
-                //new Tan(),
-                //new ASin(),
-                //new ACos(),
-                //new ATan(),
-
-                new Parentheses(),
-                new Absolute(),
-
-                new AND(),
-                new NAND(),
-                new OR(),
-                new NOR(),
-                new XOR(),
-                new XNOR(),
-                new NOT()
-            };
-
-            return new EvolutionInfo(
-                Seq,    // Sequence
-                40,    // MaxSize
-                5,     // MaxChange
-                30000,  // CandidatesPerGen
-                102,    // NumberRangeMax
-                0,      // NumberRangeMin
-                1,      // SpeciesAmount
-                100,    // MaxStuckGens
-                0.8,    // EvolvedCandidatesPerGen
-                0,      // RandomCandidatesPerGen
-                0.2,    // SmartCandidatesPerGen
-                Operators // Operatres that can be used in an equation
-                );
-        }
-
-        private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
-        {
-            string[] lines = Regex.Split(SequenceX, "} *,");
-            string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
-            string[][] namesAndValues = refined.Select(x => x.Split('{')).ToArray();
-            string[] names = namesAndValues.Select(x => x[0]).ToArray();
-            double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
-            double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            return GetSequence(names, SeqRX, SeqRY);
-        }
-        private VectorPoint[] GetSequence(string[] names, double[][] parameters, double[] functionValues)
-        {
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)parameters[0].Length / (double)Constants.VECTOR_LENGTH)];
-            int[] counts = new int[parameters.Length];
-            Vector<double>[] functionValuesVector = getParameterValues(functionValues, out counts);
-            Vector<double>[][] splittedParameters = new Vector<double>[parameters.Length][];
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                int[] count;
-                splittedParameters[i] = getParameterValues(parameters[i], out count);
-            }
-            for (int i = 0; i < splittedParameters.Length; i++)
-            {
-                Vector<double>[] parameterValues = new Vector<double>[splittedParameters[0].Length];
-                for (int j = 0; j < splittedParameters[0].Length; j++)
-                {
-                    parameterValues[j] = splittedParameters[i][j];
-                }
-                Seq[i] = new VectorPoint(parameterValues, names, functionValuesVector[i], counts[i]);
-            }
-            return Seq;
-        }
-
-        private Vector<double>[] getParameterValues(double[] parameter, out int[] vectorSize)
-        {
-            Vector<double>[] parameterValues = new Vector<double>[(int)Math.Ceiling((double)parameter.Length / (double)Constants.VECTOR_LENGTH)];
-            int index = 0;
-            vectorSize = new int[parameterValues.Length];
-            for (int i = 0; i < parameter.Length; i += Constants.VECTOR_LENGTH)
-            {
-                int sizeLeft = parameter.Length - i;
-                Vector<double> partialParameterVector;
-                if (sizeLeft >= Constants.VECTOR_LENGTH)
-                {
-                    partialParameterVector = new Vector<double>(parameter, i);
-                    vectorSize[i] = Constants.VECTOR_LENGTH;
-                }
-                else
-                {
-                    vectorSize[i] = sizeLeft;
-                    double[] rXData = new double[Constants.VECTOR_LENGTH];
-
-                    Array.Copy(parameter, i, rXData, 0, sizeLeft);
-
-                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
-                    for (int y = 1; y < missingNumbers + 1; y++)
-                    {
-                        rXData[y] = rXData[0];
-                    }
-                    partialParameterVector = new Vector<double>(rXData);
-                }
-                parameterValues[index] = partialParameterVector;
-                index++;
-            }
-            return parameterValues;
-        }
     }
 }
