@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
 using System.Numerics;
 
 namespace Solve_Funktion
@@ -120,7 +119,7 @@ namespace Solve_Funktion
                     offset += (1 - (coordY[i] / fResult));
                 }
             }
-            return offset;
+            return Math.Abs(offset);
         }
 
         /// <summary>
@@ -155,13 +154,21 @@ namespace Solve_Funktion
             {
                 EquationPart.ShowOperator(Forwards, Backwards);
             }
-            StringBuilder Result = new StringBuilder(Backwards.Length + Forwards.Length);
-            for (int i = Backwards.Length - 1; i >= 0; i--)
-            {
-                Result.Append(Backwards[i]);
-            }
-            Result.Append(Forwards.ToString());
-            return "f(" + String.Join(", ", EInfo.Goal[0].ParameterNames) +") = " + Result.ToString();
+            char[] toReverseAdd = new char[Backwards.Length + Forwards.Length];
+            Backwards.CopyTo(0, toReverseAdd, Forwards.Length, Backwards.Length);
+            Array.Reverse(toReverseAdd);
+
+            //add
+            Forwards.CopyTo(0, toReverseAdd, Backwards.Length, Forwards.Length);
+            string Result = new String(toReverseAdd);
+            //return new String(toReverseAdd);
+            //StringBuilder Result = new StringBuilder(Backwards.Length + Forwards.Length);
+            //for (int i = Backwards.Length - 1; i >= 0; i--)
+            //{
+            //    Result.Append(Backwards[i]);
+            //}
+            //Result.Append(Forwards.ToString());
+            return "f(" + String.Join(", ", EInfo.Goal[0].ParameterNames) +") = " + Result;
         }
 
         /// <summary>

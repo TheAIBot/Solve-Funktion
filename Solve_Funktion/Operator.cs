@@ -16,7 +16,7 @@ namespace Solve_Funktion
         public bool UseRandomNumber;
         public Equation Eq; // the equation this operator is a part of
         public List<Operator> ContainedList; // the list this operator is contained in in SortedOperators
-        public MathFunction ExtraMathFunction; // extra operator taht can be used if needed by the operator
+        public ISingleOperator ExtraMathFunction; // extra operator taht can be used if needed by the operator
         public List<Operator> Operators; // list of other operators this operator contains
 
         public Operator(Equation eq)
