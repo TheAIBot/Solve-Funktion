@@ -12,6 +12,8 @@ namespace Tests
 {
     public static class TestTools
     {
+        private static readonly Random rDom = new Random(12322);
+
         public static Equation MakeRandomEquation()
         {
             Equation Cand = new Equation(GetEvolutionInfo());
@@ -26,19 +28,28 @@ namespace Tests
             return Cand;
         }
 
+        public static Equation MakeEquation(string parameters, string result)
+        {
+            return new Equation(GetEvolutionInfo(parameters, result));
+        }
+
         public static Operator MakeSingleOperator()
         {
             return MakeEquation().OPStorage.Pop();
         }
-
 
         public static EvolutionInfo GetEvolutionInfo()
         {
             const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
             const string SequenceY = "     74,143,34,243,23,52,9,253,224,231";
 
-            VectorPoint[] Seq = GetSequence(SequenceX,
-                                            SequenceY);
+            return GetEvolutionInfo(SequenceX, SequenceY);
+        }
+
+        public static EvolutionInfo GetEvolutionInfo(string parameters, string result)
+        {
+            VectorPoint[] Seq = GetSequence(parameters,
+                                            result);
 
             MathFunction[] Operators = new MathFunction[]
             {
@@ -158,6 +169,34 @@ namespace Tests
                 index++;
             }
             return parameterValues;
+        }
+
+        public static Vector<double> CreateVector(params double[] data)
+        {
+            if (data.Length < Constants.VECTOR_LENGTH)
+            {
+                double[] newData = new double[Constants.VECTOR_LENGTH];
+                Array.Copy(data, newData, data.Length);
+                data = newData;
+            }
+            return new Vector<double>(data);
+        }
+
+        public static bool IsVectorsEqual(Vector<double> one, Vector<double> two)
+        {
+            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
+            {
+                if (one[i] != two[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static double GetRandomDouble(int min, int max)
+        {
+            return (double)rDom.Next(min, max) + rDom.NextDouble();
         }
     }
 }
