@@ -93,15 +93,15 @@ namespace Solve_Funktion
         }
     }
 
-    public interface ISingleOperator
+    public interface IConnecter
     {
-        Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper);
+        Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper);
 
-        //void SingleShow(StringBuilder Forwards, StringBuilder Backwards);
+        void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
     }
 
     //Standard
-    public sealed class Plus : MathFunction, ISingleOperator
+    public sealed class Plus : MathFunction, IConnecter
     {
         public Plus()
         {
@@ -117,12 +117,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (Left + Right) : (Right + Left);
         }
     }
-    public sealed class Subtract : MathFunction, ISingleOperator
+    public sealed class Subtract : MathFunction, IConnecter
     {
         public Subtract()
         {
@@ -138,12 +138,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (Left - Right) : (Right - Left);
         }
     }
-    public sealed class Multiply : MathFunction, ISingleOperator
+    public sealed class Multiply : MathFunction, IConnecter
     {
         public Multiply()
         {
@@ -159,12 +159,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (Left * Right) : (Right * Left);
         }
     }
-    public sealed class Divide : MathFunction, ISingleOperator
+    public sealed class Divide : MathFunction, IConnecter
     {
         public Divide()
         {
@@ -180,12 +180,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (Left / Right) : (Right / Left);
         }
     }
-    public class Modulos : MathFunction, ISingleOperator
+    public class Modulos : MathFunction, IConnecter
     {
         public Modulos()
         {
@@ -201,12 +201,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (ShittyVectorMath.Modulus(Left, Right)) : (ShittyVectorMath.Modulus(Right, Left));
         }
     }
-    public sealed class PowerOf : MathFunction, ISingleOperator
+    public sealed class PowerOf : MathFunction, IConnecter
     {
         public PowerOf()
         {
@@ -222,7 +222,7 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> SingleCalculate(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (ShittyVectorMath.Pow(Left, Right)) : (ShittyVectorMath.Pow(Right, Left));
         }
@@ -471,12 +471,9 @@ namespace Solve_Funktion
                     return Constants.NAN_VECTOR;
                 }
             }
-            //This is a shitty solution and it doesn't work because the drawn parameter is wrong
-            //Vector<double>[] parametersCopy = new Vector<double>[parameters.Length];
-            //Array.Copy(parameters, parametersCopy, parameters.Length);
-            //parametersCopy[0] = Res;
-            return Oper.ExtraMathFunction.SingleCalculate(Res, Result, Oper);
+            return Oper.ExtraMathFunction.CalculateConnector(Res, Result, Oper);
         }
+
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             string currentFunction = ReverseAddStringBuilder(Backwards, Forwards);
@@ -488,7 +485,7 @@ namespace Solve_Funktion
             {
                 OP.ShowOperator(Forwards, Backwards);
             }
-            //Oper.ExtraMathFunction.ShowOperator(Oper, Forwards, Backwards);
+            Oper.ExtraMathFunction.ShowOperator(Oper, Forwards, Backwards);
         }
         private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
@@ -505,7 +502,7 @@ namespace Solve_Funktion
         public override void MakeRandom(Operator Oper)
         {
             Oper.Eq.SortedOperators.Add(Oper.Operators);
-            Oper.UseRandomNumber = true;
+            Oper.UseRandomNumber = false;
             Oper.parameterIndex = 0;
 
             //the method CanUseOperator makes sure there is atleast 1 available Operator to use in the parentheses
@@ -518,10 +515,6 @@ namespace Solve_Funktion
                 ToAdd.MakeRandom(Oper.Operators);
             }
             Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Connectors.Length)];
-            //do
-            //{
-            //    Oper.ExtraMathFunction = Oper.Eq.EInfo.Operators[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Operators.Length)];
-            //} while (!Oper.ExtraMathFunction.IsConnecter);
         }
         public override bool CanUseOperator(Operator Oper)
         {
