@@ -118,7 +118,7 @@
     <Compile Include="SynchronizedRandom.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UIUpdateLimiter.cs" />
-    <Compile Include="VectorMath.cs" />
+    <Compile Include="ShittyVectorMath.cs" />
     <Page Include="BestCandidateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

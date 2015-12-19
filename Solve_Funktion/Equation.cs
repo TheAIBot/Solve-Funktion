@@ -161,13 +161,6 @@ namespace Solve_Funktion
             //add
             Forwards.CopyTo(0, toReverseAdd, Backwards.Length, Forwards.Length);
             string Result = new String(toReverseAdd);
-            //return new String(toReverseAdd);
-            //StringBuilder Result = new StringBuilder(Backwards.Length + Forwards.Length);
-            //for (int i = Backwards.Length - 1; i >= 0; i--)
-            //{
-            //    Result.Append(Backwards[i]);
-            //}
-            //Result.Append(Forwards.ToString());
             return "f(" + String.Join(", ", EInfo.Goal[0].ParameterNames) +") = " + Result;
         }
 

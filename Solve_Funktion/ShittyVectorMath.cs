@@ -20,7 +20,6 @@ namespace Solve_Funktion
         }
         public static Vector<double> BetterModulus(Vector<double> num, Vector<double> mod)
         {
-            //return num - int(num / mod)
             return num - BetterFloor(num / mod);
         }
 
@@ -45,10 +44,10 @@ namespace Solve_Funktion
         }
         public static Vector<double> BetterFloor(Vector<double> num)
         {
-            double[] data = new double[Vector<double>.Count];
+            double[] data = new double[Constants.VECTOR_LENGTH];
             num.CopyTo(data);
-            return new Vector<double>(new Vector<int>(num));
-            //return Vector.AsVectorDouble<int>(Vector.AsVectorInt32 <double>(num));
+            //return new Vector<double>(new Vector<int>(num));
+            return Vector.AsVectorDouble<int>(Vector.AsVectorInt32<double>(num));
         }
 
         public static Vector<double> Ceiling(Vector<double> num)
