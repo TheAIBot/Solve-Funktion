@@ -42,7 +42,7 @@ namespace Solve_Funktion
         /// <summary>
         /// is called before solution is evolved to setup the specie
         /// </summary>
-        public virtual void StartFinding()
+        protected virtual void StartFinding()
         {
             SpecInfo = new SpeciesInfo();
             SynchronizedRandom.CreateRandom();
@@ -60,7 +60,7 @@ namespace Solve_Funktion
         /// <summary>
         /// updates SpecInfo with the newest information about BestCandidate
         /// </summary>
-        public virtual void UpdateInfo()
+        protected virtual void UpdateInfo()
         {
             SpecInfo.FunctionText = BestCandidate.CreateFunction();
             SpecInfo.Offset = BestCandidate.OffSet;
@@ -91,7 +91,7 @@ namespace Solve_Funktion
         /// resets equations making them ready to create a new ones
         /// </summary>
         /// <param name="NextGen">list of equations to reset</param>
-        public void ResetEquations(Equation[] NextGen)
+        protected void ResetEquations(Equation[] NextGen)
         {
             foreach (Equation Cand in NextGen)
             {
@@ -103,7 +103,7 @@ namespace Solve_Funktion
         /// resets a singl equation making it ready to create a new one
         /// </summary>
         /// <param name="Cand"></param>
-        public void ResetSingle(Equation Cand)
+        protected void ResetSingle(Equation Cand)
         {
             Cand.Cleanup();
         }
