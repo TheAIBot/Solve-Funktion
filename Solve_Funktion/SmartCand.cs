@@ -52,9 +52,9 @@ namespace Solve_Funktion
                 Operator OCandOper = OCand.AllOperators[i];
                 if (BCandOper.ResultOnRightSide == OCandOper.ResultOnRightSide &&
                     BCandOper.MFunction == OCandOper.MFunction &&
-                    BCandOper.UseNumber == OCandOper.UseNumber &&
-                    BCandOper.Number != OCandOper.Number &&
-                    BCandOper.UseNumber)
+                    BCandOper.UseRandomNumber == OCandOper.UseRandomNumber &&
+                    BCandOper.randomNumber != OCandOper.randomNumber &&
+                    BCandOper.UseRandomNumber)
                 {
                     SmartChangeOperatorIndexes.Add(i);
                 }
@@ -76,13 +76,13 @@ namespace Solve_Funktion
             {
                 Operator BCandOper = BCand.AllOperators[Index];
                 Operator OCandOper = OCand.AllOperators[Index];
-                if (BCandOper.Number[0] > OCandOper.Number[0])
+                if (BCandOper.randomNumber[0] > OCandOper.randomNumber[0])
                 {
-                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.Number[0] + 1);
+                    Eq.AllOperators[Index].randomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.randomNumber[0] + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].Number = SynchronizedRandom.NextVector((int)BCandOper.Number[0], EInfo.NumberRangeMax);
+                    Eq.AllOperators[Index].randomNumber = SynchronizedRandom.NextVector((int)BCandOper.randomNumber[0], EInfo.NumberRangeMax);
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace Solve_Funktion
             for (int i = 0; i < AmountToChange; i++)
             {
                 int Index = SynchronizedRandom.Next(0, Eq.EquationParts.Count);
-                Eq.EquationParts[Index].Number = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                Eq.EquationParts[Index].randomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
             }
         }
     }

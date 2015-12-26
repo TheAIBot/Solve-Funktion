@@ -7,6 +7,11 @@ using System.Numerics;
 
 namespace Solve_Funktion
 {
+    /*
+    enviroments are used to control interaction between different species
+    this not only allows species to evolve by them selfs but also allows
+    them to use each other to evolve if that is what the evolutionary approach aims to do
+    */
     public abstract class SpecieEnviromentBase//<T> where T : Genome, new()
     {
         public event BestEquationEventHandler OnBestEquationChanged;
@@ -16,6 +21,11 @@ namespace Solve_Funktion
         protected GeneralInfo GInfo;
         protected Genome[] Species;
 
+        /// <summary>
+        /// prepares the enviroment with its evolution parameters
+        /// </summary>
+        /// <param name="EInfo">evolution parameters</param>
+        /// <returns>shared info about species</returns>
         public abstract GeneralInfo SetupEviroment(EvolutionInfo EInfo);
 
         public abstract void SimulateEnviroment();
@@ -74,17 +84,5 @@ namespace Solve_Funktion
         public Genome Specie;
     }
 
-    public sealed class VectorPoint
-    {
-        public Vector<double> X;
-        public Vector<double> Y;
-        public int Count;
-
-        public VectorPoint(Vector<double> x, Vector<double> y, int count)
-        {
-            X = x;
-            Y = y;
-            Count = count;
-        }
-    }
+    
 }

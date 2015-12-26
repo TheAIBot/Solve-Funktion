@@ -9,7 +9,7 @@ namespace Solve_Funktion
 {
     public class EvolutionInfo
     {
-        public VectorPoint[] Goal;
+        public readonly VectorPoint[] Goal;
         public readonly int GoalLength;
         public readonly int MaxSize;
         public readonly int MaxChange;
@@ -21,7 +21,8 @@ namespace Solve_Funktion
         public readonly double EvolvedCandidatesPerGen;
         public readonly double RandomCandidatesPerGen;
         public readonly double SmartCandidatesPerGen;
-        public MathFunction[] Operators;
+        public readonly MathFunction[] Operators;
+        public readonly IConnecter[] Connectors;
 
         public EvolutionInfo(VectorPoint[] goal, int maxsize, int maxchange, double candidatespergen, int numberrangemax, int numberrangemin,
                              int speciesamount, int maxstuckgens, double evolvedcandidatespergen, double randomcandidatespergen,
@@ -40,6 +41,7 @@ namespace Solve_Funktion
             RandomCandidatesPerGen = randomcandidatespergen;
             SmartCandidatesPerGen = smartcandidatespergen;
             Operators = operators;
+            Connectors = operators.OfType<IConnecter>().ToArray();
         }
     }
 }

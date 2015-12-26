@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows;
+using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -58,7 +59,7 @@ namespace Solve_Funktion
         {
             if (Cand.OperatorsLeft < MaxChange)
             {
-                Cand.RemoveRandomOperator();
+                Cand.RemoveRandomOperator(MaxChange);
             }
         }
 

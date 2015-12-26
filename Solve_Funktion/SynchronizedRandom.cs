@@ -10,7 +10,7 @@ namespace Solve_Funktion
 {
     public static class SynchronizedRandom
     {
-        private static int seedCounter = 100; // new Random().Next();
+        private static int seedCounter = 100;// new Random().Next();
 
         [ThreadStatic]
         private static Random RDom;

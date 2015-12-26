@@ -30,7 +30,7 @@ namespace Solve_Funktion
                     BestCandEvolved = GetNextGen(EvolvedEquation, OldEquation, _toCalc);
                     StuckCounter = SetStuckCounter(StuckCounter, BestCandEvolved);
                     UpdateInfo();
-                    //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
+                //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
                 } while (StuckCounter <= EInfo.MaxStuckGens);
                 _toCalc++;
                 //BestCandidate.OffSet = double.MaxValue;
