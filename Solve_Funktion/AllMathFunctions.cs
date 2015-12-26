@@ -600,123 +600,123 @@ namespace Solve_Funktion
     }
 
     //Logic Operators
-//    public sealed class AND : LogicBase
-//    {
-//        public AND()
-//        {
-//            MiddleFix = " AND ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
-//            return (Num == _one && Result == _zero) ? _one : _zero;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
-//    public sealed class NAND : LogicBase
-//    {
-//        public NAND()
-//        {
-//            MiddleFix = " NAND ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
-//            return (Num == _one && Result == _zero) ? _zero : _one;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
-//    public sealed class OR : LogicBase
-//    {
-//        public OR()
-//        {
-//            MiddleFix = " OR ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
-//            return (Num == _one || Result == _one) ? _one : _zero;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
-//    public sealed class NOR : LogicBase
-//    {
-//        public NOR()
-//        {
-//            MiddleFix = " NOR ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
-//            return (Num == _one || Result == _one) ? _zero : _one;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
-//    public sealed class XOR : LogicBase
-//    {
-//        public XOR()
-//        {
-//            MiddleFix = " XOR ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
-//            return (Num != Result && (Num == _one || Result == _one)) ? _one : _zero;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
-//    public sealed class XNOR : LogicBase
-//    {
-//        public XNOR()
-//        {
-//            MiddleFix = " XNOR ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
-//            return (Num != Result && (Num == _one || Result == _one)) ? _zero : _one;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
-//    public sealed class NOT : LogicBase
-//    {
-//        public NOT()
-//        {
-//            IsConnecter = false;
-//            PreFix = " NOT ";
-//            CreateReversedStrings();
-//        }
-//        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-//        {
-//            return (Result == _zero) ? _one : _zero;
-//        }
-//        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-//        {
-//            DrawOperator(Oper, Forwards, Backwards);
-//        }
-//    }
+    public sealed class AND : LogicBase
+    {
+        public AND()
+        {
+            MiddleFix = " AND ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            return ShittyVectorLogic.AND(Num, Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
+    public sealed class NAND : LogicBase
+    {
+        public NAND()
+        {
+            MiddleFix = " NAND ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            return ShittyVectorLogic.NAND(Num, Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
+    public sealed class OR : LogicBase
+    {
+        public OR()
+        {
+            MiddleFix = " OR ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            return ShittyVectorLogic.OR(Num, Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
+    public sealed class NOR : LogicBase
+    {
+        public NOR()
+        {
+            MiddleFix = " NOR ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            return ShittyVectorLogic.NOR(Num, Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
+    public sealed class XOR : LogicBase
+    {
+        public XOR()
+        {
+            MiddleFix = " XOR ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            return ShittyVectorLogic.XOR(Num, Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
+    public sealed class XNOR : LogicBase
+    {
+        public XNOR()
+        {
+            MiddleFix = " XNOR ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            return ShittyVectorLogic.XNOR(Num, Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
+    public sealed class NOT : LogicBase
+    {
+        public NOT()
+        {
+            IsConnecter = false;
+            PreFix = " NOT ";
+            CreateReversedStrings();
+        }
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            return ShittyVectorLogic.NOT(Result);
+        }
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            DrawOperator(Oper, Forwards, Backwards);
+        }
+    }
 }
