@@ -22,7 +22,7 @@ namespace Tests
             o1.ResultOnRightSide = false;
             o1.MFunction = new Parentheses();
             o1.UseRandomNumber = false;
-            o1.randomNumber = TestTools.CreateVector(2, 2);
+            o1.randomNumber = TestTools.CreateVectorRepeat(2);
             o1.parameterIndex = 0;
             o1.ExtraMathFunction = new Multiply();
 
@@ -34,7 +34,7 @@ namespace Tests
             o2.ResultOnRightSide = false;
             o2.MFunction = new Subtract();
             o2.UseRandomNumber = true;
-            o2.randomNumber = TestTools.CreateVector(1, 1);
+            o2.randomNumber = TestTools.CreateVectorRepeat(1);
             o2.parameterIndex = 0;
 
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x - 1) * x)", new double[] { 6, 12, 20, 30 });
@@ -51,10 +51,10 @@ namespace Tests
 
 
 
-            o2.randomNumber = TestTools.CreateVector(-5, -5);
+            o2.randomNumber = TestTools.CreateVectorRepeat(-5);
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((-5 - x) * x)", new double[] { -24, -36, -50, -66 });
             
-            o2.randomNumber = TestTools.CreateVector(3, 3);
+            o2.randomNumber = TestTools.CreateVectorRepeat(3);
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) * x)", new double[] { 0, -4, -10, -18 });
 
 

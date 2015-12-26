@@ -182,6 +182,16 @@ namespace Tests
             return new Vector<double>(data);
         }
 
+        public static Vector<double> CreateVectorRepeat(double number)
+        {
+            double[] result = new double[Constants.VECTOR_LENGTH];
+            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
+            {
+                result[i] = number;
+            }
+            return new Vector<double>(result);
+        }
+
         public static bool IsVectorsEqual(Vector<double> one, Vector<double> two)
         {
             for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
