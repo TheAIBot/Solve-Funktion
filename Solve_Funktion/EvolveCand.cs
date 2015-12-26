@@ -59,7 +59,7 @@ namespace Solve_Funktion
         {
             if (Cand.OperatorsLeft < MaxChange)
             {
-                Cand.RemoveRandomOperator();
+                Cand.RemoveRandomOperator(MaxChange);
             }
         }
 
