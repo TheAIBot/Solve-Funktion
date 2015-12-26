@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EquationTests.cs" />
     <Compile Include="TestTools.cs" />
+    <Compile Include="VectorLogicTests.cs" />
     <Compile Include="VectorMathTests.cs" />
   </ItemGroup>
   <ItemGroup>
