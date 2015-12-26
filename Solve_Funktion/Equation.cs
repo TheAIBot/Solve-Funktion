@@ -103,23 +103,35 @@ namespace Solve_Funktion
         private double CalcOffset(double[] functionResult, Vector<double> coordY, int count)
         {
             double offset = 0;
+            //for (int i = 0; i < count; i++)
+            //{
+            //    double fResult = functionResult[i];
+            //    if (fResult == 0)
+            //    {
+            //        offset++;
+            //    }
+            //    else if (fResult < coordY[i])
+            //    {
+            //        offset += (1 - (fResult / coordY[i]));
+            //    }
+            //    else
+            //    {
+            //        offset += (1 - (coordY[i] / fResult));
+            //    }
+            //}
+            //return Math.Abs(offset);
             for (int i = 0; i < count; i++)
             {
-                double fResult = functionResult[i];
-                if (fResult == 0)
+                if (coordY[i] == 0)
                 {
-                    offset++;
-                }
-                else if (fResult < coordY[i])
-                {
-                    offset += (1 - (fResult / coordY[i]));
+                    offset += Math.Abs(functionResult[i]);
                 }
                 else
                 {
-                    offset += (1 - (coordY[i] / fResult));
+                    offset += Math.Abs(coordY[i] - functionResult[i]) / coordY[i];
                 }
             }
-            return Math.Abs(offset);
+            return offset;
         }
 
         /// <summary>
@@ -249,6 +261,15 @@ namespace Solve_Funktion
         {
             int Index = SynchronizedRandom.Next(0, AllOperators.Count);
             RemoveOperator(Index);
+        }
+        public void RemoveRandomOperator(int maxRemovedOperators)
+        {
+            int index;
+            do
+            {
+                index = SynchronizedRandom.Next(0, AllOperators.Count);
+            } while ( AllOperators[index].GetOperatorCount() > maxRemovedOperators);
+            RemoveOperator(index);
         }
         /// <summary>
         /// makes sure only 1 operator is removed
