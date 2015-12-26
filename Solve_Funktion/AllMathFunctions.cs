@@ -600,7 +600,7 @@ namespace Solve_Funktion
     }
 
     //Logic Operators
-    public sealed class AND : LogicBase
+    public sealed class AND : LogicBase, IConnecter
     {
         public AND()
         {
@@ -616,8 +616,13 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
+
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        {
+            return ShittyVectorLogic.AND(Left, Right);
+        }
     }
-    public sealed class NAND : LogicBase
+    public sealed class NAND : LogicBase, IConnecter
     {
         public NAND()
         {
@@ -633,8 +638,13 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
+
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        {
+            return ShittyVectorLogic.NAND(Left, Right);
+        }
     }
-    public sealed class OR : LogicBase
+    public sealed class OR : LogicBase, IConnecter
     {
         public OR()
         {
@@ -650,8 +660,13 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
+
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        {
+            return ShittyVectorLogic.OR(Left, Right);
+        }
     }
-    public sealed class NOR : LogicBase
+    public sealed class NOR : LogicBase, IConnecter
     {
         public NOR()
         {
@@ -667,8 +682,13 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
+
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        {
+            return ShittyVectorLogic.NOR(Left, Right);
+        }
     }
-    public sealed class XOR : LogicBase
+    public sealed class XOR : LogicBase, IConnecter
     {
         public XOR()
         {
@@ -684,8 +704,13 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
+
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        {
+            return ShittyVectorLogic.XOR(Left, Right);
+        }
     }
-    public sealed class XNOR : LogicBase
+    public sealed class XNOR : LogicBase, IConnecter
     {
         public XNOR()
         {
@@ -700,6 +725,11 @@ namespace Solve_Funktion
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             DrawOperator(Oper, Forwards, Backwards);
+        }
+
+        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        {
+            return ShittyVectorLogic.XNOR(Left, Right);
         }
     }
     public sealed class NOT : LogicBase
