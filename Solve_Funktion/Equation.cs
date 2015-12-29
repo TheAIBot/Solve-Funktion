@@ -128,7 +128,7 @@ namespace Solve_Funktion
                 }
                 else
                 {
-                    offset += Math.Abs(coordY[i] - functionResult[i]) / coordY[i];
+                    offset += Math.Abs(Math.Abs(coordY[i] - functionResult[i]) / coordY[i]);
                 }
             }
             return offset;
