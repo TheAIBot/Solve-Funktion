@@ -27,9 +27,10 @@ namespace Solve_Funktion
         {
             Parallel.For(0, Species.Length, (i, LoopState) =>
             {
-                Genome FinishedSpecie;
+                TryAgain:
                 try
                 {
+                    Genome FinishedSpecie;
                     do
                     {
                         FinishedSpecie = Species[i].EvolveSolution();
@@ -38,9 +39,8 @@ namespace Solve_Funktion
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message + Environment.NewLine + e.StackTrace);
+                    goto TryAgain;
                 }
-
-                LoopState.Stop();
             });
         }
     }
