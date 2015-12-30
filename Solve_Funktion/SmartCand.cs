@@ -6,7 +6,7 @@ namespace Solve_Funktion
     {
         public static void SmartifyCandidates(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, int StartIndex, int Amount)
         {
-            List<int> Indexes = CanSmartChangeNumbers(BCand, OCand);
+            int[] Indexes = CanSmartChangeNumbers(BCand, OCand);
             if (Indexes != null)
             {
                 SmartChangeNumbers(EInfo, Copys, BCand, OCand, Indexes, StartIndex, Amount);
@@ -18,7 +18,7 @@ namespace Solve_Funktion
         }
         public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand)
         {
-            List<int> Indexes = CanSmartChangeNumbers(BCand, OCand);
+            int[] Indexes = CanSmartChangeNumbers(BCand, OCand);
             if (Indexes != null)
             {
                 SmartChangeNumber(EInfo, ToSmartify, BCand, OCand, Indexes);
@@ -28,7 +28,7 @@ namespace Solve_Funktion
                 StupidChangeNumber(EInfo, ToSmartify);
             }
         }
-        public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand, List<int> Indexes)
+        public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand, int[] Indexes)
         {
             if (Indexes != null)
             {
@@ -40,7 +40,7 @@ namespace Solve_Funktion
             }
         }
 
-        public static List<int> CanSmartChangeNumbers(Equation BCand, Equation OCand)
+        public static int[] CanSmartChangeNumbers(Equation BCand, Equation OCand)
         {
             List<int> SmartChangeOperatorIndexes = new List<int>();
             if (BCand.AllOperators.Count != OCand.AllOperators.Count)
@@ -59,10 +59,10 @@ namespace Solve_Funktion
                     SmartChangeOperatorIndexes.Add(i);
                 }
             }
-            return SmartChangeOperatorIndexes;
+            return SmartChangeOperatorIndexes.ToArray();
         }
 
-        private static void SmartChangeNumbers(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, List<int> Indexes, int StartIndex, int Amount)
+        private static void SmartChangeNumbers(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, int[] Indexes, int StartIndex, int Amount)
         {
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
@@ -70,7 +70,7 @@ namespace Solve_Funktion
                 Copys[i].CalcTotalOffSet();
             }
         }
-        private static void SmartChangeNumber(EvolutionInfo EInfo, Equation Eq, Equation BCand, Equation OCand, List<int> Indexes)
+        private static void SmartChangeNumber(EvolutionInfo EInfo, Equation Eq, Equation BCand, Equation OCand, int[] Indexes)
         {
             foreach (int Index in Indexes)
             {

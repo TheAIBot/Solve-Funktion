@@ -56,7 +56,7 @@ namespace Solve_Funktion
                 BestCandEvolved = (EvolvedToBetter) ? true : BestCandEvolved;
                 ResetSingle(EvolvedEquation);
             }
-            List<int> Indexes = SmartCand.CanSmartChangeNumbers(BestCandidate, OldEquation);
+            int[] Indexes = SmartCand.CanSmartChangeNumbers(BestCandidate, OldEquation);
             for (double i = 0; i < EInfo.CandidatesPerGen * EInfo.SmartCandidatesPerGen; i++)
             {
                 BestCandidate.MakeClone(EvolvedEquation);
@@ -95,10 +95,10 @@ namespace Solve_Funktion
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 {
                     ResetSingle(OldEquation);
-                    BestEvolvedCand.MakeClone(OldEquation);
+                    OldEquation = BestEvolvedCand.MakeClone(OldEquation);
 
                     ResetSingle(BestEvolvedCand);
-                    Eq.MakeClone(BestEvolvedCand);
+                    BestEvolvedCand = Eq.MakeClone(BestEvolvedCand);
                     return true;
                 }
             }
