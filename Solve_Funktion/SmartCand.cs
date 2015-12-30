@@ -74,6 +74,15 @@ namespace Solve_Funktion
         {
             foreach (int Index in Indexes)
             {
+#if DEBUG
+                if (Index >= BCand.AllOperators.Count ||
+                    Index < 0 ||
+                    Index >= OCand.AllOperators.Count ||
+                    Index < 0)
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
+#endif
                 Operator BCandOper = BCand.AllOperators[Index];
                 Operator OCandOper = OCand.AllOperators[Index];
                 if (BCandOper.randomNumber[0] > OCandOper.randomNumber[0])
