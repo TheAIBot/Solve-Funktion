@@ -23,19 +23,19 @@ namespace Solve_Funktion
         public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
             int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
-            for (int i = 0; i < AmountToChange; i++)
+            while (AmountToChange > 0)
             {
                 int ToDo = SynchronizedRandom.Next(0, 3);
                 switch (ToDo)
                 {
                     case 0:
-                        InsertOPS(Cand);
+                        AmountToChange -= InsertOPS(Cand);
                         break;
                     case 1:
-                        RemoveOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= RemoveOPS(Cand, EInfo.MaxChange);
                         break;
                     case 2:
-                        ChangeOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
                         break;
                 }
 #if DEBUG
@@ -43,27 +43,29 @@ namespace Solve_Funktion
                 {
                     System.Diagnostics.Debugger.Break();
                 }
-# endif
+#endif
             }
         }
 
-        private static void ChangeOPS(Equation Cand, int MaxChange)
+        private static int ChangeOPS(Equation Cand, int MaxChange)
         {
             if (Cand.OperatorsLeft < MaxChange)
             {
-                Cand.ChangeRandomOperator();
+                return Cand.ChangeRandomOperator(MaxChange);
             }
+            return 0;
         }
 
-        private static void RemoveOPS(Equation Cand, int MaxChange)
+        private static int RemoveOPS(Equation Cand, int MaxChange)
         {
             if (Cand.OperatorsLeft < MaxChange)
             {
-                Cand.RemoveRandomOperator(MaxChange);
+                return Cand.RemoveRandomOperator(MaxChange);
             }
+            return 0;
         }
 
-        private static void InsertOPS(Equation Cand)
+        private static int InsertOPS(Equation Cand)
         {
             if (Cand.OperatorsLeft > 0)
             {
@@ -72,7 +74,9 @@ namespace Solve_Funktion
                 int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Count);
                 Operator ToAdd = Cand.OPStorage.Pop();
                 ToAdd.MakeRandom(LLOper, WhereToAddOP);
+                return ToAdd.GetOperatorCount();
             }
+            return 0;
         }
     }
 }

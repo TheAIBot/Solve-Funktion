@@ -232,6 +232,18 @@ namespace Solve_Funktion
             return Copy;
         }
 
+        public int ChangeRandomOperator(int maxChangedOperators)
+        {
+            int index;
+            int changedOperatorCount;
+            do
+            {
+                index = SynchronizedRandom.Next(0, AllOperators.Count);
+                changedOperatorCount = AllOperators[index].GetOperatorCount();
+            } while (changedOperatorCount > maxChangedOperators);
+            ChangeOperator(index);
+            return changedOperatorCount;
+        }
         /// <summary>
         /// changes a random operator
         /// </summary>
@@ -262,14 +274,17 @@ namespace Solve_Funktion
             int Index = SynchronizedRandom.Next(0, AllOperators.Count);
             RemoveOperator(Index);
         }
-        public void RemoveRandomOperator(int maxRemovedOperators)
+        public int RemoveRandomOperator(int maxRemovedOperators)
         {
             int index;
+            int removedOperatorCount;
             do
             {
                 index = SynchronizedRandom.Next(0, AllOperators.Count);
-            } while ( AllOperators[index].GetOperatorCount() > maxRemovedOperators);
+                removedOperatorCount = AllOperators[index].GetOperatorCount();
+            } while (removedOperatorCount > maxRemovedOperators);
             RemoveOperator(index);
+            return removedOperatorCount;
         }
         /// <summary>
         /// makes sure only 1 operator is removed
