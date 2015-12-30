@@ -140,7 +140,7 @@ namespace Solve_Funktion
         }
         public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
-            return (Oper.ResultOnRightSide) ? (Left - Right) : (Right - Left);
+            return (!Oper.ResultOnRightSide) ? (Left - Right) : (Right - Left);
         }
     }
     public sealed class Multiply : MathFunction, IConnecter
@@ -182,7 +182,7 @@ namespace Solve_Funktion
         }
         public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
-            return (Oper.ResultOnRightSide) ? (Left / Right) : (Right / Left);
+            return (!Oper.ResultOnRightSide) ? (Left / Right) : (Right / Left);
         }
     }
     public class Modulos : MathFunction, IConnecter
