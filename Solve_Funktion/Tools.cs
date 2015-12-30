@@ -11,7 +11,7 @@ namespace Solve_Funktion
         {
             for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
             {
-                if (IsANumber(ToDecide[i]))
+                if (!IsANumber(ToDecide[i]))
                 {
                     return false;
                 }
