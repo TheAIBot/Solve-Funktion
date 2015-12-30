@@ -76,6 +76,9 @@ namespace Solve_Funktion
             }
             if (BestCandEvolved)
             {
+                ResetSingle(OldEquation);
+                BestEvolvedEquation.MakeClone(OldEquation);
+
                 ResetSingle(BestCandidate);
                 BestEvolvedEquation.MakeClone(BestCandidate);
             }
@@ -94,9 +97,6 @@ namespace Solve_Funktion
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 {
-                    ResetSingle(OldEquation);
-                    OldEquation = BestEvolvedCand.MakeClone(OldEquation);
-
                     ResetSingle(BestEvolvedCand);
                     BestEvolvedCand = Eq.MakeClone(BestEvolvedCand);
                     return true;
