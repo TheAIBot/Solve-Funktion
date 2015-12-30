@@ -67,6 +67,33 @@ namespace Tests
 
             o2.MFunction = new Divide();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 / x) * x)", new double[] { 3, 3, 3, 3 });
+
+
+
+            o2.MFunction = new Subtract();
+            o1.ExtraMathFunction = new Plus();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) + x)", new double[] { 3, 3, 3, 3 });
+
+            o1.ExtraMathFunction = new Subtract();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) - x)", new double[] { -3, -5, -7, -9 });
+
+            o1.ExtraMathFunction = new Divide();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) / x)", new double[] { 0, -0.25, -0.4, -0.5 });
+
+
+
+            o1.ResultOnRightSide = true;
+            o1.ExtraMathFunction = new Plus();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = (x + (3 - x))", new double[] { 3, 3, 3, 3 });
+
+            o1.ExtraMathFunction = new Subtract();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = (x - (3 - x))", new double[] { 3, 5, 7, 9 });
+
+            o1.ExtraMathFunction = new Divide();
+            CheckShowResult(e1.CreateFunction(), "f(x) = (x / (3 - x))");
+            e1.CalcTotalOffSet();
+            Assert.IsFalse(Tools.IsANumber(e1.OffSet), "expected NaN as offset, but got: " + e1.OffSet);
+            
         }
 
         [TestMethod]
@@ -77,11 +104,16 @@ namespace Tests
 
         private void CheckEquationShowResult(Equation e, string equation, string expected, double[] expectedResults)
         {
-            Assert.IsTrue(equation == expected, equation + " != " + expected);
+            CheckShowResult(equation, expected);
             int index = 0;
             e.CalcTotalOffSet();
             Assert.IsTrue(e.GetFunctionResults().All(x => Double.Parse(x) == expectedResults[index++]),
                           "Tested " + equation + " and got " + String.Join(", ", e.GetFunctionResults()) + " != " + String.Join(", ", expectedResults.Select(x => x.ToString("N2"))));
+        }
+
+        private void CheckShowResult(string equation, string expected)
+        {
+            Assert.IsTrue(equation == expected, equation + " != " + expected);
         }
     }
 }
