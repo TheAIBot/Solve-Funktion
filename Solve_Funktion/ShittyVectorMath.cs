@@ -20,7 +20,7 @@ namespace Solve_Funktion
         }
         public static Vector<double> BetterModulus(Vector<double> num, Vector<double> mod)
         {
-            return num - BetterFloor(num / mod);
+            return num - BetterFloor(num / mod) * mod;
         }
 
         public static Vector<double> Pow(Vector<double> num, Vector<double> pow)
