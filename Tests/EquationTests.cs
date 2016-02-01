@@ -93,7 +93,82 @@ namespace Tests
             CheckShowResult(e1.CreateFunction(), "f(x) = (x / (3 - x))");
             e1.CalcTotalOffSet();
             Assert.IsFalse(Tools.IsANumber(e1.OffSet), "expected NaN as offset, but got: " + e1.OffSet);
-            
+
+
+
+
+            // - 1 = (x / (3 - x)) - 1
+            Operator o3 = e1.OPStorage.Pop();
+            o3.ContainedList = e1.EquationParts;
+            e1.AllOperators.Add(o3);
+            e1.EquationParts.Add(o3);
+            o3.ResultOnRightSide = false;
+            o3.MFunction = new Subtract();
+            o3.UseRandomNumber = true;
+            o3.randomNumber = TestTools.CreateVectorRepeat(1);
+            o3.parameterIndex = 0;
+
+            // - 1 = 1 - (x / (3 - x)) - 1)
+            Operator o4 = e1.OPStorage.Pop();
+            o4.ContainedList = e1.EquationParts;
+            e1.AllOperators.Add(o4);
+            e1.EquationParts.Add(o4);
+            o4.ResultOnRightSide = true;
+            o4.MFunction = new Subtract();
+            o4.UseRandomNumber = true;
+            o4.randomNumber = TestTools.CreateVectorRepeat(1);
+            o4.parameterIndex = 0;
+
+            // x = (1 - ((x / (3 - x)) - 1)) * x
+            Operator o5 = e1.OPStorage.Pop();
+            o5.ContainedList = e1.EquationParts;
+            e1.AllOperators.Add(o5);
+            e1.EquationParts.Add(o5);
+            o5.ResultOnRightSide = false;
+            o5.MFunction = new Parentheses();
+            o5.UseRandomNumber = false;
+            o5.randomNumber = TestTools.CreateVectorRepeat(2);
+            o5.parameterIndex = 0;
+            o5.ExtraMathFunction = new Multiply();
+
+            // x = x * (x * ((1 - ((x / (3 - x)) - 1)) * x))
+            Operator o6 = e1.OPStorage.Pop();
+            o6.ContainedList = e1.EquationParts;
+            e1.AllOperators.Add(o6);
+            e1.EquationParts.Add(o6);
+            o6.ResultOnRightSide = true;
+            o6.MFunction = new Parentheses();
+            o6.UseRandomNumber = false;
+            o6.randomNumber = TestTools.CreateVectorRepeat(2);
+            o6.parameterIndex = 0;
+            o6.ExtraMathFunction = new Multiply();
+
+
+
+            CheckShowResult(e1.CreateFunction(), "f(x) = ((x * (1 - ((x / (3 - x)) - 1))) * x)");
+            e1.CalcTotalOffSet();
+            Assert.IsFalse(Tools.IsANumber(e1.OffSet), "expected NaN as offset, but got: " + e1.OffSet);
+
+            o1.ExtraMathFunction = new Subtract();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x * (1 - ((x - (3 - x)) - 1))) * x)", new double[] { -9, -48, -125, -252 });
+
+
+
+
+            // * x = (x * x) * (x * ((1 - ((x / (3 - x)) - 1)) * x))
+            Operator o7 = e1.OPStorage.Pop();
+            o7.ContainedList = o6.Operators;
+            e1.AllOperators.Add(o7);
+            o6.Operators.Add(o7);
+            o7.ResultOnRightSide = false;
+            o7.MFunction = new Multiply();
+            o7.UseRandomNumber = false;
+            o7.randomNumber = TestTools.CreateVectorRepeat(1);
+            o7.parameterIndex = 0;
+
+
+
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x * (1 - ((x - (3 - x)) - 1))) * (x * x))", new double[] { -27, -192, -625, -1512 });
         }
 
         [TestMethod]

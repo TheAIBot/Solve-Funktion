@@ -103,23 +103,6 @@ namespace Solve_Funktion
         private double CalcOffset(double[] functionResult, Vector<double> coordY, int count)
         {
             double offset = 0;
-            //for (int i = 0; i < count; i++)
-            //{
-            //    double fResult = functionResult[i];
-            //    if (fResult == 0)
-            //    {
-            //        offset++;
-            //    }
-            //    else if (fResult < coordY[i])
-            //    {
-            //        offset += (1 - (fResult / coordY[i]));
-            //    }
-            //    else
-            //    {
-            //        offset += (1 - (coordY[i] / fResult));
-            //    }
-            //}
-            //return Math.Abs(offset);
             for (int i = 0; i < count; i++)
             {
                 if (coordY[i] == 0)

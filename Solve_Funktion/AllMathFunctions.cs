@@ -59,10 +59,15 @@ namespace Solve_Funktion
         private void DrawConnector(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             string Num = (Oper.UseRandomNumber) ? Oper.randomNumber[0].ToString() : Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.parameterIndex];
+            DrawConnector(Oper, Forwards, Backwards, Num);
+        }
+
+        protected void DrawConnector(Operator Oper, StringBuilder Forwards, StringBuilder Backwards, string ToInsert)
+        {
             if (Oper.ResultOnRightSide)
             {
                 Backwards.Append(ReversedMiddleFix);
-                Backwards.Append(String.Concat(Num.Reverse()));
+                Backwards.Append(RevertString(ToInsert));
                 Backwards.Append("(");
                 Backwards.Append(ReversedPreFix);
                 Forwards.Append(")");
@@ -73,11 +78,12 @@ namespace Solve_Funktion
                 Backwards.Append("(");
                 Backwards.Append(ReversedPreFix);
                 Forwards.Append(MiddleFix);
-                Forwards.Append(Num);
+                Forwards.Append(ToInsert);
                 Forwards.Append(")");
                 Forwards.Append(PostFix);
             }
         }
+
         private void DrawSingle(StringBuilder Forwards, StringBuilder Backwards)
         {
             Backwards.Append("(");
@@ -93,15 +99,18 @@ namespace Solve_Funktion
         }
     }
 
-    public interface IConnecter
+    public abstract class Connector : MathFunction
     {
-        Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper);
+        public abstract Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper);
 
-        void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
+        public string ShowConnector(Operator Oper, string Left, string Right)
+        {
+            return (Oper.ResultOnRightSide) ? ("(" + Left + MiddleFix + Right + ")") : ("(" + Right + MiddleFix + Left + ")");
+        }
     }
 
     //Standard
-    public sealed class Plus : MathFunction, IConnecter
+    public sealed class Plus : Connector
     {
         public Plus()
         {
@@ -117,12 +126,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (Left + Right) : (Right + Left);
         }
     }
-    public sealed class Subtract : MathFunction, IConnecter
+    public sealed class Subtract : Connector
     {
         public Subtract()
         {
@@ -138,12 +147,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (!Oper.ResultOnRightSide) ? (Left - Right) : (Right - Left);
         }
     }
-    public sealed class Multiply : MathFunction, IConnecter
+    public sealed class Multiply : Connector
     {
         public Multiply()
         {
@@ -159,12 +168,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (Left * Right) : (Right * Left);
         }
     }
-    public sealed class Divide : MathFunction, IConnecter
+    public sealed class Divide : Connector
     {
         public Divide()
         {
@@ -180,12 +189,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (!Oper.ResultOnRightSide) ? (Left / Right) : (Right / Left);
         }
     }
-    public class Modulos : MathFunction, IConnecter
+    public class Modulos : Connector
     {
         public Modulos()
         {
@@ -201,12 +210,12 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (ShittyVectorMath.Modulus(Left, Right)) : (ShittyVectorMath.Modulus(Right, Left));
         }
     }
-    public sealed class PowerOf : MathFunction, IConnecter
+    public sealed class PowerOf : Connector
     {
         public PowerOf()
         {
@@ -222,7 +231,7 @@ namespace Solve_Funktion
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return (Oper.ResultOnRightSide) ? (ShittyVectorMath.Pow(Left, Right)) : (ShittyVectorMath.Pow(Right, Left));
         }
@@ -476,16 +485,21 @@ namespace Solve_Funktion
 
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            string currentFunction = ReverseAddStringBuilder(Backwards, Forwards);
+            string Left = ReverseAddStringBuilder(Backwards, Forwards);
             Forwards.Clear();
-            Forwards.Append(currentFunction);
             Backwards.Clear();
 
+            Forwards.Append(Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.parameterIndex]);
             foreach (Operator OP in Oper.Operators)
             {
                 OP.ShowOperator(Forwards, Backwards);
             }
-            Oper.ExtraMathFunction.ShowOperator(Oper, Forwards, Backwards);
+
+            string Right = ReverseAddStringBuilder(Backwards, Forwards);
+            Forwards.Clear();
+            Backwards.Clear();
+
+            Forwards.Append(Oper.ExtraMathFunction.ShowConnector(Oper, Left, Right));
         }
         private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
@@ -503,7 +517,7 @@ namespace Solve_Funktion
         {
             Oper.Eq.SortedOperators.Add(Oper.Operators);
             Oper.UseRandomNumber = false;
-            Oper.parameterIndex = 0;
+            //Oper.parameterIndex = 0;
 
             //the method CanUseOperator makes sure there is atleast 1 available Operator to use in the parentheses
             int AmountToAdd = SynchronizedRandom.Next(0, Oper.Eq.OperatorsLeft - 1);
@@ -582,25 +596,7 @@ namespace Solve_Funktion
     }
 
     //Logic Operators
-    public class LogicBase : MathFunction
-    {
-        protected readonly Vector<double> _one = Vector<double>.One;
-        protected readonly Vector<double> _zero = Vector<double>.Zero;
-
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
-        {
-            throw new NotImplementedException();
-        }
-        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
-        {
-            throw new NotImplementedException();
-        }
-
-
-    }
-
-    //Logic Operators
-    public sealed class AND : LogicBase, IConnecter
+    public sealed class AND : Connector
     {
         public AND()
         {
@@ -617,12 +613,12 @@ namespace Solve_Funktion
             DrawOperator(Oper, Forwards, Backwards);
         }
 
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return ShittyVectorLogic.AND(Left, Right);
         }
     }
-    public sealed class NAND : LogicBase, IConnecter
+    public sealed class NAND : Connector
     {
         public NAND()
         {
@@ -639,12 +635,12 @@ namespace Solve_Funktion
             DrawOperator(Oper, Forwards, Backwards);
         }
 
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return ShittyVectorLogic.NAND(Left, Right);
         }
     }
-    public sealed class OR : LogicBase, IConnecter
+    public sealed class OR : Connector
     {
         public OR()
         {
@@ -661,12 +657,12 @@ namespace Solve_Funktion
             DrawOperator(Oper, Forwards, Backwards);
         }
 
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return ShittyVectorLogic.OR(Left, Right);
         }
     }
-    public sealed class NOR : LogicBase, IConnecter
+    public sealed class NOR : Connector
     {
         public NOR()
         {
@@ -683,12 +679,12 @@ namespace Solve_Funktion
             DrawOperator(Oper, Forwards, Backwards);
         }
 
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return ShittyVectorLogic.NOR(Left, Right);
         }
     }
-    public sealed class XOR : LogicBase, IConnecter
+    public sealed class XOR : Connector
     {
         public XOR()
         {
@@ -705,12 +701,12 @@ namespace Solve_Funktion
             DrawOperator(Oper, Forwards, Backwards);
         }
 
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return ShittyVectorLogic.XOR(Left, Right);
         }
     }
-    public sealed class XNOR : LogicBase, IConnecter
+    public sealed class XNOR : Connector
     {
         public XNOR()
         {
@@ -727,12 +723,12 @@ namespace Solve_Funktion
             DrawOperator(Oper, Forwards, Backwards);
         }
 
-        public Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
+        public override Vector<double> CalculateConnector(Vector<double> Left, Vector<double> Right, Operator Oper)
         {
             return ShittyVectorLogic.XNOR(Left, Right);
         }
     }
-    public sealed class NOT : LogicBase
+    public sealed class NOT : MathFunction
     {
         public NOT()
         {
