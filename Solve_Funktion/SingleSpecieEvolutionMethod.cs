@@ -32,7 +32,8 @@ namespace Solve_Funktion
                     UpdateInfo();
                 //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
                 } while (StuckCounter <= EInfo.MaxStuckGens);
-                _toCalc++;
+                break;
+                //_toCalc++;
                 //BestCandidate.OffSet = double.MaxValue;
             }
             return this;

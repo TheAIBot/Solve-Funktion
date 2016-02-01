@@ -22,11 +22,20 @@ namespace Solve_Funktion
         public readonly double RandomCandidatesPerGen;
         public readonly double SmartCandidatesPerGen;
         public readonly MathFunction[] Operators;
-        public readonly IConnecter[] Connectors;
+        public readonly Connector[] Connectors;
 
-        public EvolutionInfo(VectorPoint[] goal, int maxsize, int maxchange, double candidatespergen, int numberrangemax, int numberrangemin,
-                             int speciesamount, int maxstuckgens, double evolvedcandidatespergen, double randomcandidatespergen,
-                             double smartcandidatespergen, MathFunction[] operators)
+        public EvolutionInfo(VectorPoint[] goal, 
+                             int maxsize, 
+                             int maxchange, 
+                             double candidatespergen, 
+                             int numberrangemax, 
+                             int numberrangemin,
+                             int speciesamount, 
+                             int maxstuckgens, 
+                             double evolvedcandidatespergen, 
+                             double randomcandidatespergen,
+                             double smartcandidatespergen, 
+                             MathFunction[] operators)
         {
             Goal = goal;
             GoalLength = goal.Sum(x => x.Count);
@@ -41,7 +50,7 @@ namespace Solve_Funktion
             RandomCandidatesPerGen = randomcandidatespergen;
             SmartCandidatesPerGen = smartcandidatespergen;
             Operators = operators;
-            Connectors = operators.OfType<IConnecter>().ToArray();
+            Connectors = operators.OfType<Connector>().ToArray();
         }
     }
 }

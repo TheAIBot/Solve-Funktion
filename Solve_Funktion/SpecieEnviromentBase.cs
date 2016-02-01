@@ -19,7 +19,7 @@ namespace Solve_Funktion
         protected EvolutionInfo EInfo;
         protected SpeciesInfo BestEquationInfo;
         protected GeneralInfo GInfo;
-        protected Genome[] Species;
+        public Genome[] Species;
 
         /// <summary>
         /// prepares the enviroment with its evolution parameters

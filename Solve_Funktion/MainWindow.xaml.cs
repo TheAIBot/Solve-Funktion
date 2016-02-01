@@ -26,7 +26,8 @@ namespace Solve_Funktion
     public partial class MainWindow : Window
     {
         ConcurrentStack<SpecieInfoControl> SpecControls;
-        
+        IndividualSpecieEnviroment<SingleSpecieEvolution> SpecieEnviroment;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -109,7 +110,7 @@ namespace Solve_Funktion
         {
             try
             {
-                var SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
+                SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
                 SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
                 SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
                 //MessageBox.Show(Vector<double>.Count.ToString());
@@ -120,38 +121,41 @@ namespace Solve_Funktion
                 //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10";
                 //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
 
-                //const string SequenceX = "  1,   2,  3, 4,  5,6,  7,8, 9,10";
+                //const string SequenceX = "x = {  1,   2,  3, 4,  5,6,  7,8, 9,10}";
                 //const string SequenceY = "432,4567,987,23,765,2,678,9,34,23";
 
-                //const string SequenceX = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54";
-                //const string SequenceY = "1,0,1,0,1,0,0,0,1,1,1,0,0,1,1,0,1,0,1,0,1,1,1,1,0,0,1,0,1,0,0,1,0,1,0,0,0,1,1,0,1,0,1,1,1,0,0,1,0,1,0,0,0,1";
+                //const string SequenceX = "x = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54}";
+                //const string SequenceY = "     1,0,1,0,1,0,0,0,1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1";
 
                 //const string SequenceX = "     2,     3,     4";
                 //const string SequenceY = "182014,364572,495989";
 
-                //const string SequenceX = "1,2,3,      4, 5,    6, 7,          8, 9,10";
-                //const string SequenceY = "2,4,6,2342238,10,23432,14,12223332116,18,20";
+                const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
+                const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
 
-                //const string SequenceX = " 1,  2, 3,  4, 5, 6,7,  8,  9, 10";
+                //const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
                 //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
                 //const string SequenceX = "x = {384, 357, 221, 9, 18, 357, 221, 6}, y = {18, 357, 221, 6, 384, 357, 221, 9}";
                 //const string SequenceY = "     6, 1, 17, 3, 6, 1, 17, 3";
 
-                const string SequenceX = "x = {1, 2, 3,  4,  5,   6,   7,   8,    9,   10,    11}";
-                const string SequenceY = "     1, 3, 8, 21, 55, 144, 377, 987, 2584, 6765, 17711";
+                //const string SequenceX = "x = {1, 2, 3,  4,  5,   6,   7,   8,    9,   10,    11}";
+                //const string SequenceY = "     1, 3, 8, 21, 55, 144, 377, 987, 2584, 6765, 17711";
 
                 //const string SequenceX = "x = {1,2,3,4,5,6, 7, 8, 9,10,11}";
                 //const string SequenceY = "     1,1,2,3,5,8,13,21,34,55,89";
 
                 //const string SequenceX = "x = {1.1,1.5,2,2.1,10.8,200.8}";
                 //const string SequenceY = "       1,  2,2,  2,  11,  201";
+
+                //const string SequenceX = "x = {86, 86, 86, 86}, y = {1, 0.5, 0.25, 0.125}";
+                //const string SequenceY = "86, 76, 66, 56";
                 //List<string> xx = new List<string>();
                 //List<string> yy = new List<string>();
-                //for (double i = 1; i < 10; i += 0.2)
+                //for (double i = -Math.PI; i < Math.PI; i += 0.2)
                 //{
-                //    xx.Add(i.ToString("N2"));
-                //    yy.Add(Math.Round(i).ToString("N2"));
+                //    xx.Add(i.ToString("N6", CultureInfo.InvariantCulture));
+                //    yy.Add(Math.Sin(i).ToString("N6", CultureInfo.InvariantCulture));
                 //}
 
                 //string SequenceX = "x = {" + String.Join(", ", xx) + "}";
@@ -169,14 +173,14 @@ namespace Solve_Funktion
                 //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
                 //const string SequenceY = "0.0,0.1,0.2,0.7,0.8,0.9,0.0,0.6,0.7,0.8,0.9,0.0,0.1,0.2,0.3,0.9,0.0";
 
-                //const string SequenceX = "0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.999,1.0,1.001,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,1.999,2.0,2.001,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3.0";
-                //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,  1.0,1.0,  1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,  1.0,0.0,  0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0";
+                //const string SequenceX = "x = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.999,1.0,1.001,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,1.999,2.0,2.001,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3.0,4.0,5.0,5.0,6.0}";
+                //const string SequenceY = "     0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,  0.0,1.0,  1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,  1.0,0.0,  0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0";
 
-                //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0";
-                //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0";
+                //const string SequenceX = "x = {0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0}";
+                //const string SequenceY = "     0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0";
 
-                //const string SequenceX = "0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0,3.1,3.2,3.7,3.8,3.9,4.0,4.6,4.7,4.8,4.9,5.0,5.1,5.2,5.3,5.9,6.0,6.1,6.2,6.3,6.9,7.0,7.1,7.2,7.7,7.8,7.9,8.0";
-                //const string SequenceY = "0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0";
+                //const string SequenceX = "x = {0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0,3.1,3.2,3.7,3.8,3.9,4.0,4.6,4.7,4.8,4.9,5.0,5.1,5.2,5.3,5.9,6.0,6.1,6.2,6.3,6.9,7.0,7.1,7.2,7.7,7.8,7.9,8.0}";
+                //const string SequenceY = "     0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0";
 
                 //const string SequenceX = "  1";
                 //const string SequenceY = "276";
@@ -198,50 +202,50 @@ namespace Solve_Funktion
                                                 SequenceY);
 
                 MathFunction[] Operators = new MathFunction[]
-            {
-            new Plus(), //SIMD
-            new Subtract(), //SIMD
-            new Multiply(), //SIMD
-            new Divide(), //SIMD
+                {
+                    new Plus(), //SIMD
+                    new Subtract(), //SIMD
+                    new Multiply(), //SIMD
+                    new Divide(), //SIMD
 
-            new PowerOf(), //SIMD
-            new Root(), //SIMD
-            //new Exponent(), //Software SIMD
-            //new NaturalLog(), //Software SIMD
-            //new Log(), //Software SIMD
+                    new PowerOf(), //SIMD
+                    new Root(), //SIMD
+                    new Exponent(), //Software SIMD
+                    new NaturalLog(), //Software SIMD
+                    new Log(), //Software SIMD
 
-            //new Modulos(), //Software SIMD
-            //new Floor(), //Software SIMD
-            //new Ceil(), //Software SIMD
-            //new Round(), //Software SIMD
+                    new Modulos(), //Software SIMD
+                    new Floor(), //Software SIMD
+                    new Ceil(), //Software SIMD
+                    new Round(), //Software SIMD
 
-            //new Sin(), //Software SIMD
-            //new Cos(), //Software SIMD
-            //new Tan(), //Software SIMD
-            //new ASin(), //Software SIMD
-            //new ACos(), //Software SIMD
-            //new ATan(), //Software SIMD
+                    new Sin(), //Software SIMD
+                    new Cos(), //Software SIMD
+                    new Tan(), //Software SIMD
+                    new ASin(), //Software SIMD
+                    new ACos(), //Software SIMD
+                    new ATan(), //Software SIMD
 
-            new Parentheses(), //SIMD
-            //new Absolute(), //SIMD
+                    new Parentheses(), //SIMD
+                    new Absolute(), //SIMD
 
-                //new AND(),
-                //new NAND(),
-                //new OR(),
-                //new NOR(),
-                //new XOR(),
-                //new XNOR(),
-                //new NOT()
-            };
+                    //new AND(), //Software SIMD
+                    //new NAND(), //Software SIMD
+                    //new OR(), //Software SIMD
+                    //new NOR(), //Software SIMD
+                    //new XOR(), //Software SIMD
+                    //new XNOR(), //Software SIMD
+                    //new NOT() // SIMD
+                };
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
-                    70,       // MaxSize
-                    10,        // MaxChange
+                    20,       // MaxSize
+                    5,        // MaxChange
                     30000,    // CandidatesPerGen
-                    3,      // NumberRangeMax
+                    GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    6,        // SpeciesAmount
-                    50,      // MaxStuckGens
+                    7,        // SpeciesAmount
+                    100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
                     0.2,      // SmartCandidatesPerGen
@@ -257,9 +261,16 @@ namespace Solve_Funktion
                 MessageBox.Show(e.Message + Environment.NewLine + e.StackTrace);
                 throw;
             }
-            
+
 
             MessageBox.Show("Done");
+        }
+
+        private int GetMaxNumberFromVectorPointArray(VectorPoint[] vp)
+        {
+            //Dat shit code yo
+            return (int)Math.Ceiling(Math.Max(vp.Max(x => x.Parameters.Max(y => Enumerable.Range(0, x.Count).ToList().Max(z => y[z]))), 
+                                              vp.Max(x => Enumerable.Range(0, x.Count).ToList().Max(y => x.Result[y]))));
         }
 
         public void SpecieEnviroment_OnSubscribeToSpecies(SubscribeEventEventArgs e)

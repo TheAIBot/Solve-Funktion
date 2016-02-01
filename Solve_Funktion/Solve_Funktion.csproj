@@ -60,6 +60,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,6 +72,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -105,6 +107,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RandomCand.cs" />
+    <Compile Include="ShittyVectorLogic.cs" />
     <Compile Include="SingleSpecieEvolution.cs" />
     <Compile Include="SingleSpecieEvolutionMethod.cs" />
     <Compile Include="SmartCand.cs" />
@@ -119,6 +122,7 @@
     <Compile Include="Tools.cs" />
     <Compile Include="UIUpdateLimiter.cs" />
     <Compile Include="ShittyVectorMath.cs" />
+    <Compile Include="VectorPoint.cs" />
     <Page Include="BestCandidateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
