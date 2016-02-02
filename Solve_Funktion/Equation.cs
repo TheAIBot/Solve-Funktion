@@ -149,13 +149,7 @@ namespace Solve_Funktion
             {
                 EquationPart.ShowOperator(Forwards, Backwards);
             }
-            char[] toReverseAdd = new char[Backwards.Length + Forwards.Length];
-            Backwards.CopyTo(0, toReverseAdd, Forwards.Length, Backwards.Length);
-            Array.Reverse(toReverseAdd);
-
-            //add
-            Forwards.CopyTo(0, toReverseAdd, Backwards.Length, Forwards.Length);
-            string Result = new String(toReverseAdd);
+            string Result = Tools.ReverseAddStringBuilder(Backwards, Forwards);
             return "f(" + String.Join(", ", EInfo.Goal[0].ParameterNames) +") = " + Result;
         }
 
@@ -205,6 +199,7 @@ namespace Solve_Funktion
         public Equation MakeClone(Equation Copy)
         {
             Copy.OffSet = OffSet;
+            Copy._toCalc = _toCalc;
             Array.Copy(Results, Copy.Results, Results.Length);
             foreach (Operator EPart in EquationParts)
             {

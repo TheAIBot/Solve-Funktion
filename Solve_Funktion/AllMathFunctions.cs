@@ -463,7 +463,7 @@ namespace Solve_Funktion
     }
 
     //Misc
-    public sealed class Parentheses : MathFunction
+    public class Parentheses : MathFunction
     {
         public Parentheses()
         {
@@ -485,7 +485,7 @@ namespace Solve_Funktion
 
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            string Left = ReverseAddStringBuilder(Backwards, Forwards);
+            string Left = Tools.ReverseAddStringBuilder(Backwards, Forwards);
             Forwards.Clear();
             Backwards.Clear();
 
@@ -495,25 +495,15 @@ namespace Solve_Funktion
                 OP.ShowOperator(Forwards, Backwards);
             }
 
-            string Right = ReverseAddStringBuilder(Backwards, Forwards);
+            string Right = Tools.ReverseAddStringBuilder(Backwards, Forwards);
             Forwards.Clear();
             Backwards.Clear();
 
             Forwards.Append(Oper.ExtraMathFunction.ShowConnector(Oper, Left, Right));
         }
-        private string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
-        {
-            //reverse
-            char[] toReverseAdd = new char[toReverse.Length + toAdd.Length];
-            toReverse.CopyTo(0, toReverseAdd, toAdd.Length, toReverse.Length);
-            Array.Reverse(toReverseAdd);
-
-            //add
-            toAdd.CopyTo(0, toReverseAdd, toReverse.Length, toAdd.Length);
-            return new String(toReverseAdd);
-        }
 
         public override void MakeRandom(Operator Oper)
+
         {
             Oper.Eq.SortedOperators.Add(Oper.Operators);
             Oper.UseRandomNumber = false;
@@ -574,6 +564,50 @@ namespace Solve_Funktion
             }
             Oper.Operators.Clear();
             Oper.ExtraMathFunction = null;
+        }
+    }
+    public sealed class Constant : Parentheses
+    {
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        {
+            Vector<double> Res = Oper.randomNumber;
+            foreach (Operator OP in Oper.Operators)
+            {
+                Res = OP.Calculate(Res, parameters);
+                if (!Tools.IsANumber(Res))
+                {
+                    return Constants.NAN_VECTOR;
+                }
+            }
+            return Oper.ExtraMathFunction.CalculateConnector(Res, Result, Oper);
+        }
+
+        public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
+        {
+            string Left = Tools.ReverseAddStringBuilder(Backwards, Forwards);
+            Forwards.Clear();
+            Backwards.Clear();
+
+            Forwards.Append(Oper.randomNumber[0].ToString());
+            foreach (Operator OP in Oper.Operators)
+            {
+                OP.ShowOperator(Forwards, Backwards);
+            }
+
+            string Right = Tools.ReverseAddStringBuilder(Backwards, Forwards);
+            Forwards.Clear();
+            Backwards.Clear();
+
+            Forwards.Append(Oper.ExtraMathFunction.ShowConnector(Oper, Left, Right));
+        }
+
+        public override void MakeRandom(Operator Oper)
+        {
+            base.MakeRandom(Oper);
+            foreach (Operator Op in Oper.Operators)
+            {
+                Op.UseRandomNumber = true;
+            }
         }
     }
     public sealed class Absolute : MathFunction

@@ -2,6 +2,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Numerics;
 using System;
+using System.Text;
 
 namespace Solve_Funktion
 {
@@ -27,12 +28,12 @@ namespace Solve_Funktion
             return true;
         }
 
-        public static T DeepCopy<T>(T Other)
+        public static T DeepCopy<T>(T ToSer)
         {
             using (MemoryStream Ms = new MemoryStream())
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(Ms, Other);
+                formatter.Serialize(Ms, ToSer);
                 Ms.Position = 0;
                 return (T)formatter.Deserialize(Ms);
             }
@@ -76,6 +77,18 @@ namespace Solve_Funktion
             double[] toReturn = new double[count];
             Array.Copy(result, toReturn, count);
             return toReturn;
+        }
+
+        public static string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
+        {
+            //reverse
+            char[] toReverseAdd = new char[toReverse.Length + toAdd.Length];
+            toReverse.CopyTo(0, toReverseAdd, toAdd.Length, toReverse.Length);
+            Array.Reverse(toReverseAdd);
+
+            //add
+            toAdd.CopyTo(0, toReverseAdd, toReverse.Length, toAdd.Length);
+            return new String(toReverseAdd);
         }
     }
 }
