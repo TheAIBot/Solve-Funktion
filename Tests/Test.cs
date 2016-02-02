@@ -160,6 +160,7 @@ namespace Tests
               "Holds:" + Cand.EquationParts.Count.ToString() + Environment.NewLine +
               "Expected 0 < " + Cand.EInfo.MaxSize.ToString());
             Assert.IsTrue(Cand != null, "Equation Is null");
+            Assert.IsTrue(Cand.AllOperators.Count == Cand.EInfo.MaxSize - Cand.OperatorsLeft);
         }
 
         public void EquationsAreSame(Equation Original, Equation Copy)
