@@ -40,17 +40,7 @@ namespace Solve_Funktion
             ContainedList = OContainedList;
             Eq.AllOperators.Add(this);
             ContainedList.Add(this);
-            ResultOnRightSide = SynchronizedRandom.RandomBool();
-            do
-            {
-                MFunction = Eq.EInfo.Operators[SynchronizedRandom.Next(0, Eq.EInfo.Operators.Length)];
-                // should never be an infinete loop because this function should only be called when there is 1 or more operators left
-                // and there should always be an operator that doesn't need a min of operators
-            } while (!MFunction.CanUseOperator(this));
-            UseRandomNumber = SynchronizedRandom.RandomBool();
-            RandomNumber = SynchronizedRandom.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
-            ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.coordInfo.parameters.Length);
-            MFunction.MakeRandom(this);
+            ChangeOperator();
         }
         public void MakeRandom(List<Operator> OContainedList, OperatorHolder OHolder, int CIndex)
         {
@@ -58,6 +48,11 @@ namespace Solve_Funktion
             ContainedList = OContainedList;
             Eq.AllOperators.Add(this);
             ContainedList.Insert(CIndex, this);
+            ChangeOperator();
+        }
+
+        public void ChangeOperator()
+        {
             ResultOnRightSide = SynchronizedRandom.RandomBool();
             do
             {
@@ -118,6 +113,15 @@ namespace Solve_Funktion
             Eq.OPStorage.Push(this);
             Eq.AllOperators.Remove(this);
             ContainedList.Remove(this);
+            MFunction.StoreAndCleanup(this);
+            // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
+            MFunction = null;
+            Holder = null;
+            ResetMaxCalculated();
+        }
+
+        public void ChangeCleanup()
+        {
             MFunction.StoreAndCleanup(this);
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;

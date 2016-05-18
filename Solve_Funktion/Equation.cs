@@ -219,13 +219,9 @@ namespace Solve_Funktion
         public void ChangeOperator(int Index)
         {
             Operator ToChange = AllOperators[Index];
-            OperatorHolder Holder = ToChange.Holder;
+            ToChange.ChangeCleanup();
+            ToChange.ChangeOperator();
             ToChange.OperatorChanged();
-            List<Operator> ContainedList = ToChange.ContainedList;
-
-            ToChange.StoreAndCleanup();
-            ToChange = OPStorage.Pop();
-            ToChange.MakeRandom(ContainedList, Holder);
         }
 
 
