@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Solve_Funktion
 {
-    public class Equation
+    public class Equation : OperatorHolder
     {
         /*
         operators can be located within other operators making it possible to have the equation split up by ()
@@ -55,7 +55,7 @@ namespace Solve_Funktion
             while (0 < OperatorsLeft - AmountToAdd)
             {
                 Operator ToAdd = OPStorage.Pop();
-                ToAdd.MakeRandom(EquationParts);
+                ToAdd.MakeRandom(EquationParts, this);
             }
         }
 
@@ -76,9 +76,10 @@ namespace Solve_Funktion
             _toCalc = toCalc;
             double offset = 0;
             int index = 0;
+            int CalcIndex = 0;
             foreach (VectorPoint vPoint in EInfo.Goal)
             {
-                Vector<double> FunctionResult = GetFunctionResult(vPoint.Parameters);
+                Vector<double> FunctionResult = GetFunctionResult(vPoint.Parameters, CalcIndex);
                 double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, vPoint.Count);
                 offset += CalcOffset(partResult, vPoint.Result, vPoint.Count);
                 if (!Tools.IsANumber(offset))
@@ -89,6 +90,7 @@ namespace Solve_Funktion
                 Array.Copy(partResult, 0, Results, index, partResult.Length);
 
                 index += vPoint.Count;
+                CalcIndex++;
             }
             this.OffSet = offset;
         }
@@ -122,12 +124,12 @@ namespace Solve_Funktion
         /// </summary>
         /// <param name="x">x vaules as a vector</param>
         /// <returns>equation result</returns>
-        private Vector<double> GetFunctionResult(Vector<double>[] parameters)
+        private Vector<double> GetFunctionResult(Vector<double>[] parameters, int Index)
         {
             Vector<double> Result = parameters[0];
             foreach (Operator EquationPart in EquationParts)
             {
-                Result = EquationPart.Calculate(Result, parameters);
+                Result = EquationPart.Calculate(Result, parameters, Index);
                 if (!Tools.IsANumber(Result))
                 {
                     return Constants.NAN_VECTOR;
@@ -205,7 +207,7 @@ namespace Solve_Funktion
             {
                 //copys each operator and puts it in the new equation so their equation parts are identical
                 //this should also copy the EInfo indirectly, by inserting everything into the SortedOperators list
-                EPart.GetCopy(Copy.OPStorage.Pop(), Copy, Copy.EquationParts);
+                EPart.GetCopy(Copy.OPStorage.Pop(), Copy, Copy.EquationParts, Copy);
             }
             return Copy;
         }
@@ -237,12 +239,15 @@ namespace Solve_Funktion
         public void ChangeOperator(int Index)
         {
             Operator ToChange = AllOperators[Index];
+            OperatorHolder Holder = ToChange.Holder;
+            ToChange.OperatorChanged();
             List<Operator> ContainedList = ToChange.ContainedList;
 
             ToChange.StoreAndCleanup();
             ToChange = OPStorage.Pop();
-            ToChange.MakeRandom(ContainedList);
+            ToChange.MakeRandom(ContainedList, Holder);
         }
+
 
         /// <summary>
         /// removes a random operator
@@ -280,7 +285,13 @@ namespace Solve_Funktion
         /// <param name="Index">index of operator to remove in AllOperators</param>
         public void RemoveOperator(int Index)
         {
+            AllOperators[Index].OperatorChanged();
             AllOperators[Index].StoreAndCleanup();
+        }
+
+        public void OperatorChanged()
+        {
+            
         }
     }
 }

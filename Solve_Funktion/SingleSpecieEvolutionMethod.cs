@@ -8,6 +8,7 @@ namespace Solve_Funktion
 {
     public class SingleSpecieEvolutionMethod : Genome
     {
+
         public override Genome EvolveSolution()
         {
             StartFinding();

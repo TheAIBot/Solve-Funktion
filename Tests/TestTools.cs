@@ -33,6 +33,11 @@ namespace Tests
             return new Equation(GetEvolutionInfo(parameters, result));
         }
 
+        public static Equation MakeEquation(EvolutionInfo EInfo)
+        {
+            return new Equation(EInfo);
+        }
+
         public static Operator MakeSingleOperator()
         {
             return MakeEquation().OPStorage.Pop();

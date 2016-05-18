@@ -37,7 +37,7 @@
         <TabItem Header="Charts">
             <Grid Background="#FFE5E5E5">
                 <WindowsFormsHost Name="WFHChart">
-                    <wf:Chart Name="Charter" ForeColor="White" Palette="Excel"/>
+                    <wf:Chart Name="Charter" />
                 </WindowsFormsHost>
             </Grid>
         </TabItem>

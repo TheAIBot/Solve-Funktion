@@ -12,7 +12,7 @@ namespace Solve_Funktion
     this not only allows species to evolve by them selfs but also allows
     them to use each other to evolve if that is what the evolutionary approach aims to do
     */
-    public abstract class SpecieEnviromentBase//<T> where T : Genome, new()
+    public abstract class SpecieEnviromentBase
     {
         public event BestEquationEventHandler OnBestEquationChanged;
         public event SubscribeEventEventHandler OnSubscribeToSpecies;
@@ -43,9 +43,9 @@ namespace Solve_Funktion
             if (OnBestEquationChanged != null)
             {
                 Genome[] SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
-                                        .OrderByDescending(x => x._toCalc)
-                                        .ThenBy(x => x.BestCandidate.OffSet)
-                                        .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
+                                            .OrderByDescending(x => x._toCalc)
+                                            .ThenBy(x => x.BestCandidate.OffSet)
+                                            .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
                 if (SpecInfos.Length > 0)
                 {
                     if (BestEquationInfo == null ||

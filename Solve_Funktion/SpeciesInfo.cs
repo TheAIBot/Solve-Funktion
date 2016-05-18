@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Solve_Funktion
 {
+    [Serializable]
     public class SpeciesInfo : UIUpdateLimiter
     {
 

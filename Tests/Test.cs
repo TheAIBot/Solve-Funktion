@@ -29,7 +29,7 @@ namespace Tests
             Operator Original = Cand.EquationParts.First();
             Operator Copy = TestTools.MakeSingleOperator();
             Copy.Eq.Cleanup();
-            Original.GetCopy(Copy, Cand,Cand.EquationParts);
+            Original.GetCopy(Copy, Cand,Cand.EquationParts, Cand);
 
             RecursiveCompareOperators(Original, Copy);
         }
@@ -115,7 +115,7 @@ namespace Tests
             if (Cand.OperatorsLeft > 0)
             {
                 Operator ToAdd = new Operator(Cand);
-                ToAdd.MakeRandom(Cand.EquationParts);
+                ToAdd.MakeRandom(Cand.EquationParts, Cand);
                 int DerpCount = ToAdd.GetOperatorCount();
                 Assert.AreEqual(Cand.OperatorsLeft, Cand.EInfo.MaxSize - DerpCount, "OperatorsLeft return wrong value");
             }
@@ -189,12 +189,16 @@ namespace Tests
 
         public void SimpleOPCopyCheck(Operator Original, Operator Copy)
         {
-            Assert.AreEqual(Original.randomNumber, Copy.randomNumber, "Number is not the same");
-            Assert.AreEqual(Original.parameterIndex, Copy.parameterIndex, "parameter index is not the same");
+            Assert.AreEqual(Original.RandomNumber, Copy.RandomNumber, "Number is not the same");
+            Assert.AreEqual(Original.ParameterIndex, Copy.ParameterIndex, "parameter index is not the same");
             Assert.AreEqual(Original.MFunction, Copy.MFunction, "Operator is not the same");
             Assert.AreEqual(Original.ResultOnRightSide, Copy.ResultOnRightSide, "Side is not the same");
             Assert.AreEqual(Original.UseRandomNumber, Copy.UseRandomNumber, "UseNumber is not the same");
             Assert.AreEqual(Original.Operators.Count, Copy.Operators.Count, "Operators Count is not the same");
+            Assert.AreEqual(Original.MaxCalculated, Copy.MaxCalculated, "Max calculated number is not the same");
+            int Index = 0;
+            Assert.IsTrue(Original.OperatorResults.ToList().All(x => x == Copy.OperatorResults[Index++]));
+            //can't check for correct holder. Nee a way to check that the holder is correct
         }
 
 

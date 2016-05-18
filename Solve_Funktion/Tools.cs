@@ -49,7 +49,7 @@ namespace Solve_Funktion
             {
                 Operator OrigOper = Original.AllOperators[i];
                 Operator CopyOper = Copy.AllOperators[i];
-                if (OrigOper.randomNumber != CopyOper.randomNumber ||
+                if (OrigOper.RandomNumber != CopyOper.RandomNumber ||
                     OrigOper.MFunction != CopyOper.MFunction ||
                     OrigOper.ResultOnRightSide != CopyOper.ResultOnRightSide ||
                     OrigOper.UseRandomNumber != CopyOper.UseRandomNumber)

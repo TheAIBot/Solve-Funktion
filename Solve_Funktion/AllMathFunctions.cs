@@ -15,7 +15,7 @@ namespace Solve_Funktion
         private string ReversedPreFix;
         private string ReversedMiddleFix;
 
-        public abstract Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper);
+        public abstract Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index);
         public abstract void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
 
         public virtual void MakeRandom(Operator Oper)
@@ -43,7 +43,11 @@ namespace Solve_Funktion
         {
 
         }
-
+        public virtual void OperatorChanged(Operator Oper)
+        {
+            Oper.Holder.OperatorChanged();
+        }
+        
         protected void DrawOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             if (IsConnecter)
@@ -58,7 +62,7 @@ namespace Solve_Funktion
         }
         private void DrawConnector(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
-            string Num = (Oper.UseRandomNumber) ? Oper.randomNumber[0].ToString() : Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.parameterIndex];
+            string Num = (Oper.UseRandomNumber) ? Oper.RandomNumber[0].ToString() : Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.ParameterIndex];
             DrawConnector(Oper, Forwards, Backwards, Num);
         }
 
@@ -117,9 +121,9 @@ namespace Solve_Funktion
             MiddleFix = " + ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return (Oper.ResultOnRightSide) ? (Num + Result) : (Result + Num);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -138,9 +142,9 @@ namespace Solve_Funktion
             MiddleFix = " - ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return (Oper.ResultOnRightSide) ? (Num - Result) : (Result - Num);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -159,9 +163,9 @@ namespace Solve_Funktion
             MiddleFix = " * ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return (Oper.ResultOnRightSide) ? (Num * Result) : (Result * Num);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -180,9 +184,9 @@ namespace Solve_Funktion
             MiddleFix = " / ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return (Oper.ResultOnRightSide) ? (Num / Result) : (Result / Num);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -201,9 +205,9 @@ namespace Solve_Funktion
             MiddleFix = " % ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return (Oper.ResultOnRightSide) ? (ShittyVectorMath.Modulus(Num, Result)) : (ShittyVectorMath.Modulus(Result, Num));
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -222,9 +226,9 @@ namespace Solve_Funktion
             MiddleFix = " ^ ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return (Oper.ResultOnRightSide) ? ShittyVectorMath.Pow(Num, Result) : ShittyVectorMath.Pow(Result, Num);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -241,10 +245,10 @@ namespace Solve_Funktion
         public Root()
         {
             IsConnecter = false;
-            PreFix = "Sqrt";
+            PreFix = "sqrt";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return Vector.SquareRoot<double>(Result);
         }
@@ -258,10 +262,10 @@ namespace Solve_Funktion
         public Exponent()
         {
             IsConnecter = false;
-            PreFix = "Exp";
+            PreFix = "exp";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Exp(Result);
         }
@@ -275,10 +279,10 @@ namespace Solve_Funktion
         public NaturalLog()
         {
             IsConnecter = false;
-            PreFix = "Ln";
+            PreFix = "log";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Log(Result);
         }
@@ -292,10 +296,10 @@ namespace Solve_Funktion
         public Log()
         {
             IsConnecter = false;
-            PreFix = "Log";
+            PreFix = "log10";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Log10(Result);
         }
@@ -311,10 +315,10 @@ namespace Solve_Funktion
         public Floor()
         {
             IsConnecter = false;
-            PreFix = "Floor";
+            PreFix = "floor";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Floor(Result);
         }
@@ -328,10 +332,10 @@ namespace Solve_Funktion
         public Ceil()
         {
             IsConnecter = false;
-            PreFix = "Ceil";
+            PreFix = "ceil";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Ceiling(Result);
         }
@@ -345,10 +349,10 @@ namespace Solve_Funktion
         public Round()
         {
             IsConnecter = false;
-            PreFix = "Round";
+            PreFix = "round";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Round(Result);
         }
@@ -364,10 +368,10 @@ namespace Solve_Funktion
         public Sin()
         {
             IsConnecter = false;
-            PreFix = "Sin";
+            PreFix = "sin";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Sin(Result);
         }
@@ -381,10 +385,10 @@ namespace Solve_Funktion
         public Cos()
         {
             IsConnecter = false;
-            PreFix = "Cos";
+            PreFix = "cos";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Cos(Result);
         }
@@ -398,10 +402,10 @@ namespace Solve_Funktion
         public Tan()
         {
             IsConnecter = false;
-            PreFix = "Tan";
+            PreFix = "tan";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Tan(Result);
         }
@@ -415,10 +419,10 @@ namespace Solve_Funktion
         public ASin()
         {
             IsConnecter = false;
-            PreFix = "ASin";
+            PreFix = "asin";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Asin(Result);
         }
@@ -432,10 +436,10 @@ namespace Solve_Funktion
         public ACos()
         {
             IsConnecter = false;
-            PreFix = "ACos";
+            PreFix = "acos";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Acos(Result);
         }
@@ -449,10 +453,10 @@ namespace Solve_Funktion
         public ATan()
         {
             IsConnecter = false;
-            PreFix = "ATan";
+            PreFix = "atan";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorMath.Atan(Result);
         }
@@ -469,18 +473,20 @@ namespace Solve_Funktion
         {
             IsConnecter = false;
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Res = parameters[Oper.parameterIndex];
+            Vector<double> Res = parameters[Oper.ParameterIndex];
             foreach (Operator OP in Oper.Operators)
             {
-                Res = OP.Calculate(Res, parameters);
+                Res = OP.Calculate(Res, parameters, Index);
                 if (!Tools.IsANumber(Res))
                 {
                     return Constants.NAN_VECTOR;
                 }
             }
-            return Oper.ExtraMathFunction.CalculateConnector(Res, Result, Oper);
+            Oper.OperatorResults[Index] = Oper.ExtraMathFunction.CalculateConnector(Res, Result, Oper);
+            Oper.MaxCalculated = Index;
+            return Oper.OperatorResults[Index];
         }
 
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -489,7 +495,7 @@ namespace Solve_Funktion
             Forwards.Clear();
             Backwards.Clear();
 
-            Forwards.Append(Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.parameterIndex]);
+            Forwards.Append(Oper.Eq.EInfo.Goal[0].ParameterNames[Oper.ParameterIndex]);
             foreach (Operator OP in Oper.Operators)
             {
                 OP.ShowOperator(Forwards, Backwards);
@@ -510,19 +516,19 @@ namespace Solve_Funktion
             //Oper.parameterIndex = 0;
 
             //the method CanUseOperator makes sure there is atleast 1 available Operator to use in the parentheses
-            int AmountToAdd = SynchronizedRandom.Next(0, Oper.Eq.OperatorsLeft - 1);
+            int AmountToAdd = SynchronizedRandom.Next(1, Oper.Eq.OperatorsLeft - 1);
 
             while (0 < Oper.Eq.OperatorsLeft - AmountToAdd)
             {
                 Operator ToAdd = Oper.Eq.OPStorage.Pop();
                 // by adding the operator now there is space for 1 less operator
-                ToAdd.MakeRandom(Oper.Operators);
+                ToAdd.MakeRandom(Oper.Operators, Oper);
             }
             Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Connectors.Length)];
         }
         public override bool CanUseOperator(Operator Oper)
         {
-            return Oper.Eq.OperatorsLeft > 0;
+            return Oper.Eq.OperatorsLeft > 1;
         }
         public override int GetOperatorCount(Operator Oper)
         {
@@ -542,8 +548,9 @@ namespace Solve_Funktion
             Copy.ExtraMathFunction = Original.ExtraMathFunction;
             foreach (Operator Oper in Original.Operators)
             {
-                Oper.GetCopy(Copy.Eq.OPStorage.Pop(), Copy.Eq, Copy.Operators);
+                Oper.GetCopy(Copy.Eq.OPStorage.Pop(), Copy.Eq, Copy.Operators, Copy);
             }
+            Array.Copy(Original.OperatorResults, Copy.OperatorResults, Original.MaxCalculated + 1);
         }
         public override void StoreAndCleanup(Operator Oper)
         {
@@ -565,30 +572,36 @@ namespace Solve_Funktion
             Oper.Operators.Clear();
             Oper.ExtraMathFunction = null;
         }
+        public override void OperatorChanged(Operator Oper)
+        {
+            Oper.ResetMaxCalculated();
+            Oper.Holder.OperatorChanged();
+        }
     }
     public sealed class Constant : Parentheses
     {
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Res = Oper.randomNumber;
+            Vector<double> Res = Oper.RandomNumber;
             foreach (Operator OP in Oper.Operators)
             {
-                Res = OP.Calculate(Res, parameters);
+                Res = OP.Calculate(Res, parameters, Index);
                 if (!Tools.IsANumber(Res))
                 {
                     return Constants.NAN_VECTOR;
                 }
             }
-            return Oper.ExtraMathFunction.CalculateConnector(Res, Result, Oper);
+            Oper.OperatorResults[Index] = Oper.ExtraMathFunction.CalculateConnector(Res, Result, Oper);
+            Oper.MaxCalculated = Index;
+            return Oper.OperatorResults[Index];
         }
-
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             string Left = Tools.ReverseAddStringBuilder(Backwards, Forwards);
             Forwards.Clear();
             Backwards.Clear();
 
-            Forwards.Append(Oper.randomNumber[0].ToString());
+            Forwards.Append(Oper.RandomNumber[0].ToString());
             foreach (Operator OP in Oper.Operators)
             {
                 OP.ShowOperator(Forwards, Backwards);
@@ -600,7 +613,6 @@ namespace Solve_Funktion
 
             Forwards.Append(Oper.ExtraMathFunction.ShowConnector(Oper, Left, Right));
         }
-
         public override void MakeRandom(Operator Oper)
         {
             base.MakeRandom(Oper);
@@ -619,7 +631,7 @@ namespace Solve_Funktion
             PostFix = "|";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return Vector.Abs<double>(Result);
         }
@@ -634,12 +646,12 @@ namespace Solve_Funktion
     {
         public AND()
         {
-            MiddleFix = " AND ";
+            MiddleFix = " and ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return ShittyVectorLogic.AND(Num, Result);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -656,12 +668,12 @@ namespace Solve_Funktion
     {
         public NAND()
         {
-            MiddleFix = " NAND ";
+            MiddleFix = " nand ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return ShittyVectorLogic.NAND(Num, Result);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -678,12 +690,12 @@ namespace Solve_Funktion
     {
         public OR()
         {
-            MiddleFix = " OR ";
+            MiddleFix = " or ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return ShittyVectorLogic.OR(Num, Result);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -700,12 +712,12 @@ namespace Solve_Funktion
     {
         public NOR()
         {
-            MiddleFix = " NOR ";
+            MiddleFix = " nor ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return ShittyVectorLogic.NOR(Num, Result);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -722,12 +734,12 @@ namespace Solve_Funktion
     {
         public XOR()
         {
-            MiddleFix = " XOR ";
+            MiddleFix = " xor ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return ShittyVectorLogic.XOR(Num, Result);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -744,12 +756,12 @@ namespace Solve_Funktion
     {
         public XNOR()
         {
-            MiddleFix = " XNOR ";
+            MiddleFix = " xnor ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
-            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.randomNumber : parameters[Oper.parameterIndex];
+            Vector<double> Num = (Oper.UseRandomNumber) ? Oper.RandomNumber : parameters[Oper.ParameterIndex];
             return ShittyVectorLogic.XNOR(Num, Result);
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
@@ -767,10 +779,10 @@ namespace Solve_Funktion
         public NOT()
         {
             IsConnecter = false;
-            PreFix = " NOT ";
+            PreFix = " not ";
             CreateReversedStrings();
         }
-        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper)
+        public override Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, Operator Oper, int Index)
         {
             return ShittyVectorLogic.NOT(Result);
         }

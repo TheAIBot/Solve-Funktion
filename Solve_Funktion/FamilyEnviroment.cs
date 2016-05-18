@@ -20,7 +20,7 @@ namespace Solve_Funktion
             for (int i = 0; i < EInfo.SpeciesAmount; i++)
             {
                 Species[i] = new T();
-                Species[i].Startup(this, GInfo, einfo);
+                Species[i].StartSetup(this, GInfo, EInfo);
                 DoSubscribeEvent(Species[i]);
             }
             return GInfo;

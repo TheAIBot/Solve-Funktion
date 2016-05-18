@@ -72,9 +72,16 @@ namespace Solve_Funktion
                 int WhereToAdd = SynchronizedRandom.Next(0, Cand.SortedOperators.Count);
                 List<Operator> LLOper = Cand.SortedOperators[WhereToAdd];
                 int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Count);
-                Operator ToAdd = Cand.OPStorage.Pop();
-                ToAdd.MakeRandom(LLOper, WhereToAddOP);
-                return ToAdd.GetOperatorCount();
+                //there has to be an operator in the list because that's the only way to get the holder of the list
+                if (Cand.SortedOperators[WhereToAdd].Count > 0)
+                {
+                    Operator Oper = Cand.SortedOperators[WhereToAdd][0];
+                    OperatorHolder Holder = Oper.Holder;
+                    Operator ToAdd = Cand.OPStorage.Pop();
+                    ToAdd.MakeRandom(LLOper, Holder, WhereToAddOP);
+                    Oper.OperatorChanged();
+                    return ToAdd.GetOperatorCount();
+                }
             }
             return 0;
         }

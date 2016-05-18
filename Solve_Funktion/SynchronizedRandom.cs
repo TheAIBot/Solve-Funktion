@@ -31,13 +31,7 @@ namespace Solve_Funktion
 
         public static Vector<double> NextVector(int Start, int End)
         {
-            double[] randomVectorValues = new double[Constants.VECTOR_LENGTH];
-            randomVectorValues[0] = RDom.Next(Start, End);
-            for (int i = 1; i < Constants.VECTOR_LENGTH; i++)
-            {
-                randomVectorValues[i] = randomVectorValues[0];
-            }
-            return new Vector<double>(randomVectorValues);
+            return new Vector<double>(RDom.Next(Start, End));
         }
 
         public static bool RandomBool()

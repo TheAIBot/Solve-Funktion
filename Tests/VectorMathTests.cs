@@ -12,7 +12,7 @@ namespace Tests
         Random rDom = new Random(12322);
 
         [TestMethod]
-        public void TestModulus()
+        public void TestBetterModulus()
         {
             for (int i = 0; i < DefaultLoopLimit; i++)
             {
@@ -25,7 +25,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestFloor()
+        public void TestBetterFloor()
         {
             for (int i = 0; i < DefaultLoopLimit; i++)
             {

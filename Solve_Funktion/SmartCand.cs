@@ -19,14 +19,7 @@ namespace Solve_Funktion
         public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand)
         {
             int[] Indexes = CanSmartChangeNumbers(BCand, OCand);
-            if (Indexes != null)
-            {
-                SmartChangeNumber(EInfo, ToSmartify, BCand, OCand, Indexes);
-            }
-            else
-            {
-                StupidChangeNumber(EInfo, ToSmartify);
-            }
+            SmartifyCandidate(EInfo, ToSmartify, BCand, OCand, Indexes);
         }
         public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand, int[] Indexes)
         {
@@ -53,7 +46,7 @@ namespace Solve_Funktion
                 if (BCandOper.ResultOnRightSide == OCandOper.ResultOnRightSide &&
                     BCandOper.MFunction == OCandOper.MFunction &&
                     BCandOper.UseRandomNumber == OCandOper.UseRandomNumber &&
-                    BCandOper.randomNumber != OCandOper.randomNumber &&
+                    BCandOper.RandomNumber != OCandOper.RandomNumber &&
                     BCandOper.UseRandomNumber)
                 {
                     SmartChangeOperatorIndexes.Add(i);
@@ -85,14 +78,15 @@ namespace Solve_Funktion
 #endif
                 Operator BCandOper = BCand.AllOperators[Index];
                 Operator OCandOper = OCand.AllOperators[Index];
-                if (BCandOper.randomNumber[0] > OCandOper.randomNumber[0])
+                if (BCandOper.RandomNumber[0] > OCandOper.RandomNumber[0])
                 {
-                    Eq.AllOperators[Index].randomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.randomNumber[0] + 1);
+                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.RandomNumber[0] + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].randomNumber = SynchronizedRandom.NextVector((int)BCandOper.randomNumber[0], EInfo.NumberRangeMax);
+                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.NextVector((int)BCandOper.RandomNumber[0], EInfo.NumberRangeMax);
                 }
+                Eq.AllOperators[Index].OperatorChanged();
             }
         }
 
@@ -113,8 +107,9 @@ namespace Solve_Funktion
             int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
             for (int i = 0; i < AmountToChange; i++)
             {
-                int Index = SynchronizedRandom.Next(0, Eq.EquationParts.Count);
-                Eq.EquationParts[Index].randomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                int Index = SynchronizedRandom.Next(0, Eq.AllOperators.Count);
+                Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                Eq.AllOperators[Index].OperatorChanged();
             }
         }
     }
