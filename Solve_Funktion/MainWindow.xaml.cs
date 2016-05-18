@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Collections.Concurrent;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Solve_Funktion
 {
@@ -27,6 +28,8 @@ namespace Solve_Funktion
     {
         ConcurrentStack<SpecieInfoControl> SpecControls;
         IndividualSpecieEnviroment<SingleSpecieEvolution> SpecieEnviroment;
+        double[] XArray;
+        double[] YArray;
 
         public MainWindow()
         {
@@ -51,6 +54,8 @@ namespace Solve_Funktion
         }
         private VectorPoint[] GetSequence(string[] names, double[][] parameters, double[] functionValues)
         {
+            XArray = parameters[0];
+            YArray = functionValues;
             VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)parameters[0].Length / (double)Constants.VECTOR_LENGTH)];
             int[] counts = new int[parameters.Length];
             Vector<double>[] functionValuesVector = getParameterValues(functionValues, out counts);
@@ -118,8 +123,8 @@ namespace Solve_Funktion
                 //const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25}";
                 //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
 
-                //const string SequenceX = "1,2,3,4, 5, 6, 7, 8, 9,10";
-                //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
+                const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10}";
+                const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
 
                 //const string SequenceX = "x = {  1,   2,  3, 4,  5,6,  7,8, 9,10}";
                 //const string SequenceY = "432,4567,987,23,765,2,678,9,34,23";
@@ -130,8 +135,8 @@ namespace Solve_Funktion
                 //const string SequenceX = "     2,     3,     4";
                 //const string SequenceY = "182014,364572,495989";
 
-                const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
-                const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
+                //const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
+                //const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
 
                 //const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
                 //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
@@ -148,8 +153,8 @@ namespace Solve_Funktion
                 //const string SequenceX = "x = {1.1,1.5,2,2.1,10.8,200.8}";
                 //const string SequenceY = "       1,  2,2,  2,  11,  201";
 
-                //const string SequenceX = "x = {86, 86, 86, 86}, y = {1, 0.5, 0.25, 0.125}";
-                //const string SequenceY = "86, 76, 66, 56";
+                //const string SequenceX = "x = {86, 86, 86, 86, 76, 76, 76, 76, 123, 123, 123, 123}, y = {1, 0.5, 0.25, 0.125, 1, 0.5, 0.25, 0.125, 1, 0.5, 0.25, 0.125}";
+                //const string SequenceY = "     86, 76, 66, 56, 76, 66, 56, 46, 123, 113, 103,  93";
                 //List<string> xx = new List<string>();
                 //List<string> yy = new List<string>();
                 //for (double i = -Math.PI; i < Math.PI; i += 0.2)
@@ -166,6 +171,9 @@ namespace Solve_Funktion
 
                 //const string SequenceX = "x = {1, 4, 3}, y = {1, 1, 3}, z = {1, 2, 3}";
                 //const string SequenceY = "3,2,1";
+
+                //const string SequenceX = "x = {1, 2, 3, 4, 5, 6,  7,  8,  9, 10, 11,  12,  13,  14}";
+                //const string SequenceY = "     1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377";
 
                 //const string SequenceX = "x = {0.0,0.1,0.2,0.7,0.8,0.9,1.0,1.6,1.7,1.8,1.9,2.0,2.1,2.2,2.3,2.9,3.0}";
                 //const string SequenceY = "     0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0";
@@ -198,6 +206,7 @@ namespace Solve_Funktion
                 //    SeqRY.Add(Math.Exp(i));
                 //}
                 //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
+                System.Windows.Forms.MessageBox.Show(new Vector<double>(2.34d).ToString());
                 VectorPoint[] Seq = GetSequence(SequenceX,
                                                 SequenceY);
 
@@ -210,23 +219,24 @@ namespace Solve_Funktion
 
                     new PowerOf(), //SIMD
                     new Root(), //SIMD
-                    new Exponent(), //Software SIMD
-                    new NaturalLog(), //Software SIMD
-                    new Log(), //Software SIMD
+                    //new Exponent(), //Software SIMD
+                    //new NaturalLog(), //Software SIMD
+                    //new Log(), //Software SIMD
 
-                    new Modulos(), //Software SIMD
-                    new Floor(), //Software SIMD
-                    new Ceil(), //Software SIMD
-                    new Round(), //Software SIMD
+                    //new Modulos(), //Software SIMD
+                    ////new Floor(), //Software SIMD
+                    ////new Ceil(), //Software SIMD
+                    ////new Round(), //Software SIMD
 
-                    new Sin(), //Software SIMD
-                    new Cos(), //Software SIMD
-                    new Tan(), //Software SIMD
-                    new ASin(), //Software SIMD
-                    new ACos(), //Software SIMD
-                    new ATan(), //Software SIMD
+                    //new Sin(), //Software SIMD
+                    //new Cos(), //Software SIMD
+                    //new Tan(), //Software SIMD
+                    //new ASin(), //Software SIMD
+                    //new ACos(), //Software SIMD
+                    //new ATan(), //Software SIMD
 
                     new Parentheses(), //SIMD
+                    new Constant(),
                     new Absolute(), //SIMD
 
                     //new AND(), //Software SIMD
@@ -240,11 +250,11 @@ namespace Solve_Funktion
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
                     20,       // MaxSize
-                    5,        // MaxChange
+                    10,        // MaxChange
                     30000,    // CandidatesPerGen
                     GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    7,        // SpeciesAmount
+                    6,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
@@ -292,6 +302,56 @@ namespace Solve_Funktion
                 BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
             {
                 BCandControl.InsertInfo(e.BestEquationInfo);
+            }
+            DrawGraph();
+        }
+
+        object ChartLocker = new object();
+
+        public void DrawGraph()
+        {
+            lock (ChartLocker)
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    Chart Charter = (Chart)WFHChart.Child;
+                    if (Charter.ChartAreas.Count == 0)
+                    {
+                        Charter.ChartAreas.Add("newchartarea");
+                    }
+                    Charter.Series.Clear();
+                    int GenerationIndex = 0;
+                    foreach (Genome Spec in SpecieEnviroment.Species)
+                    {
+                        int Index = 0;
+                        Series Serie = Charter.Series.Add(GenerationIndex.ToString());
+                        Serie.ChartType = SeriesChartType.Spline;
+                        Serie.BorderWidth = 2;
+                        foreach (var Vector in Spec.EInfo.Goal)
+                        {
+                            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
+                            {
+                                if (Spec.BestCandidate.Results.Length == Index ||
+                                    Spec.BestCandidate.Results[Index] > 10000000)
+                                {
+                                    goto StopSeries;
+                                }
+                                Serie.Points.AddXY(Vector.Parameters[0][i], Spec.BestCandidate.Results[Index]);
+                                Index++;
+                            }
+                        }
+                        StopSeries:
+                        GenerationIndex++;
+                    }
+                    Series Seride = Charter.Series.Add("Correct");
+                    Seride.ChartType = SeriesChartType.Spline;
+                    Seride.BorderWidth = 4;
+                    Seride.Color = System.Drawing.Color.Black;
+                    for (int i = 0; i < XArray.Length; i++)
+                    {
+                        Seride.Points.AddXY(XArray[i], YArray[i]);
+                    }
+                });
             }
         }
     }
