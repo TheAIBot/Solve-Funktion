@@ -8,7 +8,7 @@ namespace Solve_Funktion
 {
     public static class Tools
     {
-        public static bool IsANumber(Vector<double> ToDecide)
+        public static bool IsANumber(double[] ToDecide)
         {
             for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
             {

@@ -81,6 +81,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AllMathFunctions.cs" />
+    <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="FamilyEnviroment.cs" />
     <Compile Include="Operator.cs" />
@@ -107,7 +108,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RandomCand.cs" />
-    <Compile Include="ShittyVectorLogic.cs" />
+    <Compile Include="MathLogic.cs" />
     <Compile Include="SingleSpecieEvolution.cs" />
     <Compile Include="SingleSpecieEvolutionMethod.cs" />
     <Compile Include="SmartCand.cs" />
@@ -119,8 +120,7 @@
     <Compile Include="SynchronizedRandom.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UIUpdateLimiter.cs" />
-    <Compile Include="ShittyVectorMath.cs" />
-    <Compile Include="VectorPoint.cs" />
+    <Compile Include="CoordInfo.cs" />
     <Page Include="BestCandidateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

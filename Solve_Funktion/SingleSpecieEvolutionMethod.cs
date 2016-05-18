@@ -22,8 +22,8 @@ namespace Solve_Funktion
             Equation EvolvedEquation = new Equation(EInfo) { OffSet = Double.NaN };
             Equation OldEquation = new Equation(EInfo) { OffSet = Double.NaN };
             bool BestCandEvolved = false;
-            _toCalc = EInfo.GoalLength;
-            while (_toCalc <= EInfo.GoalLength)
+            _toCalc = EInfo.coordInfo.expectedResults.Length;
+            while (_toCalc <= EInfo.coordInfo.expectedResults.Length)
             {
                 int StuckCounter = 0;
                 do

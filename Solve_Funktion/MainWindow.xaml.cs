@@ -28,8 +28,6 @@ namespace Solve_Funktion
     {
         ConcurrentStack<SpecieInfoControl> SpecControls;
         IndividualSpecieEnviroment<SingleSpecieEvolution> SpecieEnviroment;
-        double[] XArray;
-        double[] YArray;
 
         public MainWindow()
         {
@@ -42,7 +40,7 @@ namespace Solve_Funktion
             Task.Factory.StartNew(() => FindFunctionWithSpecies());
         }
 
-        private VectorPoint[] GetSequence(string SequenceX, string SequenceY)
+        private CoordInfo GetSequence(string SequenceX, string SequenceY)
         {
             string[] lines = Regex.Split(SequenceX, "} *,");
             string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
@@ -50,65 +48,7 @@ namespace Solve_Funktion
             string[] names = namesAndValues.Select(x => x[0]).ToArray();
             double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            return GetSequence(names, SeqRX, SeqRY);
-        }
-        private VectorPoint[] GetSequence(string[] names, double[][] parameters, double[] functionValues)
-        {
-            XArray = parameters[0];
-            YArray = functionValues;
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)parameters[0].Length / (double)Constants.VECTOR_LENGTH)];
-            int[] counts = new int[parameters.Length];
-            Vector<double>[] functionValuesVector = getParameterValues(functionValues, out counts);
-            Vector<double>[][] splittedParameters = new Vector<double>[parameters.Length][];
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                int[] count;
-                splittedParameters[i] = getParameterValues(parameters[i], out count);
-            }
-            for (int i = 0; i < splittedParameters[0].Length; i++)
-            {
-                Vector<double>[] parameterValues = new Vector<double>[splittedParameters.Length];
-                for (int j = 0; j < splittedParameters.Length; j++)
-                {
-                    parameterValues[j] = splittedParameters[j][i];
-                }
-                Seq[i] = new VectorPoint(parameterValues, names, functionValuesVector[i], counts[i]);
-            }
-            return Seq;
-        }
-
-        private Vector<double>[] getParameterValues(double[] parameter, out int[] vectorSize)
-        {
-            Vector<double>[] parameterValues = new Vector<double>[(int)Math.Ceiling((double)parameter.Length / (double)Constants.VECTOR_LENGTH)];
-            int index = 0;
-            vectorSize = new int[parameterValues.Length];
-            for (int i = 0; i < parameter.Length; i += Constants.VECTOR_LENGTH)
-            {
-                int sizeLeft = parameter.Length - i;
-                Vector<double> partialParameterVector;
-                if (sizeLeft >= Constants.VECTOR_LENGTH)
-                {
-                    partialParameterVector = new Vector<double>(parameter, i);
-                    vectorSize[index] = Constants.VECTOR_LENGTH;
-                }
-                else
-                {
-                    vectorSize[index] = sizeLeft;
-                    double[] rXData = new double[Constants.VECTOR_LENGTH];
-
-                    Array.Copy(parameter, i, rXData, 0, sizeLeft);
-
-                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
-                    for (int y = sizeLeft; y < missingNumbers + sizeLeft; y++)
-                    {
-                        rXData[y] = rXData[0];
-                    }
-                    partialParameterVector = new Vector<double>(rXData);
-                }
-                parameterValues[index] = partialParameterVector;
-                index++;
-            }
-            return parameterValues;
+            return new CoordInfo(SeqRY, SeqRX, names);
         }
 
         private void FindFunctionWithSpecies()
@@ -207,8 +147,7 @@ namespace Solve_Funktion
                 //}
                 //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
                 System.Windows.Forms.MessageBox.Show(new Vector<double>(2.34d).ToString());
-                VectorPoint[] Seq = GetSequence(SequenceX,
-                                                SequenceY);
+                CoordInfo Seq = GetSequence(SequenceX, SequenceY);
 
                 MathFunction[] Operators = new MathFunction[]
                 {
@@ -276,11 +215,9 @@ namespace Solve_Funktion
             MessageBox.Show("Done");
         }
 
-        private int GetMaxNumberFromVectorPointArray(VectorPoint[] vp)
+        private int GetMaxNumberFromVectorPointArray(CoordInfo coordInfo)
         {
-            //Dat shit code yo
-            return (int)Math.Ceiling(Math.Max(vp.Max(x => x.Parameters.Max(y => Enumerable.Range(0, x.Count).ToList().Max(z => y[z]))), 
-                                              vp.Max(x => Enumerable.Range(0, x.Count).ToList().Max(y => x.Result[y]))));
+            return (int)Math.Ceiling(Math.Max(coordInfo.expectedResults.Max(), coordInfo.parameters.Max(x => x.Max())));
         }
 
         public void SpecieEnviroment_OnSubscribeToSpecies(SubscribeEventEventArgs e)
@@ -323,33 +260,25 @@ namespace Solve_Funktion
                     int GenerationIndex = 0;
                     foreach (Genome Spec in SpecieEnviroment.Species)
                     {
-                        int Index = 0;
                         Series Serie = Charter.Series.Add(GenerationIndex.ToString());
                         Serie.ChartType = SeriesChartType.Spline;
                         Serie.BorderWidth = 2;
-                        foreach (var Vector in Spec.EInfo.Goal)
+                        if (Spec.BestCandidate.Results.All(x => x < 10000000))
                         {
-                            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
+                            for (int i = 0; i < Spec.EInfo.coordInfo.expectedResults.Length; i++)
                             {
-                                if (Spec.BestCandidate.Results.Length == Index ||
-                                    Spec.BestCandidate.Results[Index] > 10000000)
-                                {
-                                    goto StopSeries;
-                                }
-                                Serie.Points.AddXY(Vector.Parameters[0][i], Spec.BestCandidate.Results[Index]);
-                                Index++;
+                                Serie.Points.AddXY(Spec.EInfo.coordInfo.parameters[0][i], Spec.BestCandidate.Results[i]);
                             }
                         }
-                        StopSeries:
                         GenerationIndex++;
                     }
                     Series Seride = Charter.Series.Add("Correct");
                     Seride.ChartType = SeriesChartType.Spline;
                     Seride.BorderWidth = 4;
                     Seride.Color = System.Drawing.Color.Black;
-                    for (int i = 0; i < XArray.Length; i++)
+                    for (int i = 0; i < SpecieEnviroment.Species[0].EInfo.coordInfo.expectedResults.Length; i++)
                     {
-                        Seride.Points.AddXY(XArray[i], YArray[i]);
+                        Seride.Points.AddXY(SpecieEnviroment.Species[0].EInfo.coordInfo.parameters[0][i], SpecieEnviroment.Species[0].EInfo.coordInfo.expectedResults[i]);
                     }
                 });
             }

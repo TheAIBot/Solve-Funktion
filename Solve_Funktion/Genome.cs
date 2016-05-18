@@ -71,14 +71,7 @@ namespace Solve_Funktion
         /// </summary>
         protected void InitializeUpdateInfo()
         {
-            List<double> seqNum = new List<double>(EInfo.GoalLength);
-            foreach (VectorPoint vecP in EInfo.Goal)
-            {
-                seqNum.AddRange(Tools.GetPartOfVectorResult(vecP.Result, vecP.Count));
-            }
-            IEnumerable<string> SeqText = (from x in seqNum
-                                           select x.ToString(Info.SRounding));
-            SpecInfo.SequenceText = String.Join(", ", SeqText);
+            SpecInfo.SequenceText = String.Join(", ", EInfo.coordInfo.expectedResults);
         }
 
         /// <summary>

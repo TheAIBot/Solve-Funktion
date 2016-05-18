@@ -197,7 +197,6 @@ namespace Tests
             Assert.AreEqual(Original.Operators.Count, Copy.Operators.Count, "Operators Count is not the same");
             Assert.AreEqual(Original.MaxCalculated, Copy.MaxCalculated, "Max calculated number is not the same");
             int Index = 0;
-            Assert.IsTrue(Original.OperatorResults.ToList().All(x => x == Copy.OperatorResults[Index++]));
             //can't check for correct holder. Nee a way to check that the holder is correct
         }
 

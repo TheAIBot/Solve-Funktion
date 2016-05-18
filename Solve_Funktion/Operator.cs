@@ -14,7 +14,7 @@ namespace Solve_Funktion
         public bool ResultOnRightSide;
         public MathFunction MFunction;
         public int ParameterIndex;
-        public Vector<double> RandomNumber;
+        public double RandomNumber;
         public bool UseRandomNumber;
         public List<Operator> ContainedList;
         public Connector ExtraMathFunction;
@@ -22,13 +22,12 @@ namespace Solve_Funktion
         public OperatorHolder Holder;
         public readonly Equation Eq;
         public readonly List<Operator> Operators;
-        public readonly Vector<double>[] OperatorResults;
+        //public readonly Vector<double>[] OperatorResults;
 
         public Operator(Equation OEq)
         {
             Eq = OEq;
             Operators = new List<Operator>(Eq.EInfo.MaxSize);
-            OperatorResults = new Vector<double>[Eq.EInfo.Goal.Length];
         }
 
         /// <summary>
@@ -49,8 +48,8 @@ namespace Solve_Funktion
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseRandomNumber = SynchronizedRandom.RandomBool();
-            RandomNumber = SynchronizedRandom.NextVector(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
-            ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.Goal[0].Parameters.Length);
+            RandomNumber = SynchronizedRandom.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
+            ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.coordInfo.parameters.Length);
             MFunction.MakeRandom(this);
         }
         public void MakeRandom(List<Operator> OContainedList, OperatorHolder OHolder, int CIndex)
@@ -67,8 +66,8 @@ namespace Solve_Funktion
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseRandomNumber = SynchronizedRandom.RandomBool();
-            RandomNumber = SynchronizedRandom.NextVector(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
-            ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.Goal[0].Parameters.Length);
+            RandomNumber = SynchronizedRandom.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
+            ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.coordInfo.parameters.Length);
             MFunction.MakeRandom(this);
         }
 
@@ -78,7 +77,7 @@ namespace Solve_Funktion
         /// <param name="Result">number returned by previous operators or initial number from equation</param>
         /// <param name="x"> value of x</param>
         /// <returns>result of Result and this operator</returns>
-        public Vector<double> Calculate(Vector<double> Result, Vector<double>[] parameters, int Index)
+        public bool Calculate(double[] Result, double[][] parameters)
         {
             //if (MaxCalculated >= Index)
             //{
@@ -87,7 +86,7 @@ namespace Solve_Funktion
             //else
             //{
                 //MaxCalculated = Index;
-                return MFunction.Calculate(Result, parameters, this, Index);
+                return MFunction.Calculate(Result, parameters, this);
             //}
         }
 
@@ -175,11 +174,11 @@ namespace Solve_Funktion
         {
             //if (/*maxCalculated != NONE_CALCULATED*/)
             //{
-                MFunction.OperatorChanged(this);
+                //MFunction.OperatorChanged(this);
             //}
         }
 
-        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, Vector<double> ORandomNumber, bool OUseRandomNumber,
+        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber,
                           List<Operator> OContainedlist, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             ResultOnRightSide = OResultOmRightSide;

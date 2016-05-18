@@ -9,8 +9,7 @@ namespace Solve_Funktion
 {
     public class EvolutionInfo
     {
-        public readonly VectorPoint[] Goal;
-        public readonly int GoalLength;
+        public readonly CoordInfo coordInfo;
         public readonly int MaxSize;
         public readonly int MaxChange;
         public readonly double CandidatesPerGen;
@@ -24,7 +23,7 @@ namespace Solve_Funktion
         public readonly MathFunction[] Operators;
         public readonly Connector[] Connectors;
 
-        public EvolutionInfo(VectorPoint[] goal, 
+        public EvolutionInfo(CoordInfo coordInfoo, 
                              int maxsize, 
                              int maxchange, 
                              double candidatespergen, 
@@ -37,8 +36,7 @@ namespace Solve_Funktion
                              double smartcandidatespergen, 
                              MathFunction[] operators)
         {
-            Goal = goal;
-            GoalLength = goal.Sum(x => x.Count);
+            coordInfo = coordInfoo;
             MaxSize = maxsize;
             MaxChange = maxchange;
             CandidatesPerGen = candidatespergen;

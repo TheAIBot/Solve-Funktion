@@ -78,13 +78,13 @@ namespace Solve_Funktion
 #endif
                 Operator BCandOper = BCand.AllOperators[Index];
                 Operator OCandOper = OCand.AllOperators[Index];
-                if (BCandOper.RandomNumber[0] > OCandOper.RandomNumber[0])
+                if (BCandOper.RandomNumber > OCandOper.RandomNumber)
                 {
-                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.RandomNumber[0] + 1);
+                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next(EInfo.NumberRangeMin, (int)BCandOper.RandomNumber + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.NextVector((int)BCandOper.RandomNumber[0], EInfo.NumberRangeMax);
+                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next((int)BCandOper.RandomNumber, EInfo.NumberRangeMax);
                 }
                 Eq.AllOperators[Index].OperatorChanged();
             }
@@ -108,7 +108,7 @@ namespace Solve_Funktion
             for (int i = 0; i < AmountToChange; i++)
             {
                 int Index = SynchronizedRandom.Next(0, Eq.AllOperators.Count);
-                Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
                 Eq.AllOperators[Index].OperatorChanged();
             }
         }
