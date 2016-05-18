@@ -74,7 +74,7 @@ namespace Solve_Funktion
         public void CalcPartialOffSet(int toCalc)
         {
             _toCalc = toCalc;
-            Results.Fill(EInfo.coordInfo.parameterNames[0][0]);
+            Array.Copy(EInfo.coordInfo.parameters[0], Results, Results.Length);
 
             foreach (Operator oper in EquationParts)
             {
