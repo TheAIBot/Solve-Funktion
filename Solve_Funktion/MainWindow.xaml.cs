@@ -146,7 +146,6 @@ namespace Solve_Funktion
                 //    SeqRY.Add(Math.Exp(i));
                 //}
                 //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
-                System.Windows.Forms.MessageBox.Show(new Vector<double>(2.34d).ToString());
                 CoordInfo Seq = GetSequence(SequenceX, SequenceY);
 
                 MathFunction[] Operators = new MathFunction[]
@@ -193,7 +192,7 @@ namespace Solve_Funktion
                     30000,    // CandidatesPerGen
                     GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    6,        // SpeciesAmount
+                    8,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen

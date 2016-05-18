@@ -82,7 +82,6 @@
     </ApplicationDefinition>
     <Compile Include="AllMathFunctions.cs" />
     <Compile Include="ArrayExtensions.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="FamilyEnviroment.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="BestCandidateControl.xaml.cs">
