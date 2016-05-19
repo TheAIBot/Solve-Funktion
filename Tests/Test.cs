@@ -181,6 +181,7 @@ namespace Tests
         public void RecursiveCompareOperators(Operator Original, Operator Copy)
         {
             SimpleOPCopyCheck(Original, Copy);
+            Assert.AreEqual(Original.Operators.Count, Copy.Operators.Count, "Doesn't contain the same amount of operators in copy");
             for (int i = 0; i < Original.Operators.Count; i++)
             {
                 RecursiveCompareOperators(Original.Operators[i], Copy.Operators[i]);
