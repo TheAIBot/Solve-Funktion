@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Concurrent;
-using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms.DataVisualization.Charting;
 

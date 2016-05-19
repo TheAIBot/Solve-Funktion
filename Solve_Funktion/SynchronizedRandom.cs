@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Numerics;
 
 namespace Solve_Funktion
 {
@@ -27,11 +26,6 @@ namespace Solve_Funktion
         public static int Next(int Start, int End)
         {
             return RDom.Next(Start, End);
-        }
-
-        public static Vector<double> NextVector(int Start, int End)
-        {
-            return new Vector<double>(RDom.Next(Start, End));
         }
 
         public static bool RandomBool()

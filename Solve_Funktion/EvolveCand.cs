@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows;
-using System.Numerics;
 
 namespace Solve_Funktion
 {
