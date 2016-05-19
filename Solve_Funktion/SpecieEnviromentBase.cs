@@ -38,28 +38,33 @@ namespace Solve_Funktion
             }
         }
 
+        private object checkEquationLocker = new object();
+
         public void CheckBestCandidate()
         {
-            if (OnBestEquationChanged != null)
+            lock (checkEquationLocker)
             {
-                Genome[] SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
-                                            .OrderByDescending(x => x._toCalc)
-                                            .ThenBy(x => x.BestCandidate.OffSet)
-                                            .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
-                if (SpecInfos.Length > 0)
+                if (OnBestEquationChanged != null)
                 {
-                    if (BestEquationInfo == null ||
-                        BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
-                        BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc || 
-                        BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset && 
-                        BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
-                        BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
+                    Genome[] SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
+                                                .OrderByDescending(x => x._toCalc)
+                                                .ThenBy(x => x.BestCandidate.OffSet)
+                                                .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
+                    if (SpecInfos.Length > 0)
                     {
-                        SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
-                        OnBestEquationChanged(new BestEquationEventArgs
+                        if (BestEquationInfo == null ||
+                            BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
+                            BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc ||
+                            BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset &&
+                            BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
+                            BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
                         {
-                            BestEquationInfo = SpecInfo
-                        });
+                            SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
+                            OnBestEquationChanged(new BestEquationEventArgs
+                            {
+                                BestEquationInfo = SpecInfo
+                            });
+                        }
                     }
                 }
             }

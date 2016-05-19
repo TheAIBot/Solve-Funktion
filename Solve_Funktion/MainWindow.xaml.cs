@@ -63,8 +63,8 @@ namespace Solve_Funktion
                 //const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25}";
                 //const string SequenceY = "2,3,5,7,11,13,17,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101";
 
-                const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10}";
-                const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
+                //const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10}";
+                //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
 
                 //const string SequenceX = "x = {  1,   2,  3, 4,  5,6,  7,8, 9,10}";
                 //const string SequenceY = "432,4567,987,23,765,2,678,9,34,23";
@@ -78,8 +78,8 @@ namespace Solve_Funktion
                 //const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
                 //const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
 
-                //const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
-                //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+                const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
+                const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
                 //const string SequenceX = "x = {384, 357, 221, 9, 18, 357, 221, 6}, y = {18, 357, 221, 6, 384, 357, 221, 9}";
                 //const string SequenceY = "     6, 1, 17, 3, 6, 1, 17, 3";
@@ -150,40 +150,40 @@ namespace Solve_Funktion
 
                 MathFunction[] Operators = new MathFunction[]
                 {
-                    new Plus(), //SIMD
-                    new Subtract(), //SIMD
-                    new Multiply(), //SIMD
-                    new Divide(), //SIMD
+                    new Plus(),
+                    new Subtract(),
+                    new Multiply(),
+                    new Divide(),
 
-                    new PowerOf(), //SIMD
-                    new Root(), //SIMD
-                    //new Exponent(), //Software SIMD
-                    //new NaturalLog(), //Software SIMD
-                    //new Log(), //Software SIMD
+                    new PowerOf(),
+                    new Root(),
+                    new Exponent(),
+                    new NaturalLog(),
+                    new Log(),
 
-                    //new Modulos(), //Software SIMD
-                    ////new Floor(), //Software SIMD
-                    ////new Ceil(), //Software SIMD
-                    ////new Round(), //Software SIMD
+                    new Modulos(),
+                    new Floor(),
+                    new Ceil(),
+                    new Round(),
 
-                    //new Sin(), //Software SIMD
-                    //new Cos(), //Software SIMD
-                    //new Tan(), //Software SIMD
-                    //new ASin(), //Software SIMD
-                    //new ACos(), //Software SIMD
-                    //new ATan(), //Software SIMD
+                    new Sin(),
+                    new Cos(),
+                    new Tan(),
+                    new ASin(),
+                    new ACos(),
+                    new ATan(),
 
-                    new Parentheses(), //SIMD
-                    new Constant(),
-                    new Absolute(), //SIMD
+                    new Parentheses(),
+                    //new Constant(),
+                    new Absolute(),
 
-                    //new AND(), //Software SIMD
-                    //new NAND(), //Software SIMD
-                    //new OR(), //Software SIMD
-                    //new NOR(), //Software SIMD
-                    //new XOR(), //Software SIMD
-                    //new XNOR(), //Software SIMD
-                    //new NOT() // SIMD
+                    new AND(),
+                    new NAND(),
+                    new OR(),
+                    new NOR(),
+                    new XOR(),
+                    new XNOR(),
+                    new NOT()
                 };
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
@@ -193,7 +193,7 @@ namespace Solve_Funktion
                     GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
                     8,        // SpeciesAmount
-                    100,      // MaxStuckGens
+                    30,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
                     0.2,      // SmartCandidatesPerGen
@@ -237,12 +237,13 @@ namespace Solve_Funktion
                 BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
                 BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
             {
-                BCandControl.InsertInfo(e.BestEquationInfo);
+                BCandControl.InsertInfo(e.BestEquationInfo.GetCopy());
+                System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
             }
             DrawGraph();
         }
 
-        object ChartLocker = new object();
+        private object ChartLocker = new object();
 
         public void DrawGraph()
         {
@@ -262,7 +263,7 @@ namespace Solve_Funktion
                         Series Serie = Charter.Series.Add(GenerationIndex.ToString());
                         Serie.ChartType = SeriesChartType.Spline;
                         Serie.BorderWidth = 2;
-                        if (Spec.BestCandidate.Results.All(x => x < 10000000))
+                        if (Spec.BestCandidate.Results.All(x => x < (double)Decimal.MaxValue))
                         {
                             for (int i = 0; i < Spec.EInfo.coordInfo.expectedResults.Length; i++)
                             {

@@ -132,5 +132,19 @@ namespace Solve_Funktion
             }
         }
         public int OperatorCount = 0;
+
+        public SpeciesInfo  GetCopy()
+        {
+            SpeciesInfo copy = new SpeciesInfo();
+            copy.Generation = Generation;
+            copy.FunctionText = FunctionText;
+            copy.Offset = Offset;
+            copy.SequenceText = SequenceText;
+            copy.ResultText = ResultText;
+            copy.Attempts = Attempts;
+            copy.OperatorCount = OperatorCount;
+
+            return copy;
+        }
     }
 }
