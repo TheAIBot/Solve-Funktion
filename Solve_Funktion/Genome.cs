@@ -71,7 +71,7 @@ namespace Solve_Funktion
         /// </summary>
         protected void InitializeUpdateInfo()
         {
-            SpecInfo.SequenceText = String.Join(", ", EInfo.coordInfo.expectedResults);
+            SpecInfo.SequenceText = String.Join(", ", EInfo.coordInfo.expectedResults.Select(x => x.ToString("N2")));
         }
 
         /// <summary>
