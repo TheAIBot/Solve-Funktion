@@ -12,76 +12,213 @@ namespace Tests
         [TestMethod]
         public void TestEquation1()
         {
-            Equation e1 = TestTools.MakeEquation("x = {3, 4, 5, 6}", "4, 6, 8, 10");
+            EvolutionInfo EInfo = TestTools.GetEvolutionInfo("x = {3, 4, 5, 6}", "4, 6, 8, 10");
+            Equation e1 = TestTools.MakeEquation(EInfo);
 
             // (x) = (x) * x
             Operator o1 = e1.OPStorage.Pop();
-            o1.ContainedList = e1.EquationParts;
-            e1.AllOperators.Add(o1);
-            e1.EquationParts.Add(o1);
-            o1.ResultOnRightSide = false;
-            o1.MFunction = new Parentheses();
-            o1.UseRandomNumber = false;
-            o1.randomNumber = TestTools.CreateVectorRepeat(2);
-            o1.parameterIndex = 0;
-            o1.ExtraMathFunction = new Multiply();
+            o1.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
 
             // - 1 = (x - 1) * x
             Operator o2 = e1.OPStorage.Pop();
-            o2.ContainedList = o1.Operators;
-            e1.AllOperators.Add(o2);
-            o1.Operators.Add(o2);
-            o2.ResultOnRightSide = false;
-            o2.MFunction = new Subtract();
-            o2.UseRandomNumber = true;
-            o2.randomNumber = TestTools.CreateVectorRepeat(1);
-            o2.parameterIndex = 0;
+            o2.SetupOperator(false, new Subtract(), 0, 1, true, o1.Operators, null, o1);
+
+
 
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x - 1) * x)", new double[] { 6, 12, 20, 30 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
             o1.ResultOnRightSide = true;
+            o1.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = (x * (x - 1))", new double[] { 6, 12, 20, 30 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
             o2.ResultOnRightSide = true;
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = (x * (1 - x))", new double[] { -6, -12, -20, -30 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
             o1.ResultOnRightSide = false;
             o2.ResultOnRightSide = true;
+            o1.OperatorChanged();
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((1 - x) * x)", new double[] { -6, -12, -20, -30 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
 
 
-            o2.randomNumber = TestTools.CreateVectorRepeat(-5);
+            o2.RandomNumber = -5;
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((-5 - x) * x)", new double[] { -24, -36, -50, -66 });
-            
-            o2.randomNumber = TestTools.CreateVectorRepeat(3);
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+            o2.RandomNumber = 3;
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) * x)", new double[] { 0, -4, -10, -18 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
 
 
             o2.MFunction = new Plus();
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 + x) * x)", new double[] { 18, 28, 40, 54 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
             o2.MFunction = new Multiply();
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 * x) * x)", new double[] { 27, 48, 75, 108 });
+            CheckEquationCopyAfterResult(e1, EInfo);
 
             o2.MFunction = new Divide();
+            o2.OperatorChanged();
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 / x) * x)", new double[] { 3, 3, 3, 3 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+
+
+            o2.MFunction = new Subtract();
+            o1.ExtraMathFunction = new Plus();
+            o1.OperatorChanged();
+            o2.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) + x)", new double[] { 3, 3, 3, 3 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+            o1.ExtraMathFunction = new Subtract();
+            o1.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) - x)", new double[] { -3, -5, -7, -9 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+            o1.ExtraMathFunction = new Divide();
+            o1.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((3 - x) / x)", new double[] { 0, -0.25, -0.4, -0.5 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+
+
+            o1.ResultOnRightSide = true;
+            o1.ExtraMathFunction = new Plus();
+            o1.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = (x + (3 - x))", new double[] { 3, 3, 3, 3 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+            o1.ExtraMathFunction = new Subtract();
+            o1.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = (x - (3 - x))", new double[] { 3, 5, 7, 9 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+            o1.ExtraMathFunction = new Divide();
+            o1.OperatorChanged();
+            CheckShowResult(e1.CreateFunction(), "f(x) = (x / (3 - x))");
+            e1.CalcTotalOffSet();
+            Assert.IsFalse(Tools.IsANumber(e1.OffSet), "expected NaN as offset, but got: " + e1.OffSet);
+
+
+
+
+            // - 1 = (x / (3 - x)) - 1
+            Operator o3 = e1.OPStorage.Pop();
+            o3.SetupOperator(false, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+
+            // - 1 = 1 - (x / (3 - x)) - 1)
+            Operator o4 = e1.OPStorage.Pop();
+            o4.SetupOperator(true, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+
+            // x = (1 - ((x / (3 - x)) - 1)) * x
+            Operator o5 = e1.OPStorage.Pop();
+            o5.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+
+            // x = x * (x * ((1 - ((x / (3 - x)) - 1)) * x))
+            Operator o6 = e1.OPStorage.Pop();
+            o6.SetupOperator(true, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+
+
+
+
+            o1.OperatorChanged();
+            CheckShowResult(e1.CreateFunction(), "f(x) = ((x * (1 - ((x / (3 - x)) - 1))) * x)");
+            e1.CalcTotalOffSet();
+            Assert.IsFalse(Tools.IsANumber(e1.OffSet), "expected NaN as offset, but got: " + e1.OffSet);
+
+            o1.ExtraMathFunction = new Subtract();
+            o1.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x * (1 - ((x - (3 - x)) - 1))) * x)", new double[] { -9, -48, -125, -252 });
+            CheckEquationCopyAfterResult(e1, EInfo);
+
+
+
+
+            // * x = (x * x) * (x * ((1 - ((x / (3 - x)) - 1)) * x))
+            Operator o7 = e1.OPStorage.Pop();
+            o7.SetupOperator(false, new Multiply(), 0, 1, false, o6.Operators, null, o6);
+
+
+
+
+            o6.OperatorChanged();
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x * (1 - ((x - (3 - x)) - 1))) * (x * x))", new double[] { -27, -192, -625, -1512 });
+            CheckEquationCopyAfterResult(e1, EInfo);
         }
 
         [TestMethod]
         public void TestEquation2()
         {
+            Equation e1 = TestTools.MakeEquation("x = {3, 4, 5, 6}", "4, 6, 8, 10");
 
+            // (x) = (x) * x
+            Operator o1 = e1.OPStorage.Pop();
+            o1.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+
+            // - 1 = (x - 1) * x
+            Operator o2 = e1.OPStorage.Pop();
+            o2.SetupOperator(false, new Subtract(), 0, 1, true, o1.Operators, null, o1);
+
+            // - 1 = (x / (3 - x)) - 1
+            Operator o3 = e1.OPStorage.Pop();
+            o3.SetupOperator(false, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+
+            // - 1 = 1 - (x / (3 - x)) - 1)
+            Operator o4 = e1.OPStorage.Pop();
+            o4.SetupOperator(true, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+
+            // x = (1 - ((x / (3 - x)) - 1)) * x
+            Operator o5 = e1.OPStorage.Pop();
+            o5.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+
+            // x = x * (x * ((1 - ((x / (3 - x)) - 1)) * x))
+            Operator o6 = e1.OPStorage.Pop();
+            o6.SetupOperator(true, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+
+            // * x = (x * x) * (x * ((1 - ((x / (3 - x)) - 1)) * x))
+            Operator o7 = e1.OPStorage.Pop();
+            o7.SetupOperator(false, new Multiply(), 0, 1, false, o6.Operators, null, o6);
+
+
+            CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x * (1 - (((x - 1) * x) - 1))) * (x * x))", new double[] { -108, -640, -2250, -6048 });
         }
 
         private void CheckEquationShowResult(Equation e, string equation, string expected, double[] expectedResults)
         {
-            Assert.IsTrue(equation == expected, equation + " != " + expected);
+            CheckShowResult(equation, expected);
             int index = 0;
             e.CalcTotalOffSet();
             Assert.IsTrue(e.GetFunctionResults().All(x => Double.Parse(x) == expectedResults[index++]),
                           "Tested " + equation + " and got " + String.Join(", ", e.GetFunctionResults()) + " != " + String.Join(", ", expectedResults.Select(x => x.ToString("N2"))));
+            e.CalcTotalOffSet();
+            index = 0;
+            Assert.IsTrue(e.GetFunctionResults().All(x => Double.Parse(x) == expectedResults[index++]),
+                          "Tested2 " + equation + " and got " + String.Join(", ", e.GetFunctionResults()) + " != " + String.Join(", ", expectedResults.Select(x => x.ToString("N2"))));
+        }
+
+        private void CheckEquationCopyAfterResult(Equation Original, EvolutionInfo EInfo)
+        {
+            Equation Copy = TestTools.MakeEquation(EInfo);
+            Original.MakeClone(Copy);
+            CheckEquationShowResult(Copy, Copy.CreateFunction(), Original.CreateFunction(), Original.Results);
+        }
+
+        private void CheckShowResult(string equation, string expected)
+        {
+            Assert.IsTrue(equation == expected, equation + " != " + expected);
         }
     }
 }

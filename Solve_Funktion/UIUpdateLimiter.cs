@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
 namespace Solve_Funktion
 {
+    [Serializable]
     public class UIUpdateLimiter : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public double UpdateDelay = 500;
+        [NonSerialized]
         private Timer UIUpdater = new Timer();
         public Stack<string> UpdatedProperties = new Stack<string>();
         private object UpdatedPropertiesLocker = new object();
@@ -55,6 +58,16 @@ namespace Solve_Funktion
         public void Dispose()
         {
             UIUpdater.Dispose();
+        }
+
+        [OnDeserializing]
+        private void AnyMethodName(StreamingContext c)
+        {
+            UIUpdater = new Timer();
+            UIUpdater.AutoReset = false;
+            UIUpdater.Elapsed += UIUpdater_Elapsed;
+            UIUpdater.Interval = UpdateDelay;
+            UIUpdater.Start();
         }
     }
 }

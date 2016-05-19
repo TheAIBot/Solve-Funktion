@@ -8,6 +8,7 @@ namespace Solve_Funktion
 {
     public class SingleSpecieEvolutionMethod : Genome
     {
+
         public override Genome EvolveSolution()
         {
             StartFinding();
@@ -21,8 +22,8 @@ namespace Solve_Funktion
             Equation EvolvedEquation = new Equation(EInfo) { OffSet = Double.NaN };
             Equation OldEquation = new Equation(EInfo) { OffSet = Double.NaN };
             bool BestCandEvolved = false;
-            _toCalc = EInfo.GoalLength;
-            while (_toCalc <= EInfo.GoalLength)
+            _toCalc = EInfo.coordInfo.expectedResults.Length;
+            while (_toCalc <= EInfo.coordInfo.expectedResults.Length)
             {
                 int StuckCounter = 0;
                 do
@@ -32,7 +33,8 @@ namespace Solve_Funktion
                     UpdateInfo();
                 //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
                 } while (StuckCounter <= EInfo.MaxStuckGens);
-                _toCalc++;
+                break;
+                //_toCalc++;
                 //BestCandidate.OffSet = double.MaxValue;
             }
             return this;
@@ -56,7 +58,7 @@ namespace Solve_Funktion
                 BestCandEvolved = (EvolvedToBetter) ? true : BestCandEvolved;
                 ResetSingle(EvolvedEquation);
             }
-            List<int> Indexes = SmartCand.CanSmartChangeNumbers(BestCandidate, OldEquation);
+            int[] Indexes = SmartCand.CanSmartChangeNumbers(BestCandidate, OldEquation);
             for (double i = 0; i < EInfo.CandidatesPerGen * EInfo.SmartCandidatesPerGen; i++)
             {
                 BestCandidate.MakeClone(EvolvedEquation);
@@ -76,6 +78,9 @@ namespace Solve_Funktion
             }
             if (BestCandEvolved)
             {
+                ResetSingle(OldEquation);
+                BestEvolvedEquation.MakeClone(OldEquation);
+
                 ResetSingle(BestCandidate);
                 BestEvolvedEquation.MakeClone(BestCandidate);
             }
@@ -94,11 +99,8 @@ namespace Solve_Funktion
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 {
-                    ResetSingle(OldEquation);
-                    BestEvolvedCand.MakeClone(OldEquation);
-
                     ResetSingle(BestEvolvedCand);
-                    Eq.MakeClone(BestEvolvedCand);
+                    BestEvolvedCand = Eq.MakeClone(BestEvolvedCand);
                     return true;
                 }
             }

@@ -6,7 +6,7 @@ namespace Solve_Funktion
     {
         public static void SmartifyCandidates(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, int StartIndex, int Amount)
         {
-            List<int> Indexes = CanSmartChangeNumbers(BCand, OCand);
+            int[] Indexes = CanSmartChangeNumbers(BCand, OCand);
             if (Indexes != null)
             {
                 SmartChangeNumbers(EInfo, Copys, BCand, OCand, Indexes, StartIndex, Amount);
@@ -18,17 +18,10 @@ namespace Solve_Funktion
         }
         public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand)
         {
-            List<int> Indexes = CanSmartChangeNumbers(BCand, OCand);
-            if (Indexes != null)
-            {
-                SmartChangeNumber(EInfo, ToSmartify, BCand, OCand, Indexes);
-            }
-            else
-            {
-                StupidChangeNumber(EInfo, ToSmartify);
-            }
+            int[] Indexes = CanSmartChangeNumbers(BCand, OCand);
+            SmartifyCandidate(EInfo, ToSmartify, BCand, OCand, Indexes);
         }
-        public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand, List<int> Indexes)
+        public static void SmartifyCandidate(EvolutionInfo EInfo, Equation ToSmartify, Equation BCand, Equation OCand, int[] Indexes)
         {
             if (Indexes != null)
             {
@@ -40,7 +33,7 @@ namespace Solve_Funktion
             }
         }
 
-        public static List<int> CanSmartChangeNumbers(Equation BCand, Equation OCand)
+        public static int[] CanSmartChangeNumbers(Equation BCand, Equation OCand)
         {
             List<int> SmartChangeOperatorIndexes = new List<int>();
             if (BCand.AllOperators.Count != OCand.AllOperators.Count)
@@ -53,16 +46,16 @@ namespace Solve_Funktion
                 if (BCandOper.ResultOnRightSide == OCandOper.ResultOnRightSide &&
                     BCandOper.MFunction == OCandOper.MFunction &&
                     BCandOper.UseRandomNumber == OCandOper.UseRandomNumber &&
-                    BCandOper.randomNumber != OCandOper.randomNumber &&
+                    BCandOper.RandomNumber != OCandOper.RandomNumber &&
                     BCandOper.UseRandomNumber)
                 {
                     SmartChangeOperatorIndexes.Add(i);
                 }
             }
-            return SmartChangeOperatorIndexes;
+            return SmartChangeOperatorIndexes.ToArray();
         }
 
-        private static void SmartChangeNumbers(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, List<int> Indexes, int StartIndex, int Amount)
+        private static void SmartChangeNumbers(EvolutionInfo EInfo, Equation[] Copys, Equation BCand, Equation OCand, int[] Indexes, int StartIndex, int Amount)
         {
             for (int i = StartIndex; i < StartIndex + Amount; i++)
             {
@@ -70,20 +63,30 @@ namespace Solve_Funktion
                 Copys[i].CalcTotalOffSet();
             }
         }
-        private static void SmartChangeNumber(EvolutionInfo EInfo, Equation Eq, Equation BCand, Equation OCand, List<int> Indexes)
+        private static void SmartChangeNumber(EvolutionInfo EInfo, Equation Eq, Equation BCand, Equation OCand, int[] Indexes)
         {
             foreach (int Index in Indexes)
             {
+#if DEBUG
+                if (Index >= BCand.AllOperators.Count ||
+                    Index < 0 ||
+                    Index >= OCand.AllOperators.Count ||
+                    Index < 0)
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
+#endif
                 Operator BCandOper = BCand.AllOperators[Index];
                 Operator OCandOper = OCand.AllOperators[Index];
-                if (BCandOper.randomNumber[0] > OCandOper.randomNumber[0])
+                if (BCandOper.RandomNumber > OCandOper.RandomNumber)
                 {
-                    Eq.AllOperators[Index].randomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, (int)BCandOper.randomNumber[0] + 1);
+                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next(EInfo.NumberRangeMin, (int)BCandOper.RandomNumber + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].randomNumber = SynchronizedRandom.NextVector((int)BCandOper.randomNumber[0], EInfo.NumberRangeMax);
+                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next((int)BCandOper.RandomNumber, EInfo.NumberRangeMax);
                 }
+                Eq.AllOperators[Index].OperatorChanged();
             }
         }
 
@@ -104,8 +107,9 @@ namespace Solve_Funktion
             int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
             for (int i = 0; i < AmountToChange; i++)
             {
-                int Index = SynchronizedRandom.Next(0, Eq.EquationParts.Count);
-                Eq.EquationParts[Index].randomNumber = SynchronizedRandom.NextVector(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                int Index = SynchronizedRandom.Next(0, Eq.AllOperators.Count);
+                Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                Eq.AllOperators[Index].OperatorChanged();
             }
         }
     }

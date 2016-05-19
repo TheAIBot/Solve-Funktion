@@ -16,8 +16,9 @@ namespace Solve_Funktion
             GInfo = new GeneralInfo();
             for (int i = 0; i < EInfo.SpeciesAmount; i++)
             {
+
                 Species[i] = new T();
-                Species[i].Startup(this, GInfo, einfo);
+                Species[i].StartSetup(this, GInfo, EInfo);
                 DoSubscribeEvent(Species[i]);
             }
             return GInfo;
@@ -27,9 +28,10 @@ namespace Solve_Funktion
         {
             Parallel.For(0, Species.Length, (i, LoopState) =>
             {
-                Genome FinishedSpecie;
+                TryAgain:
                 try
                 {
+                    Genome FinishedSpecie;
                     do
                     {
                         FinishedSpecie = Species[i].EvolveSolution();
@@ -38,9 +40,8 @@ namespace Solve_Funktion
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message + Environment.NewLine + e.StackTrace);
+                    goto TryAgain;
                 }
-
-                LoopState.Stop();
             });
         }
     }

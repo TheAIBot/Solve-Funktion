@@ -23,19 +23,19 @@ namespace Solve_Funktion
         public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
             int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
-            for (int i = 0; i < AmountToChange; i++)
+            while (AmountToChange > 0)
             {
                 int ToDo = SynchronizedRandom.Next(0, 3);
                 switch (ToDo)
                 {
                     case 0:
-                        InsertOPS(Cand);
+                        AmountToChange -= InsertOPS(Cand);
                         break;
                     case 1:
-                        RemoveOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= RemoveOPS(Cand, EInfo.MaxChange);
                         break;
                     case 2:
-                        ChangeOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
                         break;
                 }
 #if DEBUG
@@ -43,36 +43,47 @@ namespace Solve_Funktion
                 {
                     System.Diagnostics.Debugger.Break();
                 }
-# endif
+#endif
             }
         }
 
-        private static void ChangeOPS(Equation Cand, int MaxChange)
+        private static int ChangeOPS(Equation Cand, int MaxChange)
         {
             if (Cand.OperatorsLeft < MaxChange)
             {
-                Cand.ChangeRandomOperator();
+                return Cand.ChangeRandomOperator(MaxChange);
             }
+            return 0;
         }
 
-        private static void RemoveOPS(Equation Cand, int MaxChange)
+        private static int RemoveOPS(Equation Cand, int MaxChange)
         {
             if (Cand.OperatorsLeft < MaxChange)
             {
-                Cand.RemoveRandomOperator(MaxChange);
+                return Cand.RemoveRandomOperator(MaxChange);
             }
+            return 0;
         }
 
-        private static void InsertOPS(Equation Cand)
+        private static int InsertOPS(Equation Cand)
         {
             if (Cand.OperatorsLeft > 0)
             {
                 int WhereToAdd = SynchronizedRandom.Next(0, Cand.SortedOperators.Count);
                 List<Operator> LLOper = Cand.SortedOperators[WhereToAdd];
                 int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Count);
-                Operator ToAdd = Cand.OPStorage.Pop();
-                ToAdd.MakeRandom(LLOper, WhereToAddOP);
+                //there has to be an operator in the list because that's the only way to get the holder of the list
+                if (Cand.SortedOperators[WhereToAdd].Count > 0)
+                {
+                    Operator Oper = Cand.SortedOperators[WhereToAdd][0];
+                    OperatorHolder Holder = Oper.Holder;
+                    Operator ToAdd = Cand.OPStorage.Pop();
+                    ToAdd.MakeRandom(LLOper, Holder, WhereToAddOP);
+                    Oper.OperatorChanged();
+                    return ToAdd.GetOperatorCount();
+                }
             }
+            return 0;
         }
     }
 }

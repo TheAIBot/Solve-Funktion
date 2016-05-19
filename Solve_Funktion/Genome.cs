@@ -20,17 +20,11 @@ namespace Solve_Funktion
         public int _toCalc = 3; // amount of points that should be used to calculate the offset of an equation. min should be 3
         public event SpecieCreatedEventHandler OnSpecieCreated; // event is called when a specie is created
 
-        /// <summary>
-        /// initializes information that this specie has to use to evolve
-        /// </summary>
-        /// <param name="Env">specie eviroment</param>
-        /// <param name="ginfo"> collective specie stats</param>
-        /// <param name="einfo"> evolution parameters</param>
-        public virtual void Startup(SpecieEnviromentBase Env, GeneralInfo ginfo, EvolutionInfo einfo)
+        public void StartSetup(SpecieEnviromentBase SE, GeneralInfo G, EvolutionInfo E)
         {
-            SpecEnviroment = Env;
-            GInfo = ginfo;
-            EInfo = einfo;
+            SpecEnviroment = SE;
+            GInfo = G;
+            EInfo = E;
         }
 
         /// <summary>
@@ -77,14 +71,7 @@ namespace Solve_Funktion
         /// </summary>
         protected void InitializeUpdateInfo()
         {
-            List<double> seqNum = new List<double>(EInfo.GoalLength);
-            foreach (VectorPoint vecP in EInfo.Goal)
-            {
-                seqNum.AddRange(Tools.GetPartOfVectorResult(vecP.Result, vecP.Count));
-            }
-            IEnumerable<string> SeqText = (from x in seqNum
-                                           select x.ToString(Info.SRounding));
-            SpecInfo.SequenceText = String.Join(", ", SeqText);
+            SpecInfo.SequenceText = String.Join(", ", EInfo.coordInfo.expectedResults.Select(x => x.ToString("N2")));
         }
 
         /// <summary>

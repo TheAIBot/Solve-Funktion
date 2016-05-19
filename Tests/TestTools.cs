@@ -33,6 +33,11 @@ namespace Tests
             return new Equation(GetEvolutionInfo(parameters, result));
         }
 
+        public static Equation MakeEquation(EvolutionInfo EInfo)
+        {
+            return new Equation(EInfo);
+        }
+
         public static Operator MakeSingleOperator()
         {
             return MakeEquation().OPStorage.Pop();
@@ -48,8 +53,7 @@ namespace Tests
 
         public static EvolutionInfo GetEvolutionInfo(string parameters, string result)
         {
-            VectorPoint[] Seq = GetSequence(parameters,
-                                            result);
+            CoordInfo Seq = GetSequence(parameters, result);
 
             MathFunction[] Operators = new MathFunction[]
             {
@@ -104,7 +108,7 @@ namespace Tests
                 );
         }
 
-        public static VectorPoint[] GetSequence(string SequenceX, string SequenceY)
+        public static CoordInfo GetSequence(string SequenceX, string SequenceY)
         {
             string[] lines = Regex.Split(SequenceX, "} *,");
             string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
@@ -112,96 +116,12 @@ namespace Tests
             string[] names = namesAndValues.Select(x => x[0]).ToArray();
             double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
             double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            return GetSequence(names, SeqRX, SeqRY);
-        }
-        public static VectorPoint[] GetSequence(string[] names, double[][] parameters, double[] functionValues)
-        {
-            VectorPoint[] Seq = new VectorPoint[(int)Math.Ceiling((double)parameters[0].Length / (double)Constants.VECTOR_LENGTH)];
-            int[] counts = new int[parameters.Length];
-            Vector<double>[] functionValuesVector = getParameterValues(functionValues, out counts);
-            Vector<double>[][] splittedParameters = new Vector<double>[parameters.Length][];
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                int[] count;
-                splittedParameters[i] = getParameterValues(parameters[i], out count);
-            }
-            for (int i = 0; i < splittedParameters[0].Length; i++)
-            {
-                Vector<double>[] parameterValues = new Vector<double>[splittedParameters.Length];
-                for (int j = 0; j < splittedParameters.Length; j++)
-                {
-                    parameterValues[j] = splittedParameters[j][i];
-                }
-                Seq[i] = new VectorPoint(parameterValues, names, functionValuesVector[i], counts[i]);
-            }
-            return Seq;
+            return new CoordInfo(SeqRY, SeqRX, names);
         }
 
-        private static Vector<double>[] getParameterValues(double[] parameter, out int[] vectorSize)
+        public static double[] CreateArray(params double[] parameters)
         {
-            Vector<double>[] parameterValues = new Vector<double>[(int)Math.Ceiling((double)parameter.Length / (double)Constants.VECTOR_LENGTH)];
-            int index = 0;
-            vectorSize = new int[parameterValues.Length];
-            for (int i = 0; i < parameter.Length; i += Constants.VECTOR_LENGTH)
-            {
-                int sizeLeft = parameter.Length - i;
-                Vector<double> partialParameterVector;
-                if (sizeLeft >= Constants.VECTOR_LENGTH)
-                {
-                    partialParameterVector = new Vector<double>(parameter, i);
-                    vectorSize[index] = Constants.VECTOR_LENGTH;
-                }
-                else
-                {
-                    vectorSize[index] = sizeLeft;
-                    double[] rXData = new double[Constants.VECTOR_LENGTH];
-
-                    Array.Copy(parameter, i, rXData, 0, sizeLeft);
-
-                    int missingNumbers = Constants.VECTOR_LENGTH - sizeLeft;
-                    for (int y = sizeLeft; y < missingNumbers + sizeLeft; y++)
-                    {
-                        rXData[y] = rXData[0];
-                    }
-                    partialParameterVector = new Vector<double>(rXData);
-                }
-                parameterValues[index] = partialParameterVector;
-                index++;
-            }
-            return parameterValues;
-        }
-
-        public static Vector<double> CreateVector(params double[] data)
-        {
-            if (data.Length < Constants.VECTOR_LENGTH)
-            {
-                double[] newData = new double[Constants.VECTOR_LENGTH];
-                Array.Copy(data, newData, data.Length);
-                data = newData;
-            }
-            return new Vector<double>(data);
-        }
-
-        public static Vector<double> CreateVectorRepeat(double number)
-        {
-            double[] result = new double[Constants.VECTOR_LENGTH];
-            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
-            {
-                result[i] = number;
-            }
-            return new Vector<double>(result);
-        }
-
-        public static bool IsVectorsEqual(Vector<double> one, Vector<double> two)
-        {
-            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
-            {
-                if (one[i] != two[i])
-                {
-                    return false;
-                }
-            }
-            return true;
+            return parameters;
         }
 
         public static double GetRandomDouble(int min, int max)

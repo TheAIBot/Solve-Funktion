@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Solve_Funktion
 {
+    [Serializable]
     public class SpeciesInfo : UIUpdateLimiter
     {
 
@@ -37,7 +38,7 @@ namespace Solve_Funktion
             {
                 generation = value;
 
-                UpdateProperty("TitleText");
+                UpdateProperty(nameof(Generation));
             }
         }
         public string FunctionText
@@ -49,7 +50,7 @@ namespace Solve_Funktion
             set
             {
                 functiontext = value;
-                UpdateProperty("FunctionText");
+                UpdateProperty(nameof(FunctionText));
             }
         }
         public double Offset
@@ -61,7 +62,7 @@ namespace Solve_Funktion
             set
             {
                 offset = value;
-                UpdateProperty("OffsetText");
+                UpdateProperty(nameof(OffsetText));
             }
         }
         public string OffsetText
@@ -96,7 +97,7 @@ namespace Solve_Funktion
             set
             {
                 sequencetext = value;
-                UpdateProperty("SequenceText");
+                UpdateProperty(nameof(SequenceText));
             }
         }
         public string ResultText
@@ -108,7 +109,7 @@ namespace Solve_Funktion
             set
             {
                 resulttext = value;
-                UpdateProperty("ResultText");
+                UpdateProperty(nameof(ResultText));
             }
         }
         public double Attempts
@@ -120,7 +121,7 @@ namespace Solve_Funktion
             set
             {
                 attemts = value;
-                UpdateProperty("AttemptsText");
+                UpdateProperty(nameof(AttemptsText));
             }
         }
         public string AttemptsText
@@ -131,5 +132,19 @@ namespace Solve_Funktion
             }
         }
         public int OperatorCount = 0;
+
+        public SpeciesInfo  GetCopy()
+        {
+            SpeciesInfo copy = new SpeciesInfo();
+            copy.Generation = Generation;
+            copy.FunctionText = FunctionText;
+            copy.Offset = Offset;
+            copy.SequenceText = SequenceText;
+            copy.ResultText = ResultText;
+            copy.Attempts = Attempts;
+            copy.OperatorCount = OperatorCount;
+
+            return copy;
+        }
     }
 }

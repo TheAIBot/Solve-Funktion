@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Solve_Funktion
 {
-    public class Equation
+    public class Equation : OperatorHolder
     {
         /*
         operators can be located within other operators making it possible to have the equation split up by ()
@@ -42,7 +42,7 @@ namespace Solve_Funktion
                 OPStorage.Push(new Operator(this));
             }
             SortedOperators.Add(EquationParts);
-            Results = new double[EInfo.GoalLength];
+            Results = new double[EInfo.coordInfo.expectedResults.Length];
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Solve_Funktion
             while (0 < OperatorsLeft - AmountToAdd)
             {
                 Operator ToAdd = OPStorage.Pop();
-                ToAdd.MakeRandom(EquationParts);
+                ToAdd.MakeRandom(EquationParts, this);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Solve_Funktion
         /// </summary>
         public void CalcTotalOffSet()
         {
-            CalcPartialOffSet(EInfo.GoalLength);
+            CalcPartialOffSet(Results.Length);
         }
 
         /// <summary>
@@ -74,53 +74,37 @@ namespace Solve_Funktion
         public void CalcPartialOffSet(int toCalc)
         {
             _toCalc = toCalc;
-            double offset = 0;
-            int index = 0;
-            foreach (VectorPoint vPoint in EInfo.Goal)
+            Array.Copy(EInfo.coordInfo.parameters[0], Results, Results.Length);
+
+            foreach (Operator oper in EquationParts)
             {
-                Vector<double> FunctionResult = GetFunctionResult(vPoint.Parameters);
-                double[] partResult = Tools.GetPartOfVectorResult(FunctionResult, vPoint.Count);
-                offset += CalcOffset(partResult, vPoint.Result, vPoint.Count);
-                if (!Tools.IsANumber(offset))
+                if (oper.Calculate(Results, EInfo.coordInfo.parameters))
                 {
-                    this.OffSet = double.NaN;
+                    if (!Tools.IsANumber(Results))
+                    {
+                        OffSet = double.NaN;
+                        return;
+                    }
+                }
+                else
+                {
+                    OffSet = double.NaN;
                     return;
                 }
-                Array.Copy(partResult, 0, Results, index, partResult.Length);
-
-                index += vPoint.Count;
             }
-            this.OffSet = offset;
+            OffSet = CalcOffset(Results, EInfo.coordInfo.expectedResults);
         }
 
         /// <summary>
-        /// calculates the offset of a vector
+        /// calculates the offset of an array
         /// </summary>
-        /// <param name="functionResult">vector result</param>
+        /// <param name="functionResult">results</param>
         /// <param name="coordY"> expected result</param>
-        /// <param name="count">amount of vector results to use</param>
         /// <returns></returns>
-        private double CalcOffset(double[] functionResult, Vector<double> coordY, int count)
+        private double CalcOffset(double[] functionResult, double[] coordY)
         {
             double offset = 0;
-            //for (int i = 0; i < count; i++)
-            //{
-            //    double fResult = functionResult[i];
-            //    if (fResult == 0)
-            //    {
-            //        offset++;
-            //    }
-            //    else if (fResult < coordY[i])
-            //    {
-            //        offset += (1 - (fResult / coordY[i]));
-            //    }
-            //    else
-            //    {
-            //        offset += (1 - (coordY[i] / fResult));
-            //    }
-            //}
-            //return Math.Abs(offset);
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < functionResult.Length; i++)
             {
                 if (coordY[i] == 0)
                 {
@@ -128,29 +112,10 @@ namespace Solve_Funktion
                 }
                 else
                 {
-                    offset += Math.Abs(coordY[i] - functionResult[i]) / coordY[i];
+                    offset += Math.Abs(Math.Abs(coordY[i] - functionResult[i]) / coordY[i]);
                 }
             }
             return offset;
-        }
-
-        /// <summary>
-        /// gets the result of the equation for a given vector of x values
-        /// </summary>
-        /// <param name="x">x vaules as a vector</param>
-        /// <returns>equation result</returns>
-        private Vector<double> GetFunctionResult(Vector<double>[] parameters)
-        {
-            Vector<double> Result = parameters[0];
-            foreach (Operator EquationPart in EquationParts)
-            {
-                Result = EquationPart.Calculate(Result, parameters);
-                if (!Tools.IsANumber(Result))
-                {
-                    return Constants.NAN_VECTOR;
-                }
-            }
-            return Result;
         }
 
         /// <summary>
@@ -161,19 +126,13 @@ namespace Solve_Funktion
         {
             StringBuilder Forwards = new StringBuilder();
             StringBuilder Backwards = new StringBuilder();
-            Forwards.Append(EInfo.Goal[0].ParameterNames[0]);
+            Forwards.Append(EInfo.coordInfo.parameterNames[0]);
             foreach (Operator EquationPart in EquationParts)
             {
                 EquationPart.ShowOperator(Forwards, Backwards);
             }
-            char[] toReverseAdd = new char[Backwards.Length + Forwards.Length];
-            Backwards.CopyTo(0, toReverseAdd, Forwards.Length, Backwards.Length);
-            Array.Reverse(toReverseAdd);
-
-            //add
-            Forwards.CopyTo(0, toReverseAdd, Backwards.Length, Forwards.Length);
-            string Result = new String(toReverseAdd);
-            return "f(" + String.Join(", ", EInfo.Goal[0].ParameterNames) +") = " + Result;
+            string Result = Tools.ReverseAddStringBuilder(Backwards, Forwards);
+            return "f(" + String.Join(", ", EInfo.coordInfo.parameterNames) +") = " + Result;
         }
 
         /// <summary>
@@ -222,16 +181,29 @@ namespace Solve_Funktion
         public Equation MakeClone(Equation Copy)
         {
             Copy.OffSet = OffSet;
+            Copy._toCalc = _toCalc;
             Array.Copy(Results, Copy.Results, Results.Length);
             foreach (Operator EPart in EquationParts)
             {
                 //copys each operator and puts it in the new equation so their equation parts are identical
                 //this should also copy the EInfo indirectly, by inserting everything into the SortedOperators list
-                EPart.GetCopy(Copy.OPStorage.Pop(), Copy, Copy.EquationParts);
+                EPart.GetCopy(Copy.OPStorage.Pop(), Copy, Copy.EquationParts, Copy);
             }
             return Copy;
         }
 
+        public int ChangeRandomOperator(int maxChangedOperators)
+        {
+            int index;
+            int changedOperatorCount;
+            do
+            {
+                index = SynchronizedRandom.Next(0, AllOperators.Count);
+                changedOperatorCount = AllOperators[index].GetOperatorCount();
+            } while (changedOperatorCount > maxChangedOperators);
+            ChangeOperator(index);
+            return changedOperatorCount;
+        }
         /// <summary>
         /// changes a random operator
         /// </summary>
@@ -247,12 +219,11 @@ namespace Solve_Funktion
         public void ChangeOperator(int Index)
         {
             Operator ToChange = AllOperators[Index];
-            List<Operator> ContainedList = ToChange.ContainedList;
-
-            ToChange.StoreAndCleanup();
-            ToChange = OPStorage.Pop();
-            ToChange.MakeRandom(ContainedList);
+            ToChange.ChangeCleanup();
+            ToChange.ChangeOperator();
+            ToChange.OperatorChanged();
         }
+
 
         /// <summary>
         /// removes a random operator
@@ -262,14 +233,17 @@ namespace Solve_Funktion
             int Index = SynchronizedRandom.Next(0, AllOperators.Count);
             RemoveOperator(Index);
         }
-        public void RemoveRandomOperator(int maxRemovedOperators)
+        public int RemoveRandomOperator(int maxRemovedOperators)
         {
             int index;
+            int removedOperatorCount;
             do
             {
                 index = SynchronizedRandom.Next(0, AllOperators.Count);
-            } while ( AllOperators[index].GetOperatorCount() > maxRemovedOperators);
+                removedOperatorCount = AllOperators[index].GetOperatorCount();
+            } while (removedOperatorCount > maxRemovedOperators);
             RemoveOperator(index);
+            return removedOperatorCount;
         }
         /// <summary>
         /// makes sure only 1 operator is removed
@@ -287,7 +261,13 @@ namespace Solve_Funktion
         /// <param name="Index">index of operator to remove in AllOperators</param>
         public void RemoveOperator(int Index)
         {
+            AllOperators[Index].OperatorChanged();
             AllOperators[Index].StoreAndCleanup();
+        }
+
+        public void OperatorChanged()
+        {
+            
         }
     }
 }

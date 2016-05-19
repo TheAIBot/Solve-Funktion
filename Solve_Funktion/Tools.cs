@@ -2,16 +2,17 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Numerics;
 using System;
+using System.Text;
 
 namespace Solve_Funktion
 {
     public static class Tools
     {
-        public static bool IsANumber(Vector<double> ToDecide)
+        public static bool IsANumber(double[] ToDecide)
         {
-            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
+            for (int i = 0; i < ToDecide.Length; i++)
             {
-                if (double.IsNaN(ToDecide[i]) || double.IsInfinity(ToDecide[i]))
+                if (!IsANumber(ToDecide[i]))
                 {
                     return false;
                 }
@@ -27,12 +28,12 @@ namespace Solve_Funktion
             return true;
         }
 
-        public static T DeepCopy<T>(T Other)
+        public static T DeepCopy<T>(T ToSer)
         {
             using (MemoryStream Ms = new MemoryStream())
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(Ms, Other);
+                formatter.Serialize(Ms, ToSer);
                 Ms.Position = 0;
                 return (T)formatter.Deserialize(Ms);
             }
@@ -48,7 +49,7 @@ namespace Solve_Funktion
             {
                 Operator OrigOper = Original.AllOperators[i];
                 Operator CopyOper = Copy.AllOperators[i];
-                if (OrigOper.randomNumber != CopyOper.randomNumber ||
+                if (OrigOper.RandomNumber != CopyOper.RandomNumber ||
                     OrigOper.MFunction != CopyOper.MFunction ||
                     OrigOper.ResultOnRightSide != CopyOper.ResultOnRightSide ||
                     OrigOper.UseRandomNumber != CopyOper.UseRandomNumber)
@@ -59,23 +60,16 @@ namespace Solve_Funktion
             return true;
         }
 
-        public static Vector<double> CreateVector(double number)
+        public static string ReverseAddStringBuilder(StringBuilder toReverse, StringBuilder toAdd)
         {
-            double[] vectorValues = new double[Constants.VECTOR_LENGTH];
-            for (int i = 0; i < Constants.VECTOR_LENGTH; i++)
-            {
-                vectorValues[i] = number;
-            }
-            return new Vector<double>(vectorValues);
-        }
+            //reverse
+            char[] toReverseAdd = new char[toReverse.Length + toAdd.Length];
+            toReverse.CopyTo(0, toReverseAdd, toAdd.Length, toReverse.Length);
+            Array.Reverse(toReverseAdd);
 
-        public static double[] GetPartOfVectorResult(Vector<double> vec, int count)
-        {
-            double[] result = new double[Constants.VECTOR_LENGTH];
-            vec.CopyTo(result);
-            double[] toReturn = new double[count];
-            Array.Copy(result, toReturn, count);
-            return toReturn;
+            //add
+            toAdd.CopyTo(0, toReverseAdd, toReverse.Length, toAdd.Length);
+            return new String(toReverseAdd);
         }
     }
 }
