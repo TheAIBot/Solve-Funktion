@@ -15,38 +15,29 @@ namespace Solve_Funktion
         public int ParameterIndex;
         public double RandomNumber;
         public bool UseRandomNumber;
-        public List<Operator> ContainedList;
+        public int ContainedIndex;
+        public Operator[] ContainedList;
         public Connector ExtraMathFunction;
         public int MaxCalculated = NONE_CALCULATED;
         public OperatorHolder Holder;
         public readonly Equation Eq;
-        public readonly List<Operator> Operators;
+        public int NumberOfOperators = 0;
+        public readonly Operator[] Operators;
         //public readonly Vector<double>[] OperatorResults;
 
         public Operator(Equation OEq)
         {
             Eq = OEq;
-            Operators = new List<Operator>(Eq.EInfo.MaxSize);
+            Operators = new Operator[Eq.EInfo.MaxSize];
         }
 
-        /// <summary>
-        /// makes this operator a random operator and adds it to the equation by itself
-        /// </summary>
-        /// <param name="containedList">the list this operator is contained in</param>
-        public void MakeRandom(List<Operator> OContainedList, OperatorHolder OHolder)
+        public void MakeRandom(Operator[] OContainedList, OperatorHolder OHolder, int CIndex)
         {
             Holder = OHolder;
             ContainedList = OContainedList;
             Eq.AllOperators.Add(this);
-            ContainedList.Add(this);
-            ChangeOperator();
-        }
-        public void MakeRandom(List<Operator> OContainedList, OperatorHolder OHolder, int CIndex)
-        {
-            Holder = OHolder;
-            ContainedList = OContainedList;
-            Eq.AllOperators.Add(this);
-            ContainedList.Insert(CIndex, this);
+            ContainedIndex = CIndex;
+            ContainedList[ContainedIndex] = this;
             ChangeOperator();
         }
 
@@ -63,6 +54,7 @@ namespace Solve_Funktion
             RandomNumber = SynchronizedRandom.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
             ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.coordInfo.parameters.Length);
             MFunction.MakeRandom(this);
+            Holder.AddOperatorToHolder();
         }
 
         /// <summary>
@@ -111,12 +103,14 @@ namespace Solve_Funktion
         {
             Eq.OPStorage.Push(this);
             Eq.AllOperators.Remove(this);
-            ContainedList.Remove(this);
+            ContainedList[ContainedIndex] = null;
             MFunction.StoreAndCleanup(this);
+            Holder.RemoveOperatorFromHolder();
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
             Holder = null;
             ResetMaxCalculated();
+            NumberOfOperators = 0;
         }
 
         public void ChangeCleanup()
@@ -124,8 +118,9 @@ namespace Solve_Funktion
             MFunction.StoreAndCleanup(this);
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
-            Holder = null;
+            //Holder = null;
             ResetMaxCalculated();
+            NumberOfOperators = 0;
         }
 
         /// <summary>
@@ -135,10 +130,13 @@ namespace Solve_Funktion
         {
             Eq.OPStorage.Push(this);
             MFunction.StoreAndCleanupAll(this);
+            ContainedList[ContainedIndex] = null;
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
             Holder = null;
             ResetMaxCalculated();
+            NumberOfOperators = 0;
+            Holder.RemoveOperatorFromHolder();
         }
 
         public void ResetMaxCalculated()
@@ -152,19 +150,21 @@ namespace Solve_Funktion
         /// <param name="Copy">The OP to copy into</param>
         /// <param name="CopyEInfo">The Equationinfo the copy should use</param>
         /// <returns></returns>
-        public Operator GetCopy(Operator Copy, Equation CopyEq, List<Operator> CopyContainedList, OperatorHolder CopyHolder)
+        public Operator GetCopy(Operator Copy, Equation CopyEq, Operator[] CopyContainedList, OperatorHolder CopyHolder)
         {
             Copy.ResultOnRightSide = ResultOnRightSide;
             Copy.MFunction = MFunction;
             Copy.ParameterIndex = ParameterIndex;
             Copy.RandomNumber = RandomNumber; // this might be wrong
             Copy.UseRandomNumber = UseRandomNumber;
-            Copy.ContainedList = CopyContainedList;
             Copy.Eq.AllOperators.Add(Copy);
-            Copy.ContainedList.Add(Copy);
+            Copy.ContainedIndex = ContainedIndex;
+            Copy.ContainedList = CopyContainedList;
+            Copy.ContainedList[ContainedIndex] = Copy;
             Copy.MFunction.GetCopy(this, Copy);
             Copy.Holder = CopyHolder;
             Copy.MaxCalculated = MaxCalculated;
+            Copy.NumberOfOperators = NumberOfOperators;
             return Copy;
         }
 
@@ -181,8 +181,37 @@ namespace Solve_Funktion
             //}
         }
 
+        public void AddOperator()
+        {
+            Operator ToAdd = Eq.OPStorage.Pop();
+            ToAdd.MakeRandom(Operators, this, NumberOfOperators);
+        }
+
+        public void AddOperatorToHolder()
+        {
+            NumberOfOperators++;
+        }
+
+        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
+        {
+            Operator toAdd = Eq.OPStorage.Pop();
+            toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
+            NumberOfOperators++;
+            return toAdd;
+        }
+
+        public void RemoveOperator(int index)
+        {
+            NumberOfOperators--;
+        }
+
+        public void RemoveOperatorFromHolder()
+        {
+            NumberOfOperators--;
+        }
+
         public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber,
-                          List<Operator> OContainedlist, Connector OExtraMathFunction, OperatorHolder OHolder)
+                          Operator[] OContainedlist, int CIndex, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             ResultOnRightSide = OResultOmRightSide;
             MFunction = OMFunction;
@@ -194,7 +223,8 @@ namespace Solve_Funktion
             Holder = OHolder;
 
             Eq.AllOperators.Add(this);
-            ContainedList.Add(this);
+            ContainedIndex = CIndex;
+            ContainedList[ContainedIndex] = this;
         }
     }
 }

@@ -198,7 +198,7 @@ namespace Tests
                     Assert.IsTrue(Copy.Operators[i] != null, "Copy doesn't contain operator at the same place as the original operator");
                     RecursiveCompareOperators(Original.Operators[i], Copy.Operators[i]);
                 }
-                else
+                else if (Copy.Operators[i] == null)
                 {
                     Assert.IsTrue(Copy.Operators[i] == null, "Copy contains operator where the original doesn't");
                 }

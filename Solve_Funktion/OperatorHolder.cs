@@ -9,5 +9,9 @@ namespace Solve_Funktion
     public interface OperatorHolder
     {
         void OperatorChanged();
+
+        void AddOperatorToHolder();
+
+        void RemoveOperatorFromHolder();
     }
 }
