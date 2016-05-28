@@ -68,7 +68,7 @@ namespace Solve_Funktion
         {
             if (Cand.OperatorsLeft > 0)
             {
-                Cand.InsertOperator(Cand);
+                return Cand.InsertOperator(Cand);
             }
             return 0;
         }

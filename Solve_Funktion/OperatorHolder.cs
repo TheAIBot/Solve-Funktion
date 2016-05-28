@@ -10,8 +10,8 @@ namespace Solve_Funktion
     {
         void OperatorChanged();
 
-        void AddOperatorToHolder();
+        void AddOperatorToHolder(Operator oper, int index);
 
-        void RemoveOperatorFromHolder();
+        void RemoveOperatorFromHolder(int index);
     }
 }

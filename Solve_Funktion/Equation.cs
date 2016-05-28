@@ -211,9 +211,9 @@ namespace Solve_Funktion
             Operator[] LLOper = Cand.SortedOperators[WhereToAdd];
             int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Length);
             //there has to be an operator in the list because that's the only way to get the holder of the list
-            if (Cand.SortedOperators[WhereToAdd][0] != null) // the first element will always be not null if the list contains atleast one operator
+            Operator Oper = GetFirstOperatorInArray(LLOper);
+            if (Oper != null) // the first element will always be not null if the list contains atleast one operator
             {
-                Operator Oper = Cand.SortedOperators[WhereToAdd][0];
                 OperatorHolder Holder = Oper.Holder;
                 Operator ToAdd = Cand.OPStorage.Pop();
                 if (LLOper[WhereToAddOP] != null)
@@ -225,6 +225,18 @@ namespace Solve_Funktion
                 return ToAdd.GetOperatorCount();
             }
             return 0;
+        }
+
+        private Operator GetFirstOperatorInArray(Operator[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] != null)
+                {
+                    return array[i];
+                }
+            }
+            return null;
         }
 
         public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
@@ -275,16 +287,17 @@ namespace Solve_Funktion
                 for (int i = forwardFirstSpaceIndex; i > indexForSpace; i--)
                 {
                     makeSpaceIn[i] = makeSpaceIn[i - 1];
+                    makeSpaceIn[i - 1] = null; //not needed but makes it easier to debug
                 }
-
             }
             else
             {
                 //make space backwards
 
-                for (int i = backwardsDistance; i < indexForSpace; i++)
+                for (int i = backwardsFirstSpaceIndex; i < indexForSpace; i++)
                 {
                     makeSpaceIn[i] = makeSpaceIn[i + 1];
+                    makeSpaceIn[i + 1] = null; //not needed but makes it easier to debug
                 }
             }
         }
@@ -360,10 +373,6 @@ namespace Solve_Funktion
         public void RemoveOperator(int Index)
         {
             AllOperators[Index].OperatorChanged();
-            if (AllOperators[Index].ContainedList == EquationParts)
-            {
-                EquationPathsOperatorCount--;
-            }
             AllOperators[Index].StoreAndCleanup();
         }
 
@@ -372,13 +381,15 @@ namespace Solve_Funktion
             
         }
 
-        public void AddOperatorToHolder()
+        public void AddOperatorToHolder(Operator oper, int index)
         {
+            EquationParts[index] = oper;
             EquationPathsOperatorCount++;
         }
 
-        public void RemoveOperatorFromHolder()
+        public void RemoveOperatorFromHolder(int index)
         {
+            EquationParts[index] = null;
             EquationPathsOperatorCount--;
         }
     }

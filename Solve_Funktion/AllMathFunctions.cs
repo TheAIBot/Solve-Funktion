@@ -672,10 +672,9 @@ namespace Solve_Funktion
             {
                 if (Oper.Operators[i] != null)
                 {
-                    Oper.RemoveOperator(i);
+                    Oper.Operators[i].StoreAndCleanup();
                 }
             }
-
         }
         public override void StoreAndCleanupAll(Operator Oper)
         {

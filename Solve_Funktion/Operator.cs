@@ -37,7 +37,7 @@ namespace Solve_Funktion
             ContainedList = OContainedList;
             Eq.AllOperators.Add(this);
             ContainedIndex = CIndex;
-            ContainedList[ContainedIndex] = this;
+            Holder.AddOperatorToHolder(this, ContainedIndex);
             ChangeOperator();
         }
 
@@ -54,7 +54,6 @@ namespace Solve_Funktion
             RandomNumber = SynchronizedRandom.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
             ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.coordInfo.parameters.Length);
             MFunction.MakeRandom(this);
-            Holder.AddOperatorToHolder();
         }
 
         /// <summary>
@@ -103,12 +102,11 @@ namespace Solve_Funktion
         {
             Eq.OPStorage.Push(this);
             Eq.AllOperators.Remove(this);
-            ContainedList[ContainedIndex] = null;
             MFunction.StoreAndCleanup(this);
-            Holder.RemoveOperatorFromHolder();
-            // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
+            Holder.RemoveOperatorFromHolder(ContainedIndex);
             Holder = null;
+            ContainedIndex = -1;
             ResetMaxCalculated();
             NumberOfOperators = 0;
         }
@@ -130,13 +128,12 @@ namespace Solve_Funktion
         {
             Eq.OPStorage.Push(this);
             MFunction.StoreAndCleanupAll(this);
-            ContainedList[ContainedIndex] = null;
-            // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
+            Holder.RemoveOperatorFromHolder(ContainedIndex);
             Holder = null;
+            // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             ResetMaxCalculated();
             NumberOfOperators = 0;
-            Holder.RemoveOperatorFromHolder();
         }
 
         public void ResetMaxCalculated()
@@ -187,8 +184,9 @@ namespace Solve_Funktion
             ToAdd.MakeRandom(Operators, this, NumberOfOperators);
         }
 
-        public void AddOperatorToHolder()
+        public void AddOperatorToHolder(Operator oper, int index)
         {
+            Operators[index] = oper;
             NumberOfOperators++;
         }
 
@@ -200,13 +198,9 @@ namespace Solve_Funktion
             return toAdd;
         }
 
-        public void RemoveOperator(int index)
+        public void RemoveOperatorFromHolder(int index)
         {
-            NumberOfOperators--;
-        }
-
-        public void RemoveOperatorFromHolder()
-        {
+            Operators[index] = null;
             NumberOfOperators--;
         }
 

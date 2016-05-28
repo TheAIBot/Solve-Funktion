@@ -25,7 +25,7 @@ namespace Solve_Funktion
 
         public static double OR(double a, double b)
         {
-        return (a != b || a == b && a != 0) ? 1 : 0;
+            return (a != b || a == b && a != 0) ? 1 : 0;
         }
 
         public static double NOR(double a, double b)
