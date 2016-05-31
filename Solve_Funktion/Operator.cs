@@ -21,14 +21,11 @@ namespace Solve_Funktion
         public int MaxCalculated = NONE_CALCULATED;
         public OperatorHolder Holder;
         public readonly Equation Eq;
-        public int NumberOfOperators = 0;
-        public readonly Operator[] Operators;
         //public readonly Vector<double>[] OperatorResults;
 
-        public Operator(Equation OEq)
+        public Operator(Equation OEq) : base(OEq.EInfo.MaxSize)
         {
             Eq = OEq;
-            Operators = new Operator[Eq.EInfo.MaxSize];
         }
 
         public void MakeRandom(Operator[] OContainedList, OperatorHolder OHolder, int CIndex)
@@ -159,7 +156,7 @@ namespace Solve_Funktion
             Copy.ResultOnRightSide = ResultOnRightSide;
             Copy.MFunction = MFunction;
             Copy.ParameterIndex = ParameterIndex;
-            Copy.RandomNumber = RandomNumber; // this might be wrong
+            Copy.RandomNumber = RandomNumber;
             Copy.UseRandomNumber = UseRandomNumber;
             Copy.Eq.AllOperators.Add(Copy);
             Copy.ContainedIndex = ContainedIndex;
@@ -177,51 +174,12 @@ namespace Solve_Funktion
             return MFunction.ToString();
         }
 
-        public void OperatorChanged()
+        public override void OperatorChanged()
         {
             //if (/*maxCalculated != NONE_CALCULATED*/)
             //{
                 //MFunction.OperatorChanged(this);
             //}
-        }
-
-        public void AddOperator()
-        {
-            AddOperator(GetFirstFreeIndex());
-        }
-
-        public void AddOperator(int index)
-        {
-            Operator ToAdd = Eq.OPStorage.Pop();
-            ToAdd.MakeRandom(Operators, this, index);
-        }
-
-        private int GetFirstFreeIndex()
-        {
-            if (Operators[NumberOfOperators] == null)
-            {
-                return NumberOfOperators;
-            }
-            for (int i = 0; i < Operators.Length; i++)
-            {
-                if (Operators[i] == null)
-                {
-                    return i;
-                }
-            }
-            throw new Exception("no free space for operator");
-        }
-
-        public void AddOperatorToHolder(Operator oper, int index)
-        {
-            Operators[index] = oper;
-            NumberOfOperators++;
-        }
-
-        public void RemoveOperatorFromHolder(int index)
-        {
-            Operators[index] = null;
-            NumberOfOperators--;
         }
 
         public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)

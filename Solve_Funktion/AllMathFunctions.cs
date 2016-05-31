@@ -617,7 +617,7 @@ namespace Solve_Funktion
 
         public override void MakeRandom(Operator Oper)
         {
-            Oper.Eq.SortedOperators.Add(Oper.Operators);
+            Oper.Eq.Holders.Add(Oper);
             Oper.UseRandomNumber = false;
             //Oper.parameterIndex = 0;
 
@@ -626,7 +626,7 @@ namespace Solve_Funktion
 
             while (0 < Oper.Eq.OperatorsLeft - AmountToAdd)
             {
-                Oper.AddOperator();
+                Oper.AddOperator(Oper.Eq.OPStorage);
             }
             Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Connectors.Length)];
         }
@@ -651,7 +651,7 @@ namespace Solve_Funktion
 
         public override void GetCopy(Operator Original, Operator Copy)
         {
-            Copy.Eq.SortedOperators.Add(Copy.Operators);
+            Copy.Eq.Holders.Add(Copy);
             Copy.ExtraMathFunction = Original.ExtraMathFunction;
             for (int i = 0; i < Original.Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
             {
@@ -663,7 +663,7 @@ namespace Solve_Funktion
         }
         public override void StoreAndCleanup(Operator Oper)
         {
-            Oper.Eq.SortedOperators.Remove(Oper.Operators);
+            Oper.Eq.Holders.Remove(Oper);
             Oper.ExtraMathFunction = null;
             // the Operators list is being altered in this loop so it can't be a foreach loop
             // that's why it's done this way

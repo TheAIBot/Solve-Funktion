@@ -49,7 +49,7 @@ namespace Solve_Funktion
 
         private void SuperMix(Equation E1, Equation E2)
         {
-            for (int i = 0; i < E1.SortedOperators.Count; i++)
+            for (int i = 0; i < E1.Holders.Count; i++)
             {
                 if (SynchronizedRandom.RandomBool())
                 {
