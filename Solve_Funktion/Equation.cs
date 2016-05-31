@@ -388,8 +388,13 @@ namespace Solve_Funktion
 
         public void AddOperator()
         {
+            AddOperator(GetFirstFreeIndex());
+        }
+
+        public void AddOperator(int index)
+        {
             Operator ToAdd = OPStorage.Pop();
-            ToAdd.MakeRandom(EquationParts, this, GetFirstFreeIndex());
+            ToAdd.MakeRandom(EquationParts, this, index);
         }
 
         private int GetFirstFreeIndex()

@@ -14,6 +14,8 @@ namespace Solve_Funktion
 
         void AddOperator();
 
+        void AddOperator(int index);
+
         void RemoveOperatorFromHolder(int index);
     }
 }

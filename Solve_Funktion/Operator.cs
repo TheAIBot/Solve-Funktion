@@ -187,8 +187,13 @@ namespace Solve_Funktion
 
         public void AddOperator()
         {
+            AddOperator(GetFirstFreeIndex());
+        }
+
+        public void AddOperator(int index)
+        {
             Operator ToAdd = Eq.OPStorage.Pop();
-            ToAdd.MakeRandom(Operators, this, GetFirstFreeIndex());
+            ToAdd.MakeRandom(Operators, this, index);
         }
 
         private int GetFirstFreeIndex()
