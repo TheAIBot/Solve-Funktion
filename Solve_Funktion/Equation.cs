@@ -54,8 +54,7 @@ namespace Solve_Funktion
             int AmountToAdd = SynchronizedRandom.Next(0, OperatorsLeft - 1);
             while (0 < OperatorsLeft - AmountToAdd)
             {
-                Operator ToAdd = OPStorage.Pop();
-                ToAdd.MakeRandom(EquationParts, this, EquationPathsOperatorCount);
+                AddOperator();
             }
         }
 
@@ -166,10 +165,10 @@ namespace Solve_Funktion
             {
                 if (EquationParts[i] != null)
                 {
-                    EquationParts[i].StoreAndCleaupAll();
+                    EquationParts[i].StoreAndCleanupAll();
                 }
             }
-            EquationParts.Fill(null);
+            //EquationParts.Fill(null);
             AllOperators.Clear();
             SortedOperators.Clear();
             SortedOperators.Add(EquationParts);
@@ -385,6 +384,28 @@ namespace Solve_Funktion
         {
             EquationParts[index] = oper;
             EquationPathsOperatorCount++;
+        }
+
+        public void AddOperator()
+        {
+            Operator ToAdd = OPStorage.Pop();
+            ToAdd.MakeRandom(EquationParts, this, GetFirstFreeIndex());
+        }
+
+        private int GetFirstFreeIndex()
+        {
+            if (EquationParts[EquationPathsOperatorCount] == null)
+            {
+                return EquationPathsOperatorCount;
+            }
+            for (int i = 0; i < EquationParts.Length; i++)
+            {
+                if (EquationParts[i] == null)
+                {
+                    return i;
+                }
+            }
+            throw new Exception("no free space for operator");
         }
 
         public void RemoveOperatorFromHolder(int index)

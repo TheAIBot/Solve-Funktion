@@ -102,13 +102,16 @@ namespace Solve_Funktion
         {
             Eq.OPStorage.Push(this);
             Eq.AllOperators.Remove(this);
+
             MFunction.StoreAndCleanup(this);
             MFunction = null;
+
             Holder.RemoveOperatorFromHolder(ContainedIndex);
             Holder = null;
+
             ContainedIndex = -1;
             ResetMaxCalculated();
-            NumberOfOperators = 0;
+            //NumberOfOperators = 0;
         }
 
         public void ChangeCleanup()
@@ -117,21 +120,25 @@ namespace Solve_Funktion
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             MFunction = null;
             //Holder = null;
+            //ContainedIndex = -1;
             ResetMaxCalculated();
-            NumberOfOperators = 0;
+            //NumberOfOperators = 0;
         }
 
         /// <summary>
         /// faster way of resetting the operator when all operatos in an equation are reset at once
         /// </summary>
-        public void StoreAndCleaupAll()
+        public void StoreAndCleanupAll()
         {
             Eq.OPStorage.Push(this);
+
             MFunction.StoreAndCleanupAll(this);
             MFunction = null;
+
             Holder.RemoveOperatorFromHolder(ContainedIndex);
             Holder = null;
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
+            ContainedIndex = -1;
             ResetMaxCalculated();
             NumberOfOperators = 0;
         }
@@ -181,7 +188,23 @@ namespace Solve_Funktion
         public void AddOperator()
         {
             Operator ToAdd = Eq.OPStorage.Pop();
-            ToAdd.MakeRandom(Operators, this, NumberOfOperators);
+            ToAdd.MakeRandom(Operators, this, GetFirstFreeIndex());
+        }
+
+        private int GetFirstFreeIndex()
+        {
+            if (Operators[NumberOfOperators] == null)
+            {
+                return NumberOfOperators;
+            }
+            for (int i = 0; i < Operators.Length; i++)
+            {
+                if (Operators[i] == null)
+                {
+                    return i;
+                }
+            }
+            throw new Exception("no free space for operator");
         }
 
         public void AddOperatorToHolder(Operator oper, int index)
@@ -190,18 +213,18 @@ namespace Solve_Funktion
             NumberOfOperators++;
         }
 
+        public void RemoveOperatorFromHolder(int index)
+        {
+            Operators[index] = null;
+            NumberOfOperators--;
+        }
+
         public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             Operator toAdd = Eq.OPStorage.Pop();
             toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
             NumberOfOperators++;
             return toAdd;
-        }
-
-        public void RemoveOperatorFromHolder(int index)
-        {
-            Operators[index] = null;
-            NumberOfOperators--;
         }
 
         public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber,

@@ -22,7 +22,7 @@ namespace Solve_Funktion
         public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
             int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
-            while (AmountToChange > 0)
+            while (AmountToChange > 0 && Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 int ToDo = SynchronizedRandom.Next(0, 3);
                 switch (ToDo)
@@ -34,7 +34,7 @@ namespace Solve_Funktion
                         AmountToChange -= RemoveOPS(Cand, EInfo.MaxChange);
                         break;
                     case 2:
-                        AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
+                        //AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
                         break;
                 }
 #if DEBUG
@@ -48,7 +48,7 @@ namespace Solve_Funktion
 
         private static int ChangeOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < MaxChange)
+            if (Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 return Cand.ChangeRandomOperator(MaxChange);
             }
@@ -57,7 +57,7 @@ namespace Solve_Funktion
 
         private static int RemoveOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < MaxChange)
+            if (Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 return Cand.RemoveRandomOperator(MaxChange);
             }
@@ -66,7 +66,7 @@ namespace Solve_Funktion
 
         private static int InsertOPS(Equation Cand)
         {
-            if (Cand.OperatorsLeft > 0)
+            if (Cand.OperatorsLeft > 0 && Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 return Cand.InsertOperator(Cand);
             }

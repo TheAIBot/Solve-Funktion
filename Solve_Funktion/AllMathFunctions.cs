@@ -616,7 +616,6 @@ namespace Solve_Funktion
         }
 
         public override void MakeRandom(Operator Oper)
-
         {
             Oper.Eq.SortedOperators.Add(Oper.Operators);
             Oper.UseRandomNumber = false;
@@ -682,11 +681,10 @@ namespace Solve_Funktion
             {
                 if (Oper.Operators[i] != null)
                 {
-                    Oper.Operators[i].StoreAndCleaupAll();
+                    Oper.Operators[i].StoreAndCleanupAll();
                 }
-                Oper.Operators[i] = null;
             }
-            Oper.NumberOfOperators = 0;
+            //Oper.NumberOfOperators = 0;
             Oper.ExtraMathFunction = null;
         }
         public override void OperatorChanged(Operator Oper)
