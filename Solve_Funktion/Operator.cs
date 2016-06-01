@@ -137,7 +137,7 @@ namespace Solve_Funktion
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             ContainedIndex = -1;
             ResetMaxCalculated();
-            NumberOfOperators = 0;
+            //NumberOfOperators = 0;
         }
 
         public void ResetMaxCalculated()

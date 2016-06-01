@@ -69,7 +69,9 @@ namespace Tests
             Assert.AreEqual(Cand.NumberOfOperators, 0, "EquationParts is not empty");
             Assert.AreEqual(Cand.AllOperators.Count, 0, "AllOperators is not empty");
             Assert.AreEqual(Cand.OPStorage.Count, StartOPCount, "Missing OP in storage");
-            Assert.IsTrue(Cand.Holders.All(x => x.Operators.All(z => z == null)), "SortedOperators is not empty");
+            Assert.IsTrue(Cand.Holders.Count == 1 && Cand.Holders[0] == Cand, "SortedOperators either doesn't only or doesn't contain the equation as one of its holders");
+            Assert.IsTrue(Cand.OPStorage.All(x => x.NumberOfOperators == 0), "Number of operators isn't 0 for all operators");
+            Assert.IsTrue(Cand.OPStorage.All(x=> x.Operators.All(y => y == null)), "Not all operators list of operators are empty");
         }
 
         [TestMethod]
@@ -97,6 +99,11 @@ namespace Tests
             Assert.AreEqual(SortedopreatorsCount - OPCount, Cand.Holders.Sum(x => x.Operators.Sum(z => (z != null) ? 1 : 0)), "Not all operators was removed from SortedOperators");
             Assert.AreEqual(OperatorsLeftCount + OPCount, Cand.OperatorsLeft, "OperatorsLeft doesn't match the expected result");
             Assert.AreEqual(ContainedListCount - 1, Cand.NumberOfOperators, "Operator was not removed from ContainedList");
+            Assert.AreEqual(Oper.NumberOfOperators, 0, "Number of operators integer isn't 0");
+            Assert.IsTrue(Oper.Operators.All(x => x == null), "operator list isn't empty");
+            Assert.AreEqual(Oper.MFunction, null, "MFunction isn't null");
+            Assert.AreEqual(Oper.Holder, null, "Holder isn't null");
+            Assert.AreEqual(Oper.ExtraMathFunction, null, "the extra function isn't null");
         }
 
         [TestMethod]

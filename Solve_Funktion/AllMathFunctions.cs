@@ -47,6 +47,11 @@ namespace Solve_Funktion
             Oper.Holder.OperatorChanged();
         }
         
+        public virtual void Compress(Operator Oper)
+        {
+
+        }
+
         protected void DrawOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             if (IsConnecter)

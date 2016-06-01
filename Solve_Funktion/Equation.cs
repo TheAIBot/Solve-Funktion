@@ -263,6 +263,7 @@ namespace Solve_Funktion
                 {
                     makeSpaceIn[i] = makeSpaceIn[i - 1];
                     makeSpaceIn[i - 1] = null; //not needed but makes it easier to debug
+                    makeSpaceIn[i].ContainedIndex++;
                 }
             }
             else
@@ -273,11 +274,11 @@ namespace Solve_Funktion
                 {
                     makeSpaceIn[i] = makeSpaceIn[i + 1];
                     makeSpaceIn[i + 1] = null; //not needed but makes it easier to debug
+                    makeSpaceIn[i].ContainedIndex--;
                 }
             }
         }
-
-
+        
         public int ChangeRandomOperator(int maxChangedOperators)
         {
             int index;
@@ -309,8 +310,7 @@ namespace Solve_Funktion
             ToChange.ChangeOperator();
             ToChange.OperatorChanged();
         }
-
-
+        
         /// <summary>
         /// removes a random operator
         /// </summary>
