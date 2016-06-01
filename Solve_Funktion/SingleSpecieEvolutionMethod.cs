@@ -83,6 +83,7 @@ namespace Solve_Funktion
 
                 ResetSingle(BestCandidate);
                 BestEvolvedEquation.MakeClone(BestCandidate);
+                BestCandidate.Compress(BestCandidate);
             }
             return BestCandEvolved;
         }
