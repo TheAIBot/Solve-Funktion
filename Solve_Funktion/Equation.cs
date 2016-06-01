@@ -71,12 +71,14 @@ namespace Solve_Funktion
         {
             _toCalc = toCalc;
             Array.Copy(EInfo.coordInfo.parameters[0], Results, Results.Length);
-
-            for (int i = 0; i < Operators.Length; i++)
+            int OperatorsToCompressLeft = NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (Operators[i] != null)
+                if (Operators[OperatorToCompressIndex] != null)
                 {
-                    if (Operators[i].Calculate(Results, EInfo.coordInfo.parameters))
+                    OperatorsToCompressLeft--;
+                    if (Operators[OperatorToCompressIndex].Calculate(Results, EInfo.coordInfo.parameters))
                     {
                         if (!Tools.IsANumber(Results))
                         {
@@ -90,6 +92,7 @@ namespace Solve_Funktion
                         return;
                     }
                 }
+                OperatorToCompressIndex++;
             }
             OffSet = CalcOffset(Results, EInfo.coordInfo.expectedResults);
         }

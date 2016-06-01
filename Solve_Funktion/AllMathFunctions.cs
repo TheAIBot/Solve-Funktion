@@ -46,11 +46,7 @@ namespace Solve_Funktion
         {
             Oper.Holder.OperatorChanged();
         }
-        
-        public virtual void Compress(Operator Oper)
-        {
-
-        }
+       
 
         protected void DrawOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
@@ -576,11 +572,14 @@ namespace Solve_Funktion
             //need to find out how i can remove the creation of this array
             double[] parenthesesResults = new double[result.Length];
             Array.Copy(parameters[oper.ParameterIndex], parenthesesResults, parenthesesResults.Length);
-            for (int i = 0; i < oper.Operators.Length; i++)
+            int OperatorsToCompressLeft = oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (oper.Operators[i] != null)
+                if (oper.Operators[OperatorToCompressIndex] != null)
                 {
-                    if (oper.Operators[i].Calculate(parenthesesResults, parameters))
+                    OperatorsToCompressLeft--;
+                    if (oper.Operators[OperatorToCompressIndex].Calculate(parenthesesResults, parameters))
                     {
                         if (!Tools.IsANumber(parenthesesResults))
                         {
@@ -592,6 +591,7 @@ namespace Solve_Funktion
                         return false;
                     }
                 }
+                OperatorToCompressIndex++;
             }
             oper.ExtraMathFunction.CalculateConnector(result, parenthesesResults, oper);
             return true;
@@ -644,12 +644,16 @@ namespace Solve_Funktion
             // the parentheses is an operator in itself so the amount starts at 1
             // so the parentheses opearator is accounted for
             int Amount = 1;
-            for (int i = 0; i < Oper.Operators.Length; i++)
+            int OperatorsToCompressLeft = Oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (Oper.Operators[i] != null)
+                if (Oper.Operators[OperatorToCompressIndex] != null)
                 {
-                    Amount += Oper.Operators[i].GetOperatorCount();
+                    OperatorsToCompressLeft--;
+                    Amount += Oper.Operators[OperatorToCompressIndex].GetOperatorCount();
                 }
+                OperatorToCompressIndex++;
             }
             return Amount;
         }
@@ -672,22 +676,30 @@ namespace Solve_Funktion
             Oper.ExtraMathFunction = null;
             // the Operators list is being altered in this loop so it can't be a foreach loop
             // that's why it's done this way
-            for (int i = 0; i < Oper.Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
+            int OperatorsToCompressLeft = Oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (Oper.Operators[i] != null)
+                if (Oper.Operators[OperatorToCompressIndex] != null)
                 {
-                    Oper.Operators[i].StoreAndCleanup();
+                    OperatorsToCompressLeft--;
+                    Oper.Operators[OperatorToCompressIndex].StoreAndCleanup();
                 }
+                OperatorToCompressIndex++;
             }
         }
         public override void StoreAndCleanupAll(Operator Oper)
         {
-            for (int i = 0; i < Oper.Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
+            int OperatorsToCompressLeft = Oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (Oper.Operators[i] != null)
+                if (Oper.Operators[OperatorToCompressIndex] != null)
                 {
-                    Oper.Operators[i].StoreAndCleanupAll();
+                    OperatorsToCompressLeft--;
+                    Oper.Operators[OperatorToCompressIndex].StoreAndCleanupAll();
                 }
+                OperatorToCompressIndex++;
             }
             //Oper.NumberOfOperators = 0;
             Oper.ExtraMathFunction = null;
