@@ -13,12 +13,13 @@ namespace Solve_Funktion
         so it's possible to change a specific operator within another operator without changing or potentially deleting multiple operators.
         */
         public readonly List<OperatorHolder> Holders;
-        public readonly List<Operator> AllOperators; // a list of all operators currently in use by the equation
+        public readonly Operator[] AllOperators; // a list of all operators currently in use by the equation
+        public int NumberOfAllOperators = 0;
         public int OperatorsLeft
         {
             get
             {
-                return EInfo.MaxSize - AllOperators.Count;
+                return EInfo.MaxSize - NumberOfAllOperators;
             }
         } // the amount of operators that isn't in use by the equation
         public readonly Stack<Operator> OPStorage; // stores all the operators when they are not used so they don't have to be remade all the time
@@ -32,7 +33,7 @@ namespace Solve_Funktion
         {
             EInfo = einfo;
             Holders = new List<OperatorHolder>(EInfo.MaxSize);
-            AllOperators = new List<Operator>(EInfo.MaxSize);
+            AllOperators = new Operator[EInfo.MaxSize];
             OPStorage = new Stack<Operator>(EInfo.MaxSize);
             for (int i = 0; i < EInfo.MaxSize; i++)
             {
@@ -169,7 +170,8 @@ namespace Solve_Funktion
                 }
             }
             //EquationParts.Fill(null);
-            AllOperators.Clear();
+            AllOperators.Fill(null);
+            NumberOfAllOperators = 0;
             Holders.Clear();
             Holders.Add(this);
 
@@ -288,20 +290,13 @@ namespace Solve_Funktion
             int changedOperatorCount;
             do
             {
-                index = SynchronizedRandom.Next(0, AllOperators.Count);
+                index = GetRandomOperatorIndexFromAllOperators();
                 changedOperatorCount = AllOperators[index].GetOperatorCount();
             } while (changedOperatorCount > maxChangedOperators);
             ChangeOperator(index);
             return changedOperatorCount;
         }
-        /// <summary>
-        /// changes a random operator
-        /// </summary>
-        public void ChangeRandomOperator()
-        {
-            int Index = SynchronizedRandom.Next(0, AllOperators.Count);
-            ChangeOperator(Index);
-        }
+
         /// <summary>
         /// changes a specific operator
         /// </summary>
@@ -317,23 +312,19 @@ namespace Solve_Funktion
         /// <summary>
         /// removes a random operator
         /// </summary>
-        public void RemoveRandomOperator()
-        {
-            int Index = SynchronizedRandom.Next(0, AllOperators.Count);
-            RemoveOperator(Index);
-        }
         public int RemoveRandomOperator(int maxRemovedOperators)
         {
             int index;
             int removedOperatorCount;
             do
             {
-                index = SynchronizedRandom.Next(0, AllOperators.Count);
+                index = GetRandomOperatorIndexFromAllOperators();
                 removedOperatorCount = AllOperators[index].GetOperatorCount();
             } while (removedOperatorCount > maxRemovedOperators);
             RemoveOperator(index);
             return removedOperatorCount;
         }
+
         /// <summary>
         /// makes sure only 1 operator is removed
         /// </summary>
@@ -341,9 +332,10 @@ namespace Solve_Funktion
         {
             //there will always be atleast one operato that doesn't have any other operators
             Operator SingleOP = AllOperators.Single(x => x.GetOperatorCount() == 1);
-            int Index = AllOperators.IndexOf(SingleOP);
+            int Index = Array.IndexOf(AllOperators, SingleOP);
             RemoveOperator(Index);
         }
+        
         /// <summary>
         /// removes a specific operator
         /// </summary>
@@ -359,6 +351,45 @@ namespace Solve_Funktion
             
         }
 
+        public int AddOperatorToAlloperators(Operator oper)
+        {
+            int insertionIndex = (AllOperators[NumberOfAllOperators] == null) ? NumberOfAllOperators : GetFirstFreeIndex(AllOperators);
+            AddOperatorToAlloperators(oper, insertionIndex);
+            return insertionIndex;
+        }
 
+        public void AddOperatorToAlloperators(Operator oper, int insertionIndex)
+        {
+            AllOperators[insertionIndex] = oper;
+            NumberOfAllOperators++;
+        }
+
+        private int GetFirstFreeIndex(Operator[] array)
+        {
+            for (int i = array.Length - 1; i >= 0; i--)
+            {
+                if (array[i] == null)
+                {
+                    return i;
+                }
+            }
+            throw new Exception("Array contains no free space. this function shouldn't be called when the array is full");
+        }
+
+        public void RemoveOperatorFromAllOperators(int index)
+        {
+            AllOperators[index] = null;
+            NumberOfAllOperators--;
+        }
+
+        public int GetRandomOperatorIndexFromAllOperators()
+        {
+            int index;
+            do
+            {
+                index = SynchronizedRandom.Next(0, AllOperators.Length);
+            } while (AllOperators[index] == null);
+            return index;
+        }
     }
 }

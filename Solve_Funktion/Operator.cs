@@ -21,6 +21,8 @@ namespace Solve_Funktion
         public int MaxCalculated = NONE_CALCULATED;
         public OperatorHolder Holder;
         public readonly Equation Eq;
+        private int AllOperatorsContainedIndex;
+
         //public readonly Vector<double>[] OperatorResults;
 
         public Operator(Equation OEq) : base(OEq.EInfo.MaxSize)
@@ -32,7 +34,7 @@ namespace Solve_Funktion
         {
             Holder = OHolder;
             ContainedList = OContainedList;
-            Eq.AllOperators.Add(this);
+            AllOperatorsContainedIndex = Eq.AddOperatorToAlloperators(this);
             ContainedIndex = CIndex;
             Holder.AddOperatorToHolder(this, ContainedIndex);
             ChangeOperator();
@@ -98,7 +100,7 @@ namespace Solve_Funktion
         public void StoreAndCleanup()
         {
             Eq.OPStorage.Push(this);
-            Eq.AllOperators.Remove(this);
+            Eq.RemoveOperatorFromAllOperators(AllOperatorsContainedIndex);
 
             MFunction.StoreAndCleanup(this);
             MFunction = null;
@@ -158,7 +160,8 @@ namespace Solve_Funktion
             Copy.ParameterIndex = ParameterIndex;
             Copy.RandomNumber = RandomNumber;
             Copy.UseRandomNumber = UseRandomNumber;
-            Copy.Eq.AllOperators.Add(Copy);
+            Copy.AllOperatorsContainedIndex = AllOperatorsContainedIndex;
+            Copy.Eq.AddOperatorToAlloperators(Copy, AllOperatorsContainedIndex);
             Copy.ContainedIndex = ContainedIndex;
             Copy.ContainedList = CopyContainedList;
             Copy.ContainedList[ContainedIndex] = Copy;
@@ -202,7 +205,7 @@ namespace Solve_Funktion
             ExtraMathFunction = OExtraMathFunction;
             Holder = OHolder;
 
-            Eq.AllOperators.Add(this);
+            AllOperatorsContainedIndex = Eq.AddOperatorToAlloperators(this);
             ContainedIndex = CIndex;
             ContainedList[ContainedIndex] = this;
         }

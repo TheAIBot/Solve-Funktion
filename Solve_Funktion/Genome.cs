@@ -60,7 +60,7 @@ namespace Solve_Funktion
             SpecInfo.ResultText = String.Join(", ", BestCandidate.GetFunctionResults());
             SpecInfo.Attempts += EInfo.CandidatesPerGen;
             SpecInfo.Generation++;
-            SpecInfo.OperatorCount = BestCandidate.AllOperators.Count;
+            SpecInfo.OperatorCount = BestCandidate.NumberOfAllOperators;
             GInfo.AddTotalAttempts((long)EInfo.CandidatesPerGen);
             SpecEnviroment.CheckBestCandidate();
         }

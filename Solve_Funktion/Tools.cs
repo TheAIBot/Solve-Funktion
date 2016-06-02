@@ -40,18 +40,29 @@ namespace Solve_Funktion
 
         public static bool IsEquationsTheSame(Equation Original, Equation Copy)
         {
-            if (Original.AllOperators.Count != Copy.AllOperators.Count)
+            if (Original.NumberOfAllOperators != Copy.NumberOfAllOperators)
             {
                 return false;
             }
-            for (int i = 0; i < Original.AllOperators.Count; i++)
+            for (int i = 0; i < Original.AllOperators.Length; i++)
             {
                 Operator OrigOper = Original.AllOperators[i];
                 Operator CopyOper = Copy.AllOperators[i];
-                if (OrigOper.RandomNumber != CopyOper.RandomNumber ||
-                    OrigOper.MFunction != CopyOper.MFunction ||
-                    OrigOper.ResultOnRightSide != CopyOper.ResultOnRightSide ||
-                    OrigOper.UseRandomNumber != CopyOper.UseRandomNumber)
+                if (OrigOper != null &&
+                    CopyOper != null)
+                {
+                    if (OrigOper.RandomNumber != CopyOper.RandomNumber ||
+                        OrigOper.MFunction != CopyOper.MFunction ||
+                        OrigOper.ResultOnRightSide != CopyOper.ResultOnRightSide ||
+                        OrigOper.UseRandomNumber != CopyOper.UseRandomNumber)
+                    {
+                        return false;
+                    }
+                }
+                else if ((OrigOper == null &&
+                         CopyOper != null) ||
+                         (OrigOper != null &&
+                         CopyOper == null))
                 {
                     return false;
                 }

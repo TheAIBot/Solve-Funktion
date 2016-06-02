@@ -67,7 +67,7 @@ namespace Tests
             Cand.Cleanup();
 
             Assert.AreEqual(Cand.NumberOfOperators, 0, "EquationParts is not empty");
-            Assert.AreEqual(Cand.AllOperators.Count, 0, "AllOperators is not empty");
+            Assert.AreEqual(Cand.NumberOfAllOperators, 0, "AllOperators is not empty");
             Assert.AreEqual(Cand.OPStorage.Count, StartOPCount, "Missing OP in storage");
             Assert.IsTrue(Cand.Holders.Count == 1 && Cand.Holders[0] == Cand, "SortedOperators either doesn't only or doesn't contain the equation as one of its holders");
             Assert.IsTrue(Cand.OPStorage.All(x => x.NumberOfOperators == 0), "Number of operators isn't 0 for all operators");
@@ -86,7 +86,7 @@ namespace Tests
         {
             Equation Cand = TestTools.MakeRandomEquation();
             int OPStorageCount = Cand.OPStorage.Count;
-            int AllOperatorsCount = Cand.AllOperators.Count;
+            int AllOperatorsCount = Cand.NumberOfAllOperators;
             int SortedopreatorsCount = Cand.Holders.Sum(x => x.Operators.Sum(z => (z != null)? 1 : 0));
             int OperatorsLeftCount = Cand.OperatorsLeft;
             Operator Oper = Cand.Operators.First();
@@ -95,7 +95,7 @@ namespace Tests
             Oper.StoreAndCleanup();
 
             Assert.AreEqual(OPStorageCount + OPCount, Cand.OPStorage.Count, "Not all operators was put back into storage");
-            Assert.AreEqual(AllOperatorsCount - OPCount, Cand.AllOperators.Count, "Not all operators was removed from AllOperators");
+            Assert.AreEqual(AllOperatorsCount - OPCount, Cand.NumberOfAllOperators, "Not all operators was removed from AllOperators");
             Assert.AreEqual(SortedopreatorsCount - OPCount, Cand.Holders.Sum(x => x.Operators.Sum(z => (z != null) ? 1 : 0)), "Not all operators was removed from SortedOperators");
             Assert.AreEqual(OperatorsLeftCount + OPCount, Cand.OperatorsLeft, "OperatorsLeft doesn't match the expected result");
             Assert.AreEqual(ContainedListCount - 1, Cand.NumberOfOperators, "Operator was not removed from ContainedList");
@@ -166,15 +166,15 @@ namespace Tests
               "Holds:" + Cand.NumberOfOperators.ToString() + Environment.NewLine +
               "Expected 0 < " + Cand.EInfo.MaxSize.ToString());
             Assert.IsTrue(Cand != null, "Equation Is null");
-            Assert.IsTrue(Cand.AllOperators.Count == Cand.EInfo.MaxSize - Cand.OperatorsLeft);
+            Assert.IsTrue(Cand.NumberOfAllOperators == Cand.EInfo.MaxSize - Cand.OperatorsLeft);
         }
 
         public void EquationsAreSame(Equation Original, Equation Copy)
         {
-            Assert.AreEqual(Original.AllOperators.Count, Copy.AllOperators.Count, "AllOperators Count is not the same");
+            Assert.AreEqual(Original.NumberOfAllOperators, Copy.NumberOfAllOperators, "AllOperators Count is not the same");
             Assert.AreEqual(Original.Holders.Count, Copy.Holders.Count, "SortedOperators Count is not the same");
 
-            for (int i = 0; i < Original.AllOperators.Count; i++)
+            for (int i = 0; i < Original.AllOperators.Length; i++)
             {
                 RecursiveCompareOperators(Original.AllOperators[i], Copy.AllOperators[i]);
             }
@@ -195,18 +195,26 @@ namespace Tests
 
         public void RecursiveCompareOperators(Operator Original, Operator Copy)
         {
-            SimpleOPCopyCheck(Original, Copy);
-            Assert.AreEqual(Original.NumberOfOperators, Copy.NumberOfOperators, "Doesn't contain the same amount of operators in copy");
-            for (int i = 0; i < Original.Operators.Length; i++)
+            Assert.IsFalse((Original == null &&
+                           Copy != null) ||
+                          (Original != null &&
+                           Copy == null), "Either original or copy is null when the other isn't");
+            if (Original != null &&
+                Copy != null)
             {
-                if (Original.Operators[i] != null)
+                SimpleOPCopyCheck(Original, Copy);
+                Assert.AreEqual(Original.NumberOfOperators, Copy.NumberOfOperators, "Doesn't contain the same amount of operators in copy");
+                for (int i = 0; i < Original.Operators.Length; i++)
                 {
-                    Assert.IsTrue(Copy.Operators[i] != null, "Copy doesn't contain operator at the same place as the original operator");
-                    RecursiveCompareOperators(Original.Operators[i], Copy.Operators[i]);
-                }
-                else if (Copy.Operators[i] == null)
-                {
-                    Assert.IsTrue(Copy.Operators[i] == null, "Copy contains operator where the original doesn't");
+                    if (Original.Operators[i] != null)
+                    {
+                        Assert.IsTrue(Copy.Operators[i] != null, "Copy doesn't contain operator at the same place as the original operator");
+                        RecursiveCompareOperators(Original.Operators[i], Copy.Operators[i]);
+                    }
+                    else if (Copy.Operators[i] == null)
+                    {
+                        Assert.IsTrue(Copy.Operators[i] == null, "Copy contains operator where the original doesn't");
+                    }
                 }
             }
         }

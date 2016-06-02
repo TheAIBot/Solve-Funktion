@@ -95,7 +95,7 @@ namespace Solve_Funktion
                 if (Eq.OffSet < BestEvolvedCand.OffSet &&
                     Eq._toCalc >= BestEvolvedCand._toCalc ||
                     Eq.OffSet == BestEvolvedCand.OffSet &&
-                    Eq.AllOperators.Count < BestEvolvedCand.AllOperators.Count &&
+                    Eq.NumberOfAllOperators < BestEvolvedCand.NumberOfAllOperators &&
                     Eq._toCalc >= BestEvolvedCand._toCalc)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
