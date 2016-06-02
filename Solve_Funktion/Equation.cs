@@ -368,12 +368,13 @@ namespace Solve_Funktion
 
         private int GetFirstFreeIndex(Operator[] array)
         {
-            for (int i = array.Length - 1; i >= 0; i--)
+            for (int i = 0; i < array.Length; i++)
             {
                 if (array[i] == null)
                 {
                     return i;
                 }
+
             }
             throw new Exception("Array contains no free space. this function shouldn't be called when the array is full");
         }
