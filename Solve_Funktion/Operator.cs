@@ -21,7 +21,7 @@ namespace Solve_Funktion
         public int MaxCalculated = NONE_CALCULATED;
         public OperatorHolder Holder;
         public readonly Equation Eq;
-        private int AllOperatorsContainedIndex;
+        public int AllOperatorsContainedIndex;
 
         //public readonly Vector<double>[] OperatorResults;
 

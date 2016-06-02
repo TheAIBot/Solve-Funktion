@@ -66,32 +66,7 @@ namespace Solve_Funktion
         {
             if (NumberOfOperators > 0 && NumberOfOperators < eq.EInfo.MaxSize)
             {
-                int smallestFreeIndex = 0;
-                while (Operators[smallestFreeIndex] != null)
-                {
-                    smallestFreeIndex++;
-                }
-                int OperatorsToCompressLeft = NumberOfOperators;
-                int OperatorToCompressIndex = 0;
-                while (OperatorsToCompressLeft > 0)
-                {
-                    if (Operators[OperatorToCompressIndex] != null)
-                    {
-                        OperatorsToCompressLeft--;
-                        Operators[OperatorToCompressIndex].Compress(eq);
-                        if (smallestFreeIndex < OperatorToCompressIndex)
-                        {
-                            Operators[smallestFreeIndex] = Operators[OperatorToCompressIndex];
-                            Operators[OperatorToCompressIndex] = null;
-                            Operators[smallestFreeIndex].ContainedIndex = smallestFreeIndex;
-                            while (Operators[smallestFreeIndex] != null)
-                            {
-                                smallestFreeIndex++;
-                            }
-                        }
-                    }
-                    OperatorToCompressIndex++;
-                }
+                Tools.CompressOperatorArray(Operators, NumberOfOperators, eq, true);
             }
         }
     }

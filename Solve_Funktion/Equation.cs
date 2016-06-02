@@ -393,5 +393,14 @@ namespace Solve_Funktion
             } while (AllOperators[index] == null);
             return index;
         }
+
+        public void CompressEquation()
+        {
+            if (NumberOfAllOperators > 0 && NumberOfAllOperators < EInfo.MaxSize)
+            {
+                Tools.CompressOperatorArray(AllOperators, NumberOfAllOperators, this, false);
+            }
+            Compress(this);
+        }
     }
 }

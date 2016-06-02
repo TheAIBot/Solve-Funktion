@@ -81,5 +81,46 @@ namespace Solve_Funktion
             toAdd.CopyTo(0, toReverseAdd, toReverse.Length, toAdd.Length);
             return new String(toReverseAdd);
         }
+
+        public static void CompressOperatorArray(Operator[] Operators, int NumberOfOperators, Equation Eq, bool isNotAllOperators) //Crap solution with the bool
+        {
+            int smallestFreeIndex = 0;
+            while (Operators[smallestFreeIndex] != null)
+            {
+                smallestFreeIndex++;
+            }
+            int OperatorsToCompressLeft = NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
+            {
+                if (Operators[OperatorToCompressIndex] != null)
+                {
+                    OperatorsToCompressLeft--;
+                    if (isNotAllOperators)
+                    {
+                        Operators[OperatorToCompressIndex].Compress(Eq);
+                    }
+                    if (smallestFreeIndex < OperatorToCompressIndex)
+                    {
+                        Operators[smallestFreeIndex] = Operators[OperatorToCompressIndex];
+                        Operators[OperatorToCompressIndex] = null;
+                        if (isNotAllOperators)
+                        {
+                            Operators[smallestFreeIndex].ContainedIndex = smallestFreeIndex;
+                        }
+                        else
+                        {
+                            Operators[smallestFreeIndex].AllOperatorsContainedIndex = smallestFreeIndex;
+                        }
+                        
+                        while (Operators[smallestFreeIndex] != null)
+                        {
+                            smallestFreeIndex++;
+                        }
+                    }
+                }
+                OperatorToCompressIndex++;
+            }
+        }
     }
 }
