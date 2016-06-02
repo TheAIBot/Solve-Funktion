@@ -7,7 +7,7 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public static class RandomCand
     {

@@ -1,7 +1,7 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Solve_Funktion" x:Class="Solve_Funktion.MainWindow"
+        xmlns:local="clr-namespace:EquationCreator" x:Class="EquationCreator.MainWindow"
         xmlns:wf="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         Title="MainWindow" WindowState="Maximized" ContentRendered="Window_ContentRendered_1">
     <TabControl>

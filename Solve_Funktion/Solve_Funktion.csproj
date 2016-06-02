@@ -79,46 +79,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AllMathFunctions.cs" />
-    <Compile Include="ArrayExtensions.cs" />
-    <Compile Include="FamilyEnviroment.cs" />
-    <Compile Include="Operator.cs" />
     <Compile Include="BestCandidateControl.xaml.cs">
       <DependentUpon>BestCandidateControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Equation.cs" />
     <Compile Include="EvolutionControlUnitControl.xaml.cs">
       <DependentUpon>EvolutionControlUnitControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EvolutionInfo.cs" />
-    <Compile Include="EvolveCand.cs" />
-    <Compile Include="GeneralInfo.cs" />
     <Compile Include="GeneralInformationControl.xaml.cs">
       <DependentUpon>GeneralInformationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Genome.cs" />
-    <Compile Include="IndividualSpecieEnviroment.cs" />
-    <Compile Include="Info.cs" />
-    <Compile Include="OperatorHolder.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RandomCand.cs" />
-    <Compile Include="MathLogic.cs" />
-    <Compile Include="SingleSpecieEvolution.cs" />
-    <Compile Include="SingleSpecieEvolutionMethod.cs" />
-    <Compile Include="SmartCand.cs" />
-    <Compile Include="SpecieEnviromentBase.cs" />
     <Compile Include="SpecieInfoControl.xaml.cs">
       <DependentUpon>SpecieInfoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpeciesInfo.cs" />
-    <Compile Include="SynchronizedRandom.cs" />
-    <Compile Include="Tools.cs" />
-    <Compile Include="UIUpdateLimiter.cs" />
-    <Compile Include="CoordInfo.cs" />
     <Page Include="BestCandidateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,6 +160,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EquationCreator\EquationCreator.csproj">
+      <Project>{685c2ace-b038-48d4-b95a-ebe347ff130a}</Project>
+      <Name>EquationCreator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

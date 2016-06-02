@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
-    public abstract class Genome : IDisposable
+    public abstract class Genome
     {
         /*
         this class contains the basic setup to use an evolutionary approach to finding the best equation
@@ -12,7 +12,7 @@ namespace Solve_Funktion
         This abstract class is not supposed to define what approach to use but instead allow multiple ays of doing it by allowing other classes to build upon this one
         */
         public Equation BestCandidate; // should contain the equation that fits the given points best
-        public SpeciesInfo SpecInfo; //contains information about the BestCandidate that can be shown in a GUI
+        public SpeciesInfo SpecInfo = new SpeciesInfo(); //contains information about the BestCandidate that can be shown in a GUI
         public GeneralInfo GInfo; // contains information about all the different species running at the same time
         public EvolutionInfo EInfo; // contains information about the parameters this evolutionary approach should use
         public SpecieEnviromentBase SpecEnviroment; // this is the enviroment this specie is living in
@@ -38,7 +38,10 @@ namespace Solve_Funktion
         /// </summary>
         protected virtual void StartFinding()
         {
-            SpecInfo = new SpeciesInfo();
+            lock (SpecInfo)
+            {
+                SpecInfo = new SpeciesInfo();
+            }
             GInfo.IncrementTotalSpecies();
             InitializeUpdateInfo();
             if (OnSpecieCreated != null)
@@ -92,14 +95,6 @@ namespace Solve_Funktion
         protected void ResetSingle(Equation Cand)
         {
             Cand.Cleanup();
-        }
-
-        public void Dispose()
-        {
-            if (SpecInfo != null)
-            {
-                SpecInfo.Dispose();
-            }
         }
     }
 }

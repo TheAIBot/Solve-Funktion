@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
-    public class GeneralInfo : UIUpdateLimiter
+    public class GeneralInfo : UIUpdater
     {
         private object Locker = new object();
 

@@ -1,4 +1,4 @@
-﻿using Solve_Funktion;
+﻿using EquationCreator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

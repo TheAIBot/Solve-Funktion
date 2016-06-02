@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public class SingleSpecieEvolutionMethod : Genome
     {
@@ -45,19 +47,31 @@ namespace Solve_Funktion
             return (!BestCandEvolved) ? ++StuckCounter : StuckCounter = 0;
         }
 
+
+
         protected virtual bool GetNextGen(Equation EvolvedEquation, Equation OldEquation, int toCalc)
         {
             bool BestCandEvolved = false;
             Equation BestEvolvedEquation = BestCandidate.MakeClone(new Equation(EInfo, Randomizer));
+            Debug.WriteLine(BestCandidate.CreateFunction());
+            //int simplestCount = 0;
             for (double i = 0; i < EInfo.CandidatesPerGen * EInfo.EvolvedCandidatesPerGen; i++)
             {
                 BestCandidate.MakeClone(EvolvedEquation);
                 EvolveCand.EvolveCandidate(EInfo, EvolvedEquation);
                 EvolvedEquation.CalcPartialOffSet(toCalc);
+                //if (EvolvedEquation.CreateFunction() == "f(x) = x")
+                //{
+                //    simplestCount++;
+                //}
+                //Debug.WriteLine(EvolvedEquation.CreateFunction());
+                //Thread.Sleep(500);
                 bool EvolvedToBetter = ChangeIfBetter(EvolvedEquation, OldEquation, BestEvolvedEquation);
                 BestCandEvolved = (EvolvedToBetter) ? true : BestCandEvolved;
                 ResetSingle(EvolvedEquation);
             }
+            //Debug.WriteLine(simplestCount);
+            //Thread.Sleep(500);
             int[] Indexes = SmartCand.CanSmartChangeNumbers(BestCandidate, OldEquation);
             for (double i = 0; i < EInfo.CandidatesPerGen * EInfo.SmartCandidatesPerGen; i++)
             {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public static class MathLogic
     {

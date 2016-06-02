@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public class IndividualSpecieEnviroment<T> : SpecieEnviromentBase where T : Genome, new()
     {
@@ -26,9 +27,9 @@ namespace Solve_Funktion
 
         public override void SimulateEnviroment()
         {
+            Exception error = null;
             Parallel.For(0, Species.Length, (i, LoopState) =>
             {
-                TryAgain:
                 try
                 {
                     Genome FinishedSpecie;
@@ -39,10 +40,14 @@ namespace Solve_Funktion
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message + Environment.NewLine + e.StackTrace);
-                    goto TryAgain;
+                    error = e;
+                    LoopState.Break();
                 }
             });
+            if (error != null)
+            {
+                ExceptionDispatchInfo.Capture(error).Throw();
+            }
         }
     }
 }
