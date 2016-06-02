@@ -69,13 +69,13 @@
     <Compile Include="MathLogicTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Solve_Funktion\Solve_Funktion.csproj">
-      <Project>{7242ddf2-8d28-4fc8-a5ef-4a8505296b1c}</Project>
-      <Name>Solve_Funktion</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\EquationCreator\EquationCreator.csproj">
+      <Project>{685c2ace-b038-48d4-b95a-ebe347ff130a}</Project>
+      <Name>EquationCreator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

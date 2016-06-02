@@ -3,7 +3,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System;
 using System.Text;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public static class Tools
     {

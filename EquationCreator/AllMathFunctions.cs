@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     [Serializable]
     public abstract class MathFunction

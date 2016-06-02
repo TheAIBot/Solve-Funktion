@@ -18,7 +18,7 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -39,24 +39,10 @@ namespace Solve_Funktion
             Task.Factory.StartNew(() => FindFunctionWithSpecies());
         }
 
-        private CoordInfo GetSequence(string SequenceX, string SequenceY)
-        {
-            string[] lines = Regex.Split(SequenceX, "} *,");
-            string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
-            string[][] namesAndValues = refined.Select(x => x.Split('{')).ToArray();
-            string[] names = namesAndValues.Select(x => x[0]).ToArray();
-            double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
-            double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
-            return new CoordInfo(SeqRY, SeqRX, names);
-        }
-
         private void FindFunctionWithSpecies()
         {
             try
             {
-                SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
-                SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
                 //MessageBox.Show(Vector<double>.Count.ToString());
 
                 //const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24, 25}";
@@ -77,8 +63,8 @@ namespace Solve_Funktion
                 //const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
                 //const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
 
-                const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
-                const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+                //const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
+                //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
                 //const string SequenceX = "x = {384, 357, 221, 9, 18, 357, 221, 6}, y = {18, 357, 221, 6, 384, 357, 221, 9}";
                 //const string SequenceY = "     6, 1, 17, 3, 6, 1, 17, 3";
@@ -132,6 +118,13 @@ namespace Solve_Funktion
                 //const string SequenceX = "  1";
                 //const string SequenceY = "276";
 
+                string str = "Fish and cake makes everything great again";
+                byte[] bytes = Encoding.ASCII.GetBytes(str);
+                //byte[] bytes = new byte[str.Length * sizeof(char)];
+                //System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+                string SequenceX = "x = {" + String.Join(", ", Enumerable.Range(0, bytes.Length)) + "}";
+                string SequenceY = String.Join(", ", bytes);
+
                 //List<double> SeqRX = new List<double>();
                 //List<double> SeqRY = new List<double>();
                 ////for (double i = -Math.PI; i < Math.PI; i += 0.1)
@@ -145,7 +138,7 @@ namespace Solve_Funktion
                 //    SeqRY.Add(Math.Exp(i));
                 //}
                 //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
-                CoordInfo Seq = GetSequence(SequenceX, SequenceY);
+                CoordInfo Seq = new CoordInfo(SequenceX, SequenceY);
 
                 MathFunction[] Operators = new MathFunction[]
                 {
@@ -176,28 +169,32 @@ namespace Solve_Funktion
                     //new Constant(),
                     new Absolute(),
 
-                    new AND(),
-                    new NAND(),
-                    new OR(),
-                    new NOR(),
-                    new XOR(),
-                    new XNOR(),
-                    new NOT()
+                    //new AND(),
+                    //new NAND(),
+                    //new OR(),
+                    //new NOR(),
+                    //new XOR(),
+                    //new XNOR(),
+                    //new NOT()
                 };
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
-                    20,       // MaxSize
-                    10,        // MaxChange
+                    40,       // MaxSize
+                    0.2,        // MaxChange
                     30000,    // CandidatesPerGen
                     GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    8,        // SpeciesAmount
-                    30,      // MaxStuckGens
+                    6,        // SpeciesAmount
+                    100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
                     0.2,      // SmartCandidatesPerGen
                     Operators // Operators that can be used in an equation
                     );
+
+                SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
+                SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
                 GeneralInfo GInfo = SpecieEnviroment.SetupEviroment(EInfo);
                 GeneralInfoControl.InsertInfo(GInfo);
@@ -236,7 +233,10 @@ namespace Solve_Funktion
                 BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
                 BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
             {
-                BCandControl.InsertInfo(e.BestEquationInfo.GetCopy());
+                lock (e.BestEquationInfo)
+                {
+                    BCandControl.InsertInfo(e.BestEquationInfo);
+                }
                 System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
             }
             DrawGraph();

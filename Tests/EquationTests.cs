@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Solve_Funktion;
+using EquationCreator;
 using System.Collections.Generic;
 using System.Linq;
 

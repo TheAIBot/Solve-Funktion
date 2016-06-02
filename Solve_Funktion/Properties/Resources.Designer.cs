@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Solve_Funktion.Properties {
+namespace EquationCreator.Properties {
     using System;
     
     

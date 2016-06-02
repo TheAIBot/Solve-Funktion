@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public class EvolutionInfo
     {
         public readonly CoordInfo coordInfo;
         public readonly int MaxSize;
-        public readonly int MaxChange;
+        public readonly double MaxChange;
         public readonly double CandidatesPerGen;
         public readonly int NumberRangeMax;
         public readonly int NumberRangeMin;
@@ -24,8 +24,8 @@ namespace Solve_Funktion
         public readonly Connector[] Connectors;
 
         public EvolutionInfo(CoordInfo coordInfoo, 
-                             int maxsize, 
-                             int maxchange, 
+                             int maxsize,
+                             double maxchange, 
                              double candidatespergen, 
                              int numberrangemax, 
                              int numberrangemin,

@@ -6,10 +6,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     [Serializable]
-    public class SpeciesInfo : UIUpdateLimiter
+    public class SpeciesInfo : UIUpdater
     {
 
         private int generation = 0;
@@ -38,7 +38,7 @@ namespace Solve_Funktion
             {
                 generation = value;
 
-                UpdateProperty(nameof(Generation));
+                UpdateProperty(nameof(TitleText));
             }
         }
         public string FunctionText

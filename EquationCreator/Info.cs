@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public static class Info
     {

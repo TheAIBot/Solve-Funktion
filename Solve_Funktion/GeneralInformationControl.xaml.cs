@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Timers;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     /// <summary>
     /// Interaction logic for GeneralInformationControl.xaml

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public static class EvolveCand
     {
@@ -21,7 +21,7 @@ namespace Solve_Funktion
 
         public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
-            int AmountToChange = Cand.Randomizer.Next(1, EInfo.MaxChange);
+            int AmountToChange = Cand.Randomizer.Next(1, (int)Math.Max(2, EInfo.MaxChange * Cand.NumberOfAllOperators));
             while (AmountToChange > 0 && Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 int ToDo = Cand.Randomizer.Next(0, 3);
@@ -31,10 +31,10 @@ namespace Solve_Funktion
                         AmountToChange -= InsertOPS(Cand);
                         break;
                     case 1:
-                        AmountToChange -= RemoveOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= RemoveOPS(Cand, AmountToChange);
                         break;
                     case 2:
-                        AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= ChangeOPS(Cand, AmountToChange);
                         break;
                 }
 #if DEBUG
@@ -57,7 +57,7 @@ namespace Solve_Funktion
 
         private static int RemoveOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < Cand.EInfo.MaxSize)
+            if (Cand.OperatorsLeft < Cand.EInfo.MaxSize && Cand.NumberOfAllOperators > 1)
             {
                 return Cand.RemoveRandomOperator(MaxChange);
             }

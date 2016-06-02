@@ -7,10 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solve_Funktion", "Solve_Fun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DBC36E22-13FE-4AC4-9BF9-C366FDA09DED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquationCreator", "EquationCreator\EquationCreator.csproj", "{685C2ACE-B038-48D4-B95A-EBE347FF130A}"
+EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -24,6 +23,10 @@ Global
 		{DBC36E22-13FE-4AC4-9BF9-C366FDA09DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBC36E22-13FE-4AC4-9BF9-C366FDA09DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBC36E22-13FE-4AC4-9BF9-C366FDA09DED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{685C2ACE-B038-48D4-B95A-EBE347FF130A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{685C2ACE-B038-48D4-B95A-EBE347FF130A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{685C2ACE-B038-48D4-B95A-EBE347FF130A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{685C2ACE-B038-48D4-B95A-EBE347FF130A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

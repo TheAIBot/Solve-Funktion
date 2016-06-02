@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Solve_Funktion
+namespace EquationCreator
 {
     public static class SmartCand
     {
@@ -106,7 +107,7 @@ namespace Solve_Funktion
             {
                 return;
             }
-            int AmountToChange = Eq.Randomizer.Next(1, EInfo.MaxChange);
+            int AmountToChange = Eq.Randomizer.Next(1, (int)Math.Max(2, EInfo.MaxChange * Eq.NumberOfAllOperators));
             for (int i = 0; i < AmountToChange; i++)
             {
                 int Index = Eq.GetRandomOperatorIndexFromAllOperators();
