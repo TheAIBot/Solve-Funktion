@@ -66,7 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EquationTests.cs" />
     <Compile Include="TestTools.cs" />
-    <Compile Include="VectorLogicTests.cs" />
+    <Compile Include="MathLogicTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Solve_Funktion\Solve_Funktion.csproj">

@@ -16,12 +16,10 @@ namespace Tests
             Equation e1 = TestTools.MakeEquation(EInfo);
 
             // (x) = (x) * x
-            Operator o1 = e1.OPStorage.Pop();
-            o1.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+            Operator o1 = e1.AddOperator(false, new Parentheses(), 0, 2, false, new Multiply(), e1);
 
             // - 1 = (x - 1) * x
-            Operator o2 = e1.OPStorage.Pop();
-            o2.SetupOperator(false, new Subtract(), 0, 1, true, o1.Operators, null, o1);
+            Operator o2 = o1.AddOperator(false, new Subtract(), 0, 1, true, null, o1);
 
 
 
@@ -116,20 +114,16 @@ namespace Tests
 
 
             // - 1 = (x / (3 - x)) - 1
-            Operator o3 = e1.OPStorage.Pop();
-            o3.SetupOperator(false, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+            Operator o3 = e1.AddOperator(false, new Subtract(), 0, 1, true, null, e1);
 
             // - 1 = 1 - (x / (3 - x)) - 1)
-            Operator o4 = e1.OPStorage.Pop();
-            o4.SetupOperator(true, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+            Operator o4 = e1.AddOperator(true, new Subtract(), 0, 1, true, null, e1);
 
             // x = (1 - ((x / (3 - x)) - 1)) * x
-            Operator o5 = e1.OPStorage.Pop();
-            o5.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+            Operator o5 = e1.AddOperator(false, new Parentheses(), 0, 2, false, new Multiply(), e1);
 
             // x = x * (x * ((1 - ((x / (3 - x)) - 1)) * x))
-            Operator o6 = e1.OPStorage.Pop();
-            o6.SetupOperator(true, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+            Operator o6 = e1.AddOperator(true, new Parentheses(), 0, 2, false, new Multiply(), e1);
 
 
 
@@ -148,8 +142,7 @@ namespace Tests
 
 
             // * x = (x * x) * (x * ((1 - ((x / (3 - x)) - 1)) * x))
-            Operator o7 = e1.OPStorage.Pop();
-            o7.SetupOperator(false, new Multiply(), 0, 1, false, o6.Operators, null, o6);
+            Operator o7 = o6.AddOperator(false, new Multiply(), 0, 1, false, null, o6);
 
 
 
@@ -164,33 +157,27 @@ namespace Tests
         {
             Equation e1 = TestTools.MakeEquation("x = {3, 4, 5, 6}", "4, 6, 8, 10");
 
+
             // (x) = (x) * x
-            Operator o1 = e1.OPStorage.Pop();
-            o1.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+            Operator o1 = e1.AddOperator(false, new Parentheses(), 0, 2, false, new Multiply(), e1);
 
             // - 1 = (x - 1) * x
-            Operator o2 = e1.OPStorage.Pop();
-            o2.SetupOperator(false, new Subtract(), 0, 1, true, o1.Operators, null, o1);
+            Operator o2 = o1.AddOperator(false, new Subtract(), 0, 1, true, null, o1);
 
             // - 1 = (x / (3 - x)) - 1
-            Operator o3 = e1.OPStorage.Pop();
-            o3.SetupOperator(false, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+            Operator o3 = e1.AddOperator(false, new Subtract(), 0, 1, true, null, e1);
 
             // - 1 = 1 - (x / (3 - x)) - 1)
-            Operator o4 = e1.OPStorage.Pop();
-            o4.SetupOperator(true, new Subtract(), 0, 1, true, e1.EquationParts, null, e1);
+            Operator o4 = e1.AddOperator(true, new Subtract(), 0, 1, true, null, e1);
 
             // x = (1 - ((x / (3 - x)) - 1)) * x
-            Operator o5 = e1.OPStorage.Pop();
-            o5.SetupOperator(false, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+            Operator o5 = e1.AddOperator(false, new Parentheses(), 0, 2, false, new Multiply(), e1);
 
             // x = x * (x * ((1 - ((x / (3 - x)) - 1)) * x))
-            Operator o6 = e1.OPStorage.Pop();
-            o6.SetupOperator(true, new Parentheses(), 0, 2, false, e1.EquationParts, new Multiply(), e1);
+            Operator o6 = e1.AddOperator(true, new Parentheses(), 0, 2, false, new Multiply(), e1);
 
             // * x = (x * x) * (x * ((1 - ((x / (3 - x)) - 1)) * x))
-            Operator o7 = e1.OPStorage.Pop();
-            o7.SetupOperator(false, new Multiply(), 0, 1, false, o6.Operators, null, o6);
+            Operator o7 = o6.AddOperator(false, new Multiply(), 0, 1, false, null, o6);
 
 
             CheckEquationShowResult(e1, e1.CreateFunction(), "f(x) = ((x * (1 - (((x - 1) * x) - 1))) * (x * x))", new double[] { -108, -640, -2250, -6048 });

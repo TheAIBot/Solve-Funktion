@@ -46,7 +46,8 @@ namespace Solve_Funktion
         {
             Oper.Holder.OperatorChanged();
         }
-        
+       
+
         protected void DrawOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)
         {
             if (IsConnecter)
@@ -571,19 +572,26 @@ namespace Solve_Funktion
             //need to find out how i can remove the creation of this array
             double[] parenthesesResults = new double[result.Length];
             Array.Copy(parameters[oper.ParameterIndex], parenthesesResults, parenthesesResults.Length);
-            foreach (Operator OP in oper.Operators)
+            int OperatorsToCompressLeft = oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (OP.Calculate(parenthesesResults, parameters))
+                if (oper.Operators[OperatorToCompressIndex] != null)
                 {
-                    if (!Tools.IsANumber(parenthesesResults))
+                    OperatorsToCompressLeft--;
+                    if (oper.Operators[OperatorToCompressIndex].Calculate(parenthesesResults, parameters))
+                    {
+                        if (!Tools.IsANumber(parenthesesResults))
+                        {
+                            return false;
+                        }
+                    }
+                    else
                     {
                         return false;
                     }
                 }
-                else
-                {
-                    return false;
-                }
+                OperatorToCompressIndex++;
             }
             oper.ExtraMathFunction.CalculateConnector(result, parenthesesResults, oper);
             return true;
@@ -596,9 +604,13 @@ namespace Solve_Funktion
             Backwards.Clear();
 
             Forwards.Append(Oper.Eq.EInfo.coordInfo.parameterNames[Oper.ParameterIndex]);
-            foreach (Operator OP in Oper.Operators)
+            for (int i = 0; i < Oper.Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
             {
-                OP.ShowOperator(Forwards, Backwards);
+                if (Oper.Operators[i] != null)
+                {
+                    Oper.Operators[i].ShowOperator(Forwards, Backwards);
+                }
+
             }
 
             string Right = Tools.ReverseAddStringBuilder(Backwards, Forwards);
@@ -609,22 +621,19 @@ namespace Solve_Funktion
         }
 
         public override void MakeRandom(Operator Oper)
-
         {
-            Oper.Eq.SortedOperators.Add(Oper.Operators);
+            Oper.Eq.Holders.Add(Oper);
             Oper.UseRandomNumber = false;
             //Oper.parameterIndex = 0;
 
             //the method CanUseOperator makes sure there is atleast 1 available Operator to use in the parentheses
-            int AmountToAdd = SynchronizedRandom.Next(1, Oper.Eq.OperatorsLeft - 1);
+            int AmountToAdd = Oper.Eq.Randomizer.Next(1, Oper.Eq.OperatorsLeft - 1);
 
             while (0 < Oper.Eq.OperatorsLeft - AmountToAdd)
             {
-                Operator ToAdd = Oper.Eq.OPStorage.Pop();
-                // by adding the operator now there is space for 1 less operator
-                ToAdd.MakeRandom(Oper.Operators, Oper);
+                Oper.AddOperator(Oper.Eq.OPStorage);
             }
-            Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Connectors.Length)];
+            Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[Oper.Eq.Randomizer.Next(0, Oper.Eq.EInfo.Connectors.Length)];
         }
         public override bool CanUseOperator(Operator Oper)
         {
@@ -632,43 +641,67 @@ namespace Solve_Funktion
         }
         public override int GetOperatorCount(Operator Oper)
         {
-            // the parentheses is an operator in itself so the amount starts as 1
+            // the parentheses is an operator in itself so the amount starts at 1
             // so the parentheses opearator is accounted for
             int Amount = 1;
-            foreach (Operator OP in Oper.Operators)
+            int OperatorsToCompressLeft = Oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                Amount += OP.GetOperatorCount();
+                if (Oper.Operators[OperatorToCompressIndex] != null)
+                {
+                    OperatorsToCompressLeft--;
+                    Amount += Oper.Operators[OperatorToCompressIndex].GetOperatorCount();
+                }
+                OperatorToCompressIndex++;
             }
             return Amount;
         }
 
         public override void GetCopy(Operator Original, Operator Copy)
         {
-            Copy.Eq.SortedOperators.Add(Copy.Operators);
+            Copy.Eq.Holders.Add(Copy);
             Copy.ExtraMathFunction = Original.ExtraMathFunction;
-            foreach (Operator Oper in Original.Operators)
+            for (int i = 0; i < Original.Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
             {
-                Oper.GetCopy(Copy.Eq.OPStorage.Pop(), Copy.Eq, Copy.Operators, Copy);
+                if (Original.Operators[i] != null)
+                {
+                    Original.Operators[i].GetCopy(Copy.Eq.OPStorage.Pop(), Copy.Eq, Copy.Operators, Copy);
+                }
             }
         }
         public override void StoreAndCleanup(Operator Oper)
         {
-            Oper.Eq.SortedOperators.Remove(Oper.Operators);
+            Oper.Eq.Holders.Remove(Oper);
             Oper.ExtraMathFunction = null;
             // the Operators list is being altered in this loop so it can't be a foreach loop
             // that's why it's done this way
-            while (Oper.Operators.Count > 0)
+            int OperatorsToCompressLeft = Oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                Oper.Operators.First().StoreAndCleanup();
+                if (Oper.Operators[OperatorToCompressIndex] != null)
+                {
+                    OperatorsToCompressLeft--;
+                    Oper.Operators[OperatorToCompressIndex].StoreAndCleanup();
+                }
+                OperatorToCompressIndex++;
             }
         }
         public override void StoreAndCleanupAll(Operator Oper)
         {
-            foreach (Operator OP in Oper.Operators)
+            int OperatorsToCompressLeft = Oper.NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                OP.StoreAndCleaupAll();
+                if (Oper.Operators[OperatorToCompressIndex] != null)
+                {
+                    OperatorsToCompressLeft--;
+                    Oper.Operators[OperatorToCompressIndex].StoreAndCleanupAll();
+                }
+                OperatorToCompressIndex++;
             }
-            Oper.Operators.Clear();
+            //Oper.NumberOfOperators = 0;
             Oper.ExtraMathFunction = null;
         }
         public override void OperatorChanged(Operator Oper)
@@ -683,18 +716,21 @@ namespace Solve_Funktion
         {
             double[] parenthesesResults = new double[result.Length];
             parenthesesResults.Fill(oper.RandomNumber);
-            foreach (Operator OP in oper.Operators)
+            for (int i = 0; i < oper.Operators.Length; i++)
             {
-                if (OP.Calculate(parenthesesResults, parameters))
+                if (oper.Operators[i] != null)
                 {
-                    if (!Tools.IsANumber(parenthesesResults))
+                    if (oper.Operators[i].Calculate(parenthesesResults, parameters))
+                    {
+                        if (!Tools.IsANumber(parenthesesResults))
+                        {
+                            return false;
+                        }
+                    }
+                    else
                     {
                         return false;
                     }
-                }
-                else
-                {
-                    return false;
                 }
             }
             oper.ExtraMathFunction.CalculateConnector(result, parenthesesResults, oper);
@@ -721,9 +757,12 @@ namespace Solve_Funktion
         public override void MakeRandom(Operator Oper)
         {
             base.MakeRandom(Oper);
-            foreach (Operator Op in Oper.Operators)
+            for (int i = 0; i < Oper.Operators.Length; i++)
             {
-                Op.UseRandomNumber = true;
+                if (Oper.Operators[i] != null)
+                {
+                    Oper.Operators[i].UseRandomNumber = true;
+                }
             }
         }
     }

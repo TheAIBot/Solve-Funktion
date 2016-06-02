@@ -36,14 +36,16 @@ namespace Solve_Funktion
         public static int[] CanSmartChangeNumbers(Equation BCand, Equation OCand)
         {
             List<int> SmartChangeOperatorIndexes = new List<int>();
-            if (BCand.AllOperators.Count != OCand.AllOperators.Count)
+            if (BCand.NumberOfAllOperators != OCand.NumberOfAllOperators)
                 return null;
 
-            for (int i = 0; i < BCand.AllOperators.Count; i++)
+            for (int i = 0; i < BCand.AllOperators.Length; i++)
             {
                 Operator BCandOper = BCand.AllOperators[i];
                 Operator OCandOper = OCand.AllOperators[i];
-                if (BCandOper.ResultOnRightSide == OCandOper.ResultOnRightSide &&
+                if (BCandOper != null &&
+                    OCandOper != null &&
+                    BCandOper.ResultOnRightSide == OCandOper.ResultOnRightSide &&
                     BCandOper.MFunction == OCandOper.MFunction &&
                     BCandOper.UseRandomNumber == OCandOper.UseRandomNumber &&
                     BCandOper.RandomNumber != OCandOper.RandomNumber &&
@@ -68,9 +70,9 @@ namespace Solve_Funktion
             foreach (int Index in Indexes)
             {
 #if DEBUG
-                if (Index >= BCand.AllOperators.Count ||
+                if (Index >= BCand.AllOperators.Length ||
                     Index < 0 ||
-                    Index >= OCand.AllOperators.Count ||
+                    Index >= OCand.AllOperators.Length ||
                     Index < 0)
                 {
                     System.Diagnostics.Debugger.Break();
@@ -80,11 +82,11 @@ namespace Solve_Funktion
                 Operator OCandOper = OCand.AllOperators[Index];
                 if (BCandOper.RandomNumber > OCandOper.RandomNumber)
                 {
-                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next(EInfo.NumberRangeMin, (int)BCandOper.RandomNumber + 1);
+                    Eq.AllOperators[Index].RandomNumber = Eq.Randomizer.Next(EInfo.NumberRangeMin, (int)BCandOper.RandomNumber + 1);
                 }
                 else
                 {
-                    Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next((int)BCandOper.RandomNumber, EInfo.NumberRangeMax);
+                    Eq.AllOperators[Index].RandomNumber = Eq.Randomizer.Next((int)BCandOper.RandomNumber, EInfo.NumberRangeMax);
                 }
                 Eq.AllOperators[Index].OperatorChanged();
             }
@@ -100,15 +102,15 @@ namespace Solve_Funktion
         }
         private static void StupidChangeNumber(EvolutionInfo EInfo, Equation Eq)
         {
-            if (Eq.AllOperators.Count == 0)
+            if (Eq.NumberOfAllOperators == 0)
             {
                 return;
             }
-            int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
+            int AmountToChange = Eq.Randomizer.Next(1, EInfo.MaxChange);
             for (int i = 0; i < AmountToChange; i++)
             {
-                int Index = SynchronizedRandom.Next(0, Eq.AllOperators.Count);
-                Eq.AllOperators[Index].RandomNumber = SynchronizedRandom.Next(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
+                int Index = Eq.GetRandomOperatorIndexFromAllOperators();
+                Eq.AllOperators[Index].RandomNumber = Eq.Randomizer.Next(EInfo.NumberRangeMin, EInfo.NumberRangeMax);
                 Eq.AllOperators[Index].OperatorChanged();
             }
         }

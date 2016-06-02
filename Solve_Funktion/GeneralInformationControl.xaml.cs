@@ -52,7 +52,7 @@ namespace Solve_Funktion
             if (OldAttempsSec.Count > 3)
             {
                 double average = OldAttempsSec.Average();
-                double maxAllowedOffset = 100000; //100.000
+                double maxAllowedOffset = 150000; //150.000
                 OldAttempsSec.RemoveAll(x => x < average - maxAllowedOffset || x > average + maxAllowedOffset);
             }
         }

@@ -12,15 +12,15 @@ namespace Solve_Funktion
         public override Genome EvolveSolution()
         {
             StartFinding();
-            BestCandidate = new Equation(EInfo);
+            BestCandidate = new Equation(EInfo, Randomizer);
             do
             {
                 ResetSingle(BestCandidate);
                 RandomCand.MakeRandomEquation(BestCandidate);
                 BestCandidate.CalcTotalOffSet();
             } while (!Tools.IsANumber(BestCandidate.OffSet));
-            Equation EvolvedEquation = new Equation(EInfo) { OffSet = Double.NaN };
-            Equation OldEquation = new Equation(EInfo) { OffSet = Double.NaN };
+            Equation EvolvedEquation = new Equation(EInfo, Randomizer) { OffSet = Double.NaN };
+            Equation OldEquation = new Equation(EInfo, Randomizer) { OffSet = Double.NaN };
             bool BestCandEvolved = false;
             _toCalc = EInfo.coordInfo.expectedResults.Length;
             while (_toCalc <= EInfo.coordInfo.expectedResults.Length)
@@ -48,7 +48,7 @@ namespace Solve_Funktion
         protected virtual bool GetNextGen(Equation EvolvedEquation, Equation OldEquation, int toCalc)
         {
             bool BestCandEvolved = false;
-            Equation BestEvolvedEquation = BestCandidate.MakeClone(new Equation(EInfo));
+            Equation BestEvolvedEquation = BestCandidate.MakeClone(new Equation(EInfo, Randomizer));
             for (double i = 0; i < EInfo.CandidatesPerGen * EInfo.EvolvedCandidatesPerGen; i++)
             {
                 BestCandidate.MakeClone(EvolvedEquation);
@@ -83,6 +83,7 @@ namespace Solve_Funktion
 
                 ResetSingle(BestCandidate);
                 BestEvolvedEquation.MakeClone(BestCandidate);
+                BestCandidate.CompressEquation();
             }
             return BestCandEvolved;
         }
@@ -94,7 +95,7 @@ namespace Solve_Funktion
                 if (Eq.OffSet < BestEvolvedCand.OffSet &&
                     Eq._toCalc >= BestEvolvedCand._toCalc ||
                     Eq.OffSet == BestEvolvedCand.OffSet &&
-                    Eq.AllOperators.Count < BestEvolvedCand.AllOperators.Count &&
+                    Eq.NumberOfAllOperators < BestEvolvedCand.NumberOfAllOperators &&
                     Eq._toCalc >= BestEvolvedCand._toCalc)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)

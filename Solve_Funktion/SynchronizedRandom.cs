@@ -7,28 +7,24 @@ using System.Threading.Tasks;
 
 namespace Solve_Funktion
 {
-    public static class SynchronizedRandom
+    public class SynchronizedRandom
     {
         private static int seedCounter = 100;// new Random().Next();
 
-        [ThreadStatic]
-        private static Random RDom;
+        private readonly Random RDom;
 
-        public static void CreateRandom()
+        public SynchronizedRandom()
         {
-            if (RDom == null)
-            {
-                int seed = Interlocked.Increment(ref seedCounter);
-                RDom = new Random(seed);
-            }
+            int seed = Interlocked.Increment(ref seedCounter);
+            RDom = new Random(seed);
         }
 
-        public static int Next(int Start, int End)
+        public int Next(int Start, int End)
         {
             return RDom.Next(Start, End);
         }
 
-        public static bool RandomBool()
+        public bool RandomBool()
         {
             return RDom.Next(0, 2) == 1 ? true : false;
         }

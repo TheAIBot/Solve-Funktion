@@ -12,35 +12,36 @@ namespace Solve_Funktion
         to keep track of this every single operator that is contained within a single () is kept in its own list of operators
         so it's possible to change a specific operator within another operator without changing or potentially deleting multiple operators.
         */
-        public List<List<Operator>> SortedOperators;
-        public List<Operator> AllOperators; // a list of all operators currently in use by the equation
-        public List<Operator> EquationParts; // the base operators that has to be computed first to allow the operators in the next layer to be calculated
+        public readonly List<OperatorHolder> Holders;
+        public readonly Operator[] AllOperators; // a list of all operators currently in use by the equation
+        public int NumberOfAllOperators = 0;
         public int OperatorsLeft
         {
             get
             {
-                return EInfo.MaxSize - AllOperators.Count;
+                return EInfo.MaxSize - NumberOfAllOperators;
             }
         } // the amount of operators that isn't in use by the equation
-        public Stack<Operator> OPStorage; // stores all the operators when they are not used so they don't have to be remade all the time
+        public readonly Stack<Operator> OPStorage; // stores all the operators when they are not used so they don't have to be remade all the time
         public readonly EvolutionInfo EInfo; // the parameters the equation has to work with in order to make the equation
         public double OffSet; // the total offset of the equation
-        public double[] Results; // is a list of all the calculated results returned by the equation
+        public readonly double[] Results; // is a list of all the calculated results returned by the equation
         public int _toCalc; // the amount of points that had been used to calcualte the offset
+        public readonly SynchronizedRandom Randomizer;
         //public readonly string parameterNames;
 
-        public Equation(EvolutionInfo einfo)
+        public Equation(EvolutionInfo einfo, SynchronizedRandom Rand) : base(einfo.MaxSize)
         {
+            Randomizer = Rand;
             EInfo = einfo;
-            SortedOperators = new List<List<Operator>>(EInfo.MaxSize);
-            AllOperators = new List<Operator>(EInfo.MaxSize);
-            EquationParts = new List<Operator>(EInfo.MaxSize);
+            Holders = new List<OperatorHolder>(EInfo.MaxSize);
+            AllOperators = new Operator[EInfo.MaxSize];
             OPStorage = new Stack<Operator>(EInfo.MaxSize);
             for (int i = 0; i < EInfo.MaxSize; i++)
             {
                 OPStorage.Push(new Operator(this));
             }
-            SortedOperators.Add(EquationParts);
+            Holders.Add(this);
             Results = new double[EInfo.coordInfo.expectedResults.Length];
         }
 
@@ -50,11 +51,10 @@ namespace Solve_Funktion
         public void MakeRandom()
         {
             // the number is atleast 1, so there is actually something in the equation
-            int AmountToAdd = SynchronizedRandom.Next(0, OperatorsLeft - 1);
+            int AmountToAdd = Randomizer.Next(0, OperatorsLeft - 1);
             while (0 < OperatorsLeft - AmountToAdd)
             {
-                Operator ToAdd = OPStorage.Pop();
-                ToAdd.MakeRandom(EquationParts, this);
+                AddOperator(OPStorage);
             }
         }
 
@@ -74,22 +74,28 @@ namespace Solve_Funktion
         {
             _toCalc = toCalc;
             Array.Copy(EInfo.coordInfo.parameters[0], Results, Results.Length);
-
-            foreach (Operator oper in EquationParts)
+            int OperatorsToCompressLeft = NumberOfOperators;
+            int OperatorToCompressIndex = 0;
+            while (OperatorsToCompressLeft > 0)
             {
-                if (oper.Calculate(Results, EInfo.coordInfo.parameters))
+                if (Operators[OperatorToCompressIndex] != null)
                 {
-                    if (!Tools.IsANumber(Results))
+                    OperatorsToCompressLeft--;
+                    if (Operators[OperatorToCompressIndex].Calculate(Results, EInfo.coordInfo.parameters))
+                    {
+                        if (!Tools.IsANumber(Results))
+                        {
+                            OffSet = double.NaN;
+                            return;
+                        }
+                    }
+                    else
                     {
                         OffSet = double.NaN;
                         return;
                     }
                 }
-                else
-                {
-                    OffSet = double.NaN;
-                    return;
-                }
+                OperatorToCompressIndex++;
             }
             OffSet = CalcOffset(Results, EInfo.coordInfo.expectedResults);
         }
@@ -126,9 +132,12 @@ namespace Solve_Funktion
             StringBuilder Forwards = new StringBuilder();
             StringBuilder Backwards = new StringBuilder();
             Forwards.Append(EInfo.coordInfo.parameterNames[0]);
-            foreach (Operator EquationPart in EquationParts)
+            for (int i = 0; i < Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
             {
-                EquationPart.ShowOperator(Forwards, Backwards);
+                if (Operators[i] != null)
+                {
+                    Operators[i].ShowOperator(Forwards, Backwards);
+                }
             }
             string Result = Tools.ReverseAddStringBuilder(Backwards, Forwards);
             return "f(" + String.Join(", ", EInfo.coordInfo.parameterNames) +") = " + Result;
@@ -155,14 +164,18 @@ namespace Solve_Funktion
         {
             // the EquationParts list is being altered in this loop so it can't be a foreach loop
             // that's why it's done this way
-            foreach (Operator Oper in EquationParts)
+            for (int i = 0; i < Operators.Length; i++) // can optimize this to only run untill all operators have been cleaned
             {
-                Oper.StoreAndCleaupAll();
+                if (Operators[i] != null)
+                {
+                    Operators[i].StoreAndCleanupAll();
+                }
             }
-            EquationParts.Clear();
-            AllOperators.Clear();
-            SortedOperators.Clear();
-            SortedOperators.Add(EquationParts);
+            //EquationParts.Fill(null);
+            AllOperators.Fill(null);
+            NumberOfAllOperators = 0;
+            Holders.Clear();
+            Holders.Add(this);
 
 #if DEBUG
             if (OperatorsLeft != EInfo.MaxSize)
@@ -181,36 +194,111 @@ namespace Solve_Funktion
         {
             Copy.OffSet = OffSet;
             Copy._toCalc = _toCalc;
+            Copy.NumberOfOperators = NumberOfOperators;
             Array.Copy(Results, Copy.Results, Results.Length);
-            foreach (Operator EPart in EquationParts)
+            for (int i = 0; i < Operators.Length; i++)
             {
-                //copys each operator and puts it in the new equation so their equation parts are identical
-                //this should also copy the EInfo indirectly, by inserting everything into the SortedOperators list
-                EPart.GetCopy(Copy.OPStorage.Pop(), Copy, Copy.EquationParts, Copy);
+                if (Operators[i] != null)
+                {
+                    //copys each operator and puts it in the new equation so their equation parts are identical
+                    //this should also copy the EInfo indirectly, by inserting everything into the SortedOperators list
+                    Operators[i].GetCopy(Copy.OPStorage.Pop(), Copy, Copy.Operators, Copy);
+                }
             }
             return Copy;
         }
 
+        public int InsertOperator(Equation Cand)
+        {
+            int WhereToAdd = Randomizer.Next(0, Cand.Holders.Count);
+            Operator[] LLOper = Cand.Holders[WhereToAdd].Operators;
+            int WhereToAddOP = Randomizer.Next(0, LLOper.Length);
+            if (LLOper[WhereToAddOP] != null)
+            {
+                MakeSpaceForOperator(LLOper, WhereToAddOP);
+            }
+            Operator addedOperator = Cand.Holders[WhereToAdd].AddOperator(OPStorage, WhereToAddOP);
+            return addedOperator.GetOperatorCount();
+        }
+
+        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
+        {
+            Operator toAdd = OPStorage.Pop();
+            toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
+            NumberOfOperators++;
+            return toAdd;
+        }
+
+        private void MakeSpaceForOperator(Operator[] makeSpaceIn, int indexForSpace)
+        {
+            const int NO_SPACE_FOUND = -1;
+
+
+            int forwardFirstSpaceIndex = NO_SPACE_FOUND;
+            for (int i = indexForSpace + 1; i < makeSpaceIn.Length; i++)
+            {
+                if (makeSpaceIn[i] == null)
+                {
+                    forwardFirstSpaceIndex = i;
+                    break;
+                }
+            }
+            int forwardDistance = (forwardFirstSpaceIndex == NO_SPACE_FOUND) ? NO_SPACE_FOUND : forwardFirstSpaceIndex - indexForSpace;
+
+
+            int backwardsFirstSpaceIndex = NO_SPACE_FOUND;
+            for (int i = indexForSpace - 1; i >= 0; i--) // optimize with the distance from forward
+            {
+                if (makeSpaceIn[i] == null)
+                {
+                    backwardsFirstSpaceIndex = i;
+                    break;
+                }
+            }
+            int backwardsDistance = (backwardsFirstSpaceIndex == NO_SPACE_FOUND) ? NO_SPACE_FOUND : indexForSpace - backwardsFirstSpaceIndex;
+
+
+            if (forwardDistance != NO_SPACE_FOUND && 
+                backwardsDistance != NO_SPACE_FOUND && 
+                forwardDistance < backwardsDistance ||
+                forwardDistance != NO_SPACE_FOUND &&
+                backwardsDistance == NO_SPACE_FOUND)
+            {
+                //make space forward
+
+                for (int i = forwardFirstSpaceIndex; i > indexForSpace; i--)
+                {
+                    makeSpaceIn[i] = makeSpaceIn[i - 1];
+                    makeSpaceIn[i - 1] = null; //not needed but makes it easier to debug
+                    makeSpaceIn[i].ContainedIndex++;
+                }
+            }
+            else
+            {
+                //make space backwards
+
+                for (int i = backwardsFirstSpaceIndex; i < indexForSpace; i++)
+                {
+                    makeSpaceIn[i] = makeSpaceIn[i + 1];
+                    makeSpaceIn[i + 1] = null; //not needed but makes it easier to debug
+                    makeSpaceIn[i].ContainedIndex--;
+                }
+            }
+        }
+        
         public int ChangeRandomOperator(int maxChangedOperators)
         {
             int index;
             int changedOperatorCount;
             do
             {
-                index = SynchronizedRandom.Next(0, AllOperators.Count);
+                index = GetRandomOperatorIndexFromAllOperators();
                 changedOperatorCount = AllOperators[index].GetOperatorCount();
             } while (changedOperatorCount > maxChangedOperators);
             ChangeOperator(index);
             return changedOperatorCount;
         }
-        /// <summary>
-        /// changes a random operator
-        /// </summary>
-        public void ChangeRandomOperator()
-        {
-            int Index = SynchronizedRandom.Next(0, AllOperators.Count);
-            ChangeOperator(Index);
-        }
+
         /// <summary>
         /// changes a specific operator
         /// </summary>
@@ -222,28 +310,23 @@ namespace Solve_Funktion
             ToChange.ChangeOperator();
             ToChange.OperatorChanged();
         }
-
-
+        
         /// <summary>
         /// removes a random operator
         /// </summary>
-        public void RemoveRandomOperator()
-        {
-            int Index = SynchronizedRandom.Next(0, AllOperators.Count);
-            RemoveOperator(Index);
-        }
         public int RemoveRandomOperator(int maxRemovedOperators)
         {
             int index;
             int removedOperatorCount;
             do
             {
-                index = SynchronizedRandom.Next(0, AllOperators.Count);
+                index = GetRandomOperatorIndexFromAllOperators();
                 removedOperatorCount = AllOperators[index].GetOperatorCount();
             } while (removedOperatorCount > maxRemovedOperators);
             RemoveOperator(index);
             return removedOperatorCount;
         }
+
         /// <summary>
         /// makes sure only 1 operator is removed
         /// </summary>
@@ -251,9 +334,10 @@ namespace Solve_Funktion
         {
             //there will always be atleast one operato that doesn't have any other operators
             Operator SingleOP = AllOperators.Single(x => x.GetOperatorCount() == 1);
-            int Index = AllOperators.IndexOf(SingleOP);
+            int Index = Array.IndexOf(AllOperators, SingleOP);
             RemoveOperator(Index);
         }
+        
         /// <summary>
         /// removes a specific operator
         /// </summary>
@@ -264,9 +348,60 @@ namespace Solve_Funktion
             AllOperators[Index].StoreAndCleanup();
         }
 
-        public void OperatorChanged()
+        public override void OperatorChanged()
         {
             
+        }
+
+        public int AddOperatorToAlloperators(Operator oper)
+        {
+            int insertionIndex = (AllOperators[NumberOfAllOperators] == null) ? NumberOfAllOperators : GetFirstFreeIndex(AllOperators);
+            AddOperatorToAlloperators(oper, insertionIndex);
+            return insertionIndex;
+        }
+
+        public void AddOperatorToAlloperators(Operator oper, int insertionIndex)
+        {
+            AllOperators[insertionIndex] = oper;
+            NumberOfAllOperators++;
+        }
+
+        private int GetFirstFreeIndex(Operator[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == null)
+                {
+                    return i;
+                }
+
+            }
+            throw new Exception("Array contains no free space. this function shouldn't be called when the array is full");
+        }
+
+        public void RemoveOperatorFromAllOperators(int index)
+        {
+            AllOperators[index] = null;
+            NumberOfAllOperators--;
+        }
+
+        public int GetRandomOperatorIndexFromAllOperators()
+        {
+            int index;
+            do
+            {
+                index = Randomizer.Next(0, AllOperators.Length);
+            } while (AllOperators[index] == null);
+            return index;
+        }
+
+        public void CompressEquation()
+        {
+            if (NumberOfAllOperators > 0 && NumberOfAllOperators < EInfo.MaxSize)
+            {
+                Tools.CompressOperatorArray(AllOperators, NumberOfAllOperators, this, false);
+            }
+            Compress(this);
         }
     }
 }

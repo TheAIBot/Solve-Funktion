@@ -21,10 +21,10 @@ namespace Solve_Funktion
 
         public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
-            int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
-            while (AmountToChange > 0)
+            int AmountToChange = Cand.Randomizer.Next(1, EInfo.MaxChange);
+            while (AmountToChange > 0 && Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
-                int ToDo = SynchronizedRandom.Next(0, 3);
+                int ToDo = Cand.Randomizer.Next(0, 3);
                 switch (ToDo)
                 {
                     case 0:
@@ -48,7 +48,7 @@ namespace Solve_Funktion
 
         private static int ChangeOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < MaxChange)
+            if (Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 return Cand.ChangeRandomOperator(MaxChange);
             }
@@ -57,7 +57,7 @@ namespace Solve_Funktion
 
         private static int RemoveOPS(Equation Cand, int MaxChange)
         {
-            if (Cand.OperatorsLeft < MaxChange)
+            if (Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
                 return Cand.RemoveRandomOperator(MaxChange);
             }
@@ -66,21 +66,9 @@ namespace Solve_Funktion
 
         private static int InsertOPS(Equation Cand)
         {
-            if (Cand.OperatorsLeft > 0)
+            if (Cand.OperatorsLeft > 0 && Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
-                int WhereToAdd = SynchronizedRandom.Next(0, Cand.SortedOperators.Count);
-                List<Operator> LLOper = Cand.SortedOperators[WhereToAdd];
-                int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Count);
-                //there has to be an operator in the list because that's the only way to get the holder of the list
-                if (Cand.SortedOperators[WhereToAdd].Count > 0)
-                {
-                    Operator Oper = Cand.SortedOperators[WhereToAdd][0];
-                    OperatorHolder Holder = Oper.Holder;
-                    Operator ToAdd = Cand.OPStorage.Pop();
-                    ToAdd.MakeRandom(LLOper, Holder, WhereToAddOP);
-                    Oper.OperatorChanged();
-                    return ToAdd.GetOperatorCount();
-                }
+                return Cand.InsertOperator(Cand);
             }
             return 0;
         }
