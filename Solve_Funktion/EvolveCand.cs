@@ -34,7 +34,7 @@ namespace Solve_Funktion
                         AmountToChange -= RemoveOPS(Cand, EInfo.MaxChange);
                         break;
                     case 2:
-                        //AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
+                        AmountToChange -= ChangeOPS(Cand, EInfo.MaxChange);
                         break;
                 }
 #if DEBUG
