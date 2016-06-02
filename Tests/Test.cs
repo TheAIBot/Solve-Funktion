@@ -116,7 +116,6 @@ namespace Tests
         }
         public void CheckEquationInfo_OperatorsLeft()
         {
-            SynchronizedRandom.CreateRandom();
             Equation Cand = TestTools.MakeEquation();
             Assert.AreEqual(Cand.OperatorsLeft, Cand.EInfo.MaxSize, "OperatorsLeft return wrong value");
             if (Cand.OperatorsLeft > 0)

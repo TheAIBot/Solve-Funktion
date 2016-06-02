@@ -13,29 +13,29 @@ namespace Tests
     public static class TestTools
     {
         private static readonly Random rDom = new Random(12322);
+        private static readonly SynchronizedRandom Randomizer = new SynchronizedRandom();
 
         public static Equation MakeRandomEquation()
         {
-            Equation Cand = new Equation(GetEvolutionInfo());
-            SynchronizedRandom.CreateRandom();
+            Equation Cand = new Equation(GetEvolutionInfo(), Randomizer);
             Cand.MakeRandom();
             return Cand;
         }
 
         public static Equation MakeEquation()
         {
-            Equation Cand = new Equation(GetEvolutionInfo());
+            Equation Cand = new Equation(GetEvolutionInfo(), Randomizer);
             return Cand;
         }
 
         public static Equation MakeEquation(string parameters, string result)
         {
-            return new Equation(GetEvolutionInfo(parameters, result));
+            return new Equation(GetEvolutionInfo(parameters, result), Randomizer);
         }
 
         public static Equation MakeEquation(EvolutionInfo EInfo)
         {
-            return new Equation(EInfo);
+            return new Equation(EInfo, Randomizer);
         }
 
         public static Operator MakeSingleOperator()

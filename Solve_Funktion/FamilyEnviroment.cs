@@ -51,10 +51,10 @@ namespace Solve_Funktion
         {
             for (int i = 0; i < E1.Holders.Count; i++)
             {
-                if (SynchronizedRandom.RandomBool())
-                {
+                //if (SynchronizedRandom.RandomBool())
+                //{
                     
-                }
+                //}
             }
         }
     }

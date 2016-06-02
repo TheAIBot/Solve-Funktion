@@ -27,10 +27,12 @@ namespace Solve_Funktion
         public double OffSet; // the total offset of the equation
         public readonly double[] Results; // is a list of all the calculated results returned by the equation
         public int _toCalc; // the amount of points that had been used to calcualte the offset
+        public readonly SynchronizedRandom Randomizer;
         //public readonly string parameterNames;
 
-        public Equation(EvolutionInfo einfo) : base(einfo.MaxSize)
+        public Equation(EvolutionInfo einfo, SynchronizedRandom Rand) : base(einfo.MaxSize)
         {
+            Randomizer = Rand;
             EInfo = einfo;
             Holders = new List<OperatorHolder>(EInfo.MaxSize);
             AllOperators = new Operator[EInfo.MaxSize];
@@ -49,7 +51,7 @@ namespace Solve_Funktion
         public void MakeRandom()
         {
             // the number is atleast 1, so there is actually something in the equation
-            int AmountToAdd = SynchronizedRandom.Next(0, OperatorsLeft - 1);
+            int AmountToAdd = Randomizer.Next(0, OperatorsLeft - 1);
             while (0 < OperatorsLeft - AmountToAdd)
             {
                 AddOperator(OPStorage);
@@ -208,9 +210,9 @@ namespace Solve_Funktion
 
         public int InsertOperator(Equation Cand)
         {
-            int WhereToAdd = SynchronizedRandom.Next(0, Cand.Holders.Count);
+            int WhereToAdd = Randomizer.Next(0, Cand.Holders.Count);
             Operator[] LLOper = Cand.Holders[WhereToAdd].Operators;
-            int WhereToAddOP = SynchronizedRandom.Next(0, LLOper.Length);
+            int WhereToAddOP = Randomizer.Next(0, LLOper.Length);
             if (LLOper[WhereToAddOP] != null)
             {
                 MakeSpaceForOperator(LLOper, WhereToAddOP);
@@ -387,7 +389,7 @@ namespace Solve_Funktion
             int index;
             do
             {
-                index = SynchronizedRandom.Next(0, AllOperators.Length);
+                index = Randomizer.Next(0, AllOperators.Length);
             } while (AllOperators[index] == null);
             return index;
         }

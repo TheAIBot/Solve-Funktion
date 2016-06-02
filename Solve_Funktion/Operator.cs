@@ -42,16 +42,16 @@ namespace Solve_Funktion
 
         public void ChangeOperator()
         {
-            ResultOnRightSide = SynchronizedRandom.RandomBool();
+            ResultOnRightSide = Eq.Randomizer.RandomBool();
             do
             {
-                MFunction = Eq.EInfo.Operators[SynchronizedRandom.Next(0, Eq.EInfo.Operators.Length)];
+                MFunction = Eq.EInfo.Operators[Eq.Randomizer.Next(0, Eq.EInfo.Operators.Length)];
                 // should never be an infinete loop because this function should only be called when there is 1 or more operators left
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
-            UseRandomNumber = SynchronizedRandom.RandomBool();
-            RandomNumber = SynchronizedRandom.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
-            ParameterIndex = SynchronizedRandom.Next(0, Eq.EInfo.coordInfo.parameters.Length);
+            UseRandomNumber = Eq.Randomizer.RandomBool();
+            RandomNumber = Eq.Randomizer.Next(Eq.EInfo.NumberRangeMin, Eq.EInfo.NumberRangeMax);
+            ParameterIndex = Eq.Randomizer.Next(0, Eq.EInfo.coordInfo.parameters.Length);
             MFunction.MakeRandom(this);
         }
 

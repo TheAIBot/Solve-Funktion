@@ -18,6 +18,7 @@ namespace Solve_Funktion
         public SpecieEnviromentBase SpecEnviroment; // this is the enviroment this specie is living in
         public int _toCalc = 3; // amount of points that should be used to calculate the offset of an equation. min should be 3
         public event SpecieCreatedEventHandler OnSpecieCreated; // event is called when a specie is created
+        public readonly SynchronizedRandom Randomizer = new SynchronizedRandom();
 
         public void StartSetup(SpecieEnviromentBase SE, GeneralInfo G, EvolutionInfo E)
         {
@@ -38,7 +39,6 @@ namespace Solve_Funktion
         protected virtual void StartFinding()
         {
             SpecInfo = new SpeciesInfo();
-            SynchronizedRandom.CreateRandom();
             GInfo.IncrementTotalSpecies();
             InitializeUpdateInfo();
             if (OnSpecieCreated != null)

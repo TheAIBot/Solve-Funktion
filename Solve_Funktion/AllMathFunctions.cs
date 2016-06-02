@@ -627,13 +627,13 @@ namespace Solve_Funktion
             //Oper.parameterIndex = 0;
 
             //the method CanUseOperator makes sure there is atleast 1 available Operator to use in the parentheses
-            int AmountToAdd = SynchronizedRandom.Next(1, Oper.Eq.OperatorsLeft - 1);
+            int AmountToAdd = Oper.Eq.Randomizer.Next(1, Oper.Eq.OperatorsLeft - 1);
 
             while (0 < Oper.Eq.OperatorsLeft - AmountToAdd)
             {
                 Oper.AddOperator(Oper.Eq.OPStorage);
             }
-            Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[SynchronizedRandom.Next(0, Oper.Eq.EInfo.Connectors.Length)];
+            Oper.ExtraMathFunction = Oper.Eq.EInfo.Connectors[Oper.Eq.Randomizer.Next(0, Oper.Eq.EInfo.Connectors.Length)];
         }
         public override bool CanUseOperator(Operator Oper)
         {

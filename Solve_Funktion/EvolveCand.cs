@@ -21,10 +21,10 @@ namespace Solve_Funktion
 
         public static void EvolveCandidate(EvolutionInfo EInfo, Equation Cand)
         {
-            int AmountToChange = SynchronizedRandom.Next(1, EInfo.MaxChange);
+            int AmountToChange = Cand.Randomizer.Next(1, EInfo.MaxChange);
             while (AmountToChange > 0 && Cand.OperatorsLeft < Cand.EInfo.MaxSize)
             {
-                int ToDo = SynchronizedRandom.Next(0, 3);
+                int ToDo = Cand.Randomizer.Next(0, 3);
                 switch (ToDo)
                 {
                     case 0:
