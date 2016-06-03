@@ -184,7 +184,7 @@ namespace EquationCreator
                     30000,    // CandidatesPerGen
                     GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    6,        // SpeciesAmount
+                    7,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
