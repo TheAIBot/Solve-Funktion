@@ -118,7 +118,7 @@ namespace EquationCreator
                 //const string SequenceX = "  1";
                 //const string SequenceY = "276";
 
-                string str = "Fish and cake makes everything great again";
+                string str = "Math Memes";
                 byte[] bytes = Encoding.ASCII.GetBytes(str);
                 //byte[] bytes = new byte[str.Length * sizeof(char)];
                 //System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
