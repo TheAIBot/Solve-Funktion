@@ -33,7 +33,10 @@ namespace EquationCreator
                 BestFunction = SpecInfo;
                 Dispatcher.Invoke(() => this.DataContext = SpecInfo);
             }
-            catch (Exception) { }    
+            catch (Exception  e)
+            {
+                MessageBox.Show(e.Message + Environment.NewLine + e.StackTrace);
+            }    
         }
     }
 }

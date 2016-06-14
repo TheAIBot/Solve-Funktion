@@ -9,7 +9,7 @@ namespace EquationCreator
 {
     public class SynchronizedRandom
     {
-        private static int seedCounter = 100;// new Random().Next();
+        private static int seedCounter = 10;// new Random().Next();
 
         private readonly Random RDom;
 

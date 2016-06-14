@@ -238,7 +238,7 @@ namespace EquationCreator
             {
                 lock (e.BestEquationInfo)
                 {
-                    BCandControl.InsertInfo(e.BestEquationInfo.GetCopy());
+                    BCandControl.InsertInfo(e.BestEquationInfo);
                 }
                 System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
             }
