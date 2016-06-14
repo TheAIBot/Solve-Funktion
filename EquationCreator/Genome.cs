@@ -44,10 +44,10 @@ namespace EquationCreator
             }
             GInfo.IncrementTotalSpecies();
             InitializeUpdateInfo();
-            if (OnSpecieCreated != null)
+            lock (SpecInfo)
             {
-                OnSpecieCreated(new SpecieCreatedEventArgs() 
-                { 
+                OnSpecieCreated?.Invoke(new SpecieCreatedEventArgs()
+                {
                     SpecInfo = SpecInfo
                 });
             }
@@ -58,12 +58,15 @@ namespace EquationCreator
         /// </summary>
         protected virtual void UpdateInfo()
         {
-            SpecInfo.FunctionText = BestCandidate.CreateFunction();
-            SpecInfo.Offset = BestCandidate.OffSet;
-            SpecInfo.ResultText = String.Join(", ", BestCandidate.GetFunctionResults());
-            SpecInfo.Attempts += EInfo.CandidatesPerGen;
-            SpecInfo.Generation++;
-            SpecInfo.OperatorCount = BestCandidate.NumberOfAllOperators;
+            lock (SpecInfo)
+            {
+                SpecInfo.FunctionText = BestCandidate.CreateFunction();
+                SpecInfo.Offset = BestCandidate.OffSet;
+                SpecInfo.ResultText = String.Join(", ", BestCandidate.GetFunctionResults());
+                SpecInfo.Attempts += EInfo.CandidatesPerGen;
+                SpecInfo.Generation++;
+                SpecInfo.OperatorCount = BestCandidate.NumberOfAllOperators;
+            }
             GInfo.AddTotalAttempts((long)EInfo.CandidatesPerGen);
             SpecEnviroment.CheckBestCandidate();
         }
@@ -73,7 +76,10 @@ namespace EquationCreator
         /// </summary>
         protected void InitializeUpdateInfo()
         {
-            SpecInfo.SequenceText = String.Join(", ", EInfo.coordInfo.expectedResults.Select(x => x.ToString("N2")));
+            lock (SpecInfo)
+            {
+                SpecInfo.SequenceText = String.Join(", ", EInfo.coordInfo.expectedResults.Select(x => x.ToString("N2")));
+            }
         }
 
         /// <summary>

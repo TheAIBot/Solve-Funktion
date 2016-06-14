@@ -118,26 +118,29 @@ namespace EquationCreator
                 //const string SequenceX = "  1";
                 //const string SequenceY = "276";
 
-                string str = "Math Memes";
-                byte[] bytes = Encoding.ASCII.GetBytes(str);
+                //string str = "Math Memes";
+                //byte[] bytes = Encoding.ASCII.GetBytes(str);
                 //byte[] bytes = new byte[str.Length * sizeof(char)];
                 //System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-                string SequenceX = "x = {" + String.Join(", ", Enumerable.Range(0, bytes.Length)) + "}";
-                string SequenceY = String.Join(", ", bytes);
+                //string SequenceX = "x = {" + String.Join(", ", Enumerable.Range(0, bytes.Length)) + "}";
+                //((string SequenceY = String.Join(", ", bytes);
 
-                //List<double> SeqRX = new List<double>();
-                //List<double> SeqRY = new List<double>();
-                ////for (double i = -Math.PI; i < Math.PI; i += 0.1)
-                ////{
-                ////    SeqRX.Add(i);
-                ////    SeqRY.Add(Math.Sin(i));
-                ////}
+                List<double> SeqRX = new List<double>();
+                List<double> SeqRY = new List<double>();
+                for (double i = -Math.PI; i < Math.PI; i += 0.4)
+                {
+                    SeqRX.Add(i);
+                    SeqRY.Add(Math.Sin(i));
+                }
+                string SequenceX = "x = {" + String.Join(", ", SeqRX.Select(x => x.ToString("N2", CultureInfo.GetCultureInfo("en-US")))) + "}";
+                string SequenceY = String.Join(", ", SeqRY.Select(x => x.ToString("N2", CultureInfo.GetCultureInfo("en-US"))));
                 //for (double i = -30; i < 150; i += 10)
                 //{
                 //    SeqRX.Add(i);
                 //    SeqRY.Add(Math.Exp(i));
                 //}
                 //VectorPoint[] Seq = GetSequence(SeqRX.ToArray(), SeqRY.ToArray());
+
                 CoordInfo Seq = new CoordInfo(SequenceX, SequenceY);
 
                 MathFunction[] Operators = new MathFunction[]
@@ -147,27 +150,27 @@ namespace EquationCreator
                     new Multiply(),
                     new Divide(),
 
-                    new PowerOf(),
-                    new Root(),
-                    new Exponent(),
-                    new NaturalLog(),
-                    new Log(),
+                    //new PowerOf(),
+                    //new Root(),
+                    //new Exponent(),
+                    //new NaturalLog(),
+                    //new Log(),
 
-                    new Modulos(),
-                    new Floor(),
-                    new Ceil(),
-                    new Round(),
+                    //new Modulos(),
+                    //new Floor(),
+                    //new Ceil(),
+                    //new Round(),
 
-                    new Sin(),
-                    new Cos(),
-                    new Tan(),
-                    new ASin(),
-                    new ACos(),
-                    new ATan(),
+                    //new Sin(),
+                    //new Cos(),
+                    //new Tan(),
+                    //new ASin(),
+                    //new ACos(),
+                    //new ATan(),
 
                     new Parentheses(),
                     //new Constant(),
-                    new Absolute(),
+                    //new Absolute(),
 
                     //new AND(),
                     //new NAND(),
@@ -179,12 +182,12 @@ namespace EquationCreator
                 };
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
-                    40,       // MaxSize
+                    20,       // MaxSize
                     0.2,        // MaxChange
                     30000,    // CandidatesPerGen
-                    GetMaxNumberFromVectorPointArray(Seq) + 1,   // NumberRangeMax
+                    Math.Max(0, GetMaxNumberFromVectorPointArray(Seq)) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    7,        // SpeciesAmount
+                    6,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
@@ -235,7 +238,7 @@ namespace EquationCreator
             {
                 lock (e.BestEquationInfo)
                 {
-                    BCandControl.InsertInfo(e.BestEquationInfo);
+                    BCandControl.InsertInfo(e.BestEquationInfo.GetCopy());
                 }
                 System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
             }

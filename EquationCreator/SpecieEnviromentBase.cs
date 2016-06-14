@@ -51,18 +51,21 @@ namespace EquationCreator
                                                 .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
                     if (SpecInfos.Length > 0)
                     {
-                        if (BestEquationInfo == null ||
-                            BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
-                            BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc ||
-                            BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset &&
-                            BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
-                            BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
+                        lock (SpecInfos[0].SpecInfo)
                         {
-                            SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
-                            OnBestEquationChanged(new BestEquationEventArgs
+                            if (BestEquationInfo == null ||
+                                BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
+                                BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc ||
+                                BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset &&
+                                BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
+                                BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
                             {
-                                BestEquationInfo = SpecInfo
-                            });
+                                SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
+                                OnBestEquationChanged(new BestEquationEventArgs
+                                {
+                                    BestEquationInfo = SpecInfo
+                                });
+                            }
                         }
                     }
                 }
