@@ -24,5 +24,15 @@ namespace EquationCreator
         {
             Cand.MakeRandom();
         }
+
+        public static void MakeValidRandomEquation(Equation eq)
+        {
+            do
+            {
+                eq.Cleanup();
+                MakeRandomEquation(eq);
+                eq.CalcTotalOffSet();
+            } while (!Tools.IsANumber(eq.OffSet));
+        }
     }
 }

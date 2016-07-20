@@ -26,7 +26,8 @@ namespace EquationCreator
     public partial class MainWindow : Window
     {
         ConcurrentStack<SpecieInfoControl> SpecControls;
-        IndividualSpecieEnviroment<SingleSpecieEvolution> SpecieEnviroment;
+        IndividualSpecieEnviroment<SingleSpecieEvolutionMethod> singleSpecieEnviroment;
+        FamilyEnviroment<FamilySpecieEvolutionMethod> familyEnviroment;
 
         public MainWindow()
         {
@@ -63,8 +64,8 @@ namespace EquationCreator
                 //const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
                 //const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
 
-                //const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
-                //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+                const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
+                const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
 
                 //const string SequenceX = "x = {384, 357, 221, 9, 18, 357, 221, 6}, y = {18, 357, 221, 6, 384, 357, 221, 9}";
                 //const string SequenceY = "     6, 1, 17, 3, 6, 1, 17, 3";
@@ -125,15 +126,15 @@ namespace EquationCreator
                 //string SequenceX = "x = {" + String.Join(", ", Enumerable.Range(0, bytes.Length)) + "}";
                 //((string SequenceY = String.Join(", ", bytes);
 
-                List<double> SeqRX = new List<double>();
-                List<double> SeqRY = new List<double>();
-                for (double i = -Math.PI; i < Math.PI; i += 0.4)
-                {
-                    SeqRX.Add(i);
-                    SeqRY.Add(Math.Sin(i));
-                }
-                string SequenceX = "x = {" + String.Join(", ", SeqRX.Select(x => x.ToString("N2", CultureInfo.GetCultureInfo("en-US")))) + "}";
-                string SequenceY = String.Join(", ", SeqRY.Select(x => x.ToString("N2", CultureInfo.GetCultureInfo("en-US"))));
+                //List<double> SeqRX = new List<double>();
+                //List<double> SeqRY = new List<double>();
+                //for (double i = -Math.PI; i < Math.PI; i += 0.4)
+                //{
+                //    SeqRX.Add(i);
+                //    SeqRY.Add(Math.Sin(i));
+                //}
+                //string SequenceX = "x = {" + String.Join(", ", SeqRX.Select(x => x.ToString("N2", CultureInfo.GetCultureInfo("en-US")))) + "}";
+                //string SequenceY = String.Join(", ", SeqRY.Select(x => x.ToString("N2", CultureInfo.GetCultureInfo("en-US"))));
                 //for (double i = -30; i < 150; i += 10)
                 //{
                 //    SeqRX.Add(i);
@@ -150,8 +151,8 @@ namespace EquationCreator
                     new Multiply(),
                     new Divide(),
 
-                    //new PowerOf(),
-                    //new Root(),
+                    new PowerOf(),
+                    new Root(),
                     //new Exponent(),
                     //new NaturalLog(),
                     //new Log(),
@@ -182,12 +183,12 @@ namespace EquationCreator
                 };
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
-                    20,       // MaxSize
+                    10,       // MaxSize
                     0.2,        // MaxChange
-                    30000,    // CandidatesPerGen
-                    Math.Max(0, GetMaxNumberFromVectorPointArray(Seq)) + 1,   // NumberRangeMax
+                    200000,    // CandidatesPerGen
+                    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    6,        // SpeciesAmount
+                    4,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
@@ -195,13 +196,21 @@ namespace EquationCreator
                     Operators // Operators that can be used in an equation
                     );
 
-                SpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolution>();
-                SpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                SpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+                //singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
+                //singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                //singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-                GeneralInfo GInfo = SpecieEnviroment.SetupEviroment(EInfo);
+                //GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
+                //GeneralInfoControl.InsertInfo(GInfo);
+                //singleSpecieEnviroment.SimulateEnviroment();
+
+                familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
+                familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+
+                GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
                 GeneralInfoControl.InsertInfo(GInfo);
-                SpecieEnviroment.SimulateEnviroment();
+                familyEnviroment.SimulateEnviroment();
             }
             catch (Exception e)
             {
@@ -213,7 +222,7 @@ namespace EquationCreator
             MessageBox.Show("Done");
         }
 
-        private int GetMaxNumberFromVectorPointArray(CoordInfo coordInfo)
+        private int GetMaxNumber(CoordInfo coordInfo)
         {
             return (int)Math.Ceiling(Math.Max(coordInfo.expectedResults.Max(), coordInfo.parameters.Max(x => x.Max())));
         }
@@ -227,28 +236,31 @@ namespace EquationCreator
             }
         }
 
+        private object checkBestEquationLocker = new object();
+
         public void SpecieEnviroment_OnBestEquationChanged(BestEquationEventArgs e)
         {
-            if (BCandControl.BestFunction == null ||
-                BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset && 
-                BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc ||
-                BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
-                BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
-                BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
+            lock (checkBestEquationLocker)
             {
-                lock (e.BestEquationInfo)
+                if (BCandControl.BestFunction == null ||
+                    BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset &&
+                    BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc ||
+                    BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
+                    BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
+                    BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
                 {
                     BCandControl.InsertInfo(e.BestEquationInfo);
+                    System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
                 }
-                System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
+                DrawGraph();
             }
-            DrawGraph();
         }
 
         private object ChartLocker = new object();
 
         public void DrawGraph()
         {
+            Genome[] Species = (Genome[])singleSpecieEnviroment?.Species ?? (Genome[])familyEnviroment?.Species;
             lock (ChartLocker)
             {
                 this.Dispatcher.Invoke(() =>
@@ -260,7 +272,7 @@ namespace EquationCreator
                     }
                     Charter.Series.Clear();
                     int GenerationIndex = 0;
-                    foreach (Genome Spec in SpecieEnviroment.Species)
+                    foreach (Genome Spec in Species)
                     {
                         Series Serie = Charter.Series.Add(GenerationIndex.ToString());
                         Serie.ChartType = SeriesChartType.Spline;
@@ -278,9 +290,9 @@ namespace EquationCreator
                     Seride.ChartType = SeriesChartType.Spline;
                     Seride.BorderWidth = 4;
                     Seride.Color = System.Drawing.Color.Black;
-                    for (int i = 0; i < SpecieEnviroment.Species[0].EInfo.coordInfo.expectedResults.Length; i++)
+                    for (int i = 0; i < Species[0].EInfo.coordInfo.expectedResults.Length; i++)
                     {
-                        Seride.Points.AddXY(SpecieEnviroment.Species[0].EInfo.coordInfo.parameters[0][i], SpecieEnviroment.Species[0].EInfo.coordInfo.expectedResults[i]);
+                        Seride.Points.AddXY(Species[0].EInfo.coordInfo.parameters[0][i], Species[0].EInfo.coordInfo.expectedResults[i]);
                     }
                 });
             }
