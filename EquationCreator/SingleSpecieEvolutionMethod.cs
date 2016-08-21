@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace EquationCreator
 {
-    public class SingleSpecieEvolutionMethod : Genome
+    public class SingleSpecieEvolutionMethod : SingleGenome
     {
 
-        public override Genome EvolveSolution()
+        public override Genome EvolveSpecie()
         {
             StartFinding();
             BestCandidate = new Equation(EInfo, Randomizer);
@@ -102,7 +102,7 @@ namespace EquationCreator
             return BestCandEvolved;
         }
 
-        protected virtual bool ChangeIfBetter(Equation Eq, Equation OldEquation, Equation BestEvolvedCand)
+        protected bool ChangeIfBetter(Equation Eq, Equation OldEquation, Equation BestEvolvedCand)
         {
             if (Tools.IsANumber(Eq.OffSet))
             {
@@ -121,5 +121,6 @@ namespace EquationCreator
             }
             return false;
         }
+
     }
 }

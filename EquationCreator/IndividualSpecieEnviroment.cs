@@ -8,12 +8,12 @@ using System.Windows;
 
 namespace EquationCreator
 {
-    public class IndividualSpecieEnviroment<T> : SpecieEnviromentBase where T : Genome, new()
+    public class IndividualSpecieEnviroment<T> : SpecieEnviromentBase<SingleGenome> where T : SingleGenome, new()
     {
         public override GeneralInfo SetupEviroment(EvolutionInfo einfo)
         {
             EInfo = einfo;
-            Species = new Genome[EInfo.SpeciesAmount];
+            Species = new SingleGenome[EInfo.SpeciesAmount];
             GInfo = new GeneralInfo();
             for (int i = 0; i < EInfo.SpeciesAmount; i++)
             {
@@ -35,7 +35,8 @@ namespace EquationCreator
                     Genome FinishedSpecie;
                     do
                     {
-                        FinishedSpecie = Species[i].EvolveSolution();
+                        FinishedSpecie = Species[i].EvolveSpecie();
+                        CheckBestCandidate(FinishedSpecie.SpecInfo.GetCopy());
                     } while (FinishedSpecie.BestCandidate.OffSet != 0);
                 }
                 catch (Exception e)

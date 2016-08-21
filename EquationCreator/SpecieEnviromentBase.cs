@@ -11,14 +11,14 @@ namespace EquationCreator
     this not only allows species to evolve by them selfs but also allows
     them to use each other to evolve if that is what the evolutionary approach aims to do
     */
-    public abstract class SpecieEnviromentBase
+    public abstract class SpecieEnviromentBase<T>
     {
         public event BestEquationEventHandler OnBestEquationChanged;
         public event SubscribeEventEventHandler OnSubscribeToSpecies;
         protected EvolutionInfo EInfo;
         protected SpeciesInfo BestEquationInfo;
         protected GeneralInfo GInfo;
-        public Genome[] Species;
+        public T[] Species;
 
         /// <summary>
         /// prepares the enviroment with its evolution parameters
@@ -39,37 +39,12 @@ namespace EquationCreator
 
         private object checkEquationLocker = new object();
 
-        public void CheckBestCandidate()
+        public void CheckBestCandidate(SpeciesInfo specInfo)
         {
-            lock (checkEquationLocker)
+            OnBestEquationChanged?.Invoke(new BestEquationEventArgs
             {
-                if (OnBestEquationChanged != null)
-                {
-                    Genome[] SpecInfos = Species.Where(x => x.BestCandidate != null && Tools.IsANumber(x.BestCandidate.OffSet))
-                                                .OrderByDescending(x => x._toCalc)
-                                                .ThenBy(x => x.BestCandidate.OffSet)
-                                                .ThenByDescending(x => x.BestCandidate.OperatorsLeft).ToArray();
-                    if (SpecInfos.Length > 0)
-                    {
-                        lock (SpecInfos[0].SpecInfo)
-                        {
-                            if (BestEquationInfo == null ||
-                                BestEquationInfo.Offset > SpecInfos[0].SpecInfo.Offset &&
-                                BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc ||
-                                BestEquationInfo.Offset == SpecInfos[0].SpecInfo.Offset &&
-                                BestEquationInfo.OperatorCount > SpecInfos[0].SpecInfo.OperatorCount &&
-                                BestEquationInfo.toCalc <= SpecInfos[0].SpecInfo.toCalc)
-                            {
-                                SpeciesInfo SpecInfo = SpecInfos[0].SpecInfo;
-                                OnBestEquationChanged(new BestEquationEventArgs
-                                {
-                                    BestEquationInfo = SpecInfo
-                                });
-                            }
-                        }
-                    }
-                }
-            }
+                BestEquationInfo = specInfo
+            });
         }
     }
 
