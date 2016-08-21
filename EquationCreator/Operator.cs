@@ -13,7 +13,7 @@ namespace EquationCreator
         public bool ResultOnRightSide;
         public MathFunction MFunction;
         public int ParameterIndex;
-        public double RandomNumber;
+        public float RandomNumber;
         public bool UseRandomNumber;
         public int ContainedIndex;
         public Operator[] ContainedList;
@@ -61,7 +61,7 @@ namespace EquationCreator
         /// <param name="Result">number returned by previous operators or initial number from equation</param>
         /// <param name="x"> value of x</param>
         /// <returns>result of Result and this operator</returns>
-        public bool Calculate(double[] Result, double[][] parameters)
+        public bool Calculate(float[] Result, float[][] parameters)
         {
             //if (MaxCalculated >= Index)
             //{
@@ -185,7 +185,7 @@ namespace EquationCreator
             //}
         }
 
-        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
+        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             Operator toAdd = Eq.OPStorage.Pop();
             toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
@@ -193,7 +193,7 @@ namespace EquationCreator
             return toAdd;
         }
 
-        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber,
+        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber,
                           Operator[] OContainedlist, int CIndex, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             ResultOnRightSide = OResultOmRightSide;

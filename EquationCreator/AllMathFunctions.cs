@@ -14,7 +14,7 @@ namespace EquationCreator
         private string ReversedPreFix;
         private string ReversedMiddleFix;
 
-        public abstract bool Calculate(double[] Result, double[][] parameters, Operator Oper);
+        public abstract bool Calculate(float[] Result, float[][] parameters, Operator Oper);
         public abstract void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards);
 
         public virtual void MakeRandom(Operator Oper)
@@ -105,7 +105,7 @@ namespace EquationCreator
 
     public abstract class Connector : MathFunction
     {
-        public abstract void CalculateConnector(double[] results, double[] scalar, Operator oper);
+        public abstract void CalculateConnector(float[] results, float[] scalar, Operator oper);
 
         public string ShowConnector(Operator Oper, string Left, string Right)
         {
@@ -121,11 +121,11 @@ namespace EquationCreator
             MiddleFix = " + ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (Num + result[i]) : (result[i] + Num);
             }
             return true;
@@ -134,7 +134,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -149,11 +149,11 @@ namespace EquationCreator
             MiddleFix = " - ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (Num - result[i]) : (result[i] - Num);
             }
             return true;
@@ -162,7 +162,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -177,11 +177,11 @@ namespace EquationCreator
             MiddleFix = " * ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (Num * result[i]) : (result[i] * Num);
             }
             return true;
@@ -190,7 +190,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -205,11 +205,11 @@ namespace EquationCreator
             MiddleFix = " / ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (Num / result[i]) : (result[i] / Num);
             }
             return true;
@@ -218,7 +218,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -233,11 +233,11 @@ namespace EquationCreator
             MiddleFix = " % ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (Num % result[i]) : (result[i] % Num);
             }
             return true;
@@ -246,7 +246,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -261,12 +261,12 @@ namespace EquationCreator
             MiddleFix = " ^ ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
-                result[i] = (oper.ResultOnRightSide) ? (Math.Pow(Num, result[i])) : (Math.Pow(result[i], Num));
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                result[i] = (oper.ResultOnRightSide) ? ((float)Math.Pow(Num, result[i])) : ((float)Math.Pow(result[i], Num));
             }
             return true;
         }
@@ -274,11 +274,11 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
-                results[i] = (oper.ResultOnRightSide) ? (Math.Pow(results[i], scalars[i])) : (Math.Pow(scalars[i], results[i]));
+                results[i] = (oper.ResultOnRightSide) ? ((float)Math.Pow(results[i], scalars[i])) : ((float)Math.Pow(scalars[i], results[i]));
             }
         }
     }
@@ -290,11 +290,11 @@ namespace EquationCreator
             PreFix = "sqrt";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Sqrt(result[i]);
+                result[i] = (float)Math.Sqrt(result[i]);
             }
             return true;
         }
@@ -311,11 +311,11 @@ namespace EquationCreator
             PreFix = "exp";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Exp(result[i]);
+                result[i] = (float)Math.Exp(result[i]);
             }
             return true;
         }
@@ -332,11 +332,11 @@ namespace EquationCreator
             PreFix = "log";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Log(result[i]);
+                result[i] = (float)Math.Log(result[i]);
             }
             return true;
         }
@@ -353,11 +353,11 @@ namespace EquationCreator
             PreFix = "log10";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Log10(result[i]);
+                result[i] = (float)Math.Log10(result[i]);
             }
             return true;
         }
@@ -376,11 +376,11 @@ namespace EquationCreator
             PreFix = "floor";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Floor(result[i]);
+                result[i] = (float)Math.Floor(result[i]);
             }
             return true;
         }
@@ -397,11 +397,11 @@ namespace EquationCreator
             PreFix = "ceil";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Ceiling(result[i]);
+                result[i] = (float)Math.Ceiling(result[i]);
             }
             return true;
         }
@@ -418,11 +418,11 @@ namespace EquationCreator
             PreFix = "round";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Round(result[i]);
+                result[i] = (float)Math.Round(result[i]);
             }
             return true;
         }
@@ -441,11 +441,11 @@ namespace EquationCreator
             PreFix = "sin";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Sin(result[i]);
+                result[i] = (float)Math.Sin(result[i]);
             }
             return true;
         }
@@ -462,11 +462,11 @@ namespace EquationCreator
             PreFix = "cos";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Cos(result[i]);
+                result[i] = (float)Math.Cos(result[i]);
             }
             return true;
         }
@@ -483,11 +483,11 @@ namespace EquationCreator
             PreFix = "tan";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Tan(result[i]);
+                result[i] = (float)Math.Tan(result[i]);
             }
             return true;
         }
@@ -504,11 +504,11 @@ namespace EquationCreator
             PreFix = "asin";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Asin(result[i]);
+                result[i] = (float)Math.Asin(result[i]);
             }
             return true;
         }
@@ -525,11 +525,11 @@ namespace EquationCreator
             PreFix = "acos";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Acos(result[i]);
+                result[i] = (float)Math.Acos(result[i]);
             }
             return true;
         }
@@ -546,11 +546,11 @@ namespace EquationCreator
             PreFix = "atan";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Math.Atan(result[i]);
+                result[i] = (float)Math.Atan(result[i]);
             }
             return true;
         }
@@ -567,10 +567,10 @@ namespace EquationCreator
         {
             IsConnecter = false;
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             //need to find out how i can remove the creation of this array
-            double[] parenthesesResults = new double[result.Length];
+            float[] parenthesesResults = new float[result.Length];
             Array.Copy(parameters[oper.ParameterIndex], parenthesesResults, parenthesesResults.Length);
             int OperatorsToCompressLeft = oper.NumberOfOperators;
             int OperatorToCompressIndex = 0;
@@ -712,9 +712,9 @@ namespace EquationCreator
     }
     public sealed class Constant : Parentheses
     {
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
-            double[] parenthesesResults = new double[result.Length];
+            float[] parenthesesResults = new float[result.Length];
             parenthesesResults.Fill(oper.RandomNumber);
             for (int i = 0; i < oper.Operators.Length; i++)
             {
@@ -775,7 +775,7 @@ namespace EquationCreator
             PostFix = "|";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
@@ -797,11 +797,11 @@ namespace EquationCreator
             MiddleFix = " and ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (MathLogic.AND(Num, result[i])) : (MathLogic.AND(result[i], Num));
             }
             return true;
@@ -810,7 +810,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -825,11 +825,11 @@ namespace EquationCreator
             MiddleFix = " nand ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (MathLogic.NAND(Num, result[i])) : (MathLogic.NAND(result[i], Num));
             }
             return true;
@@ -838,7 +838,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -853,11 +853,11 @@ namespace EquationCreator
             MiddleFix = " or ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (MathLogic.OR(Num, result[i])) : (MathLogic.OR(result[i], Num));
             }
             return true;
@@ -866,7 +866,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -881,11 +881,11 @@ namespace EquationCreator
             MiddleFix = " nor ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (MathLogic.NOR(Num, result[i])) : (MathLogic.NOR(result[i], Num));
             }
             return true;
@@ -894,7 +894,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -909,11 +909,11 @@ namespace EquationCreator
             MiddleFix = " xor ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (MathLogic.XOR(Num, result[i])) : (MathLogic.XOR(result[i], Num));
             }
             return true;
@@ -922,7 +922,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -937,11 +937,11 @@ namespace EquationCreator
             MiddleFix = " xnor ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {
-                double Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
+                float Num = (oper.UseRandomNumber) ? oper.RandomNumber : parameters[oper.ParameterIndex][i];
                 result[i] = (oper.ResultOnRightSide) ? (MathLogic.XNOR(Num, result[i])) : (MathLogic.XNOR(result[i], Num));
             }
             return true;
@@ -950,7 +950,7 @@ namespace EquationCreator
         {
             DrawOperator(Oper, Forwards, Backwards);
         }
-        public override void CalculateConnector(double[] results, double[] scalars, Operator oper)
+        public override void CalculateConnector(float[] results, float[] scalars, Operator oper)
         {
             for (int i = 0; i < results.Length; i++)
             {
@@ -966,7 +966,7 @@ namespace EquationCreator
             PreFix = " not ";
             CreateReversedStrings();
         }
-        public override bool Calculate(double[] result, double[][] parameters, Operator oper)
+        public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
             for (int i = 0; i < result.Length; i++)
             {

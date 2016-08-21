@@ -7,7 +7,7 @@ namespace EquationCreator
 {
     public static class Tools
     {
-        public static bool IsANumber(double[] ToDecide)
+        public static bool IsANumber(float[] ToDecide)
         {
             for (int i = 0; i < ToDecide.Length; i++)
             {
@@ -18,9 +18,9 @@ namespace EquationCreator
             }
             return true;
         }
-        public static bool IsANumber(double ToDecide)
+        public static bool IsANumber(float ToDecide)
         {
-            if (double.IsNaN(ToDecide) || double.IsInfinity(ToDecide))
+            if (float.IsNaN(ToDecide) || float.IsInfinity(ToDecide))
             {
                 return false;
             }

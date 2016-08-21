@@ -21,8 +21,8 @@ namespace EquationCreator
                 RandomCand.MakeRandomEquation(BestCandidate);
                 BestCandidate.CalcTotalOffSet();
             } while (!Tools.IsANumber(BestCandidate.OffSet));
-            Equation EvolvedEquation = new Equation(EInfo, Randomizer) { OffSet = Double.NaN };
-            Equation OldEquation = new Equation(EInfo, Randomizer) { OffSet = Double.NaN };
+            Equation EvolvedEquation = new Equation(EInfo, Randomizer) { OffSet = float.NaN };
+            Equation OldEquation = new Equation(EInfo, Randomizer) { OffSet = float.NaN };
             bool BestCandEvolved = false;
             _toCalc = EInfo.coordInfo.expectedResults.Length;
             while (_toCalc <= EInfo.coordInfo.expectedResults.Length)

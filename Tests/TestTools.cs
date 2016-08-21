@@ -114,8 +114,8 @@ namespace Tests
             string[] refined = lines.Select(x => Regex.Replace(x, "[ =}]", String.Empty)).ToArray();
             string[][] namesAndValues = refined.Select(x => x.Split('{')).ToArray();
             string[] names = namesAndValues.Select(x => x[0]).ToArray();
-            double[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToDouble(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
-            double[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+            float[][] SeqRX = namesAndValues.Select(x => x[1].Split(',').Select(z => Convert.ToSingle(z, CultureInfo.InvariantCulture.NumberFormat)).ToArray()).ToArray();
+            float[] SeqRY = SequenceY.Split(',').Select(x => Convert.ToSingle(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
             return new CoordInfo(SeqRY, SeqRX, names);
         }
 
