@@ -569,9 +569,7 @@ namespace EquationCreator
         }
         public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
-            //need to find out how i can remove the creation of this array
-            float[] parenthesesResults = new float[result.Length];
-            Array.Copy(parameters[oper.ParameterIndex], parenthesesResults, parenthesesResults.Length);
+            Array.Copy(parameters[oper.ParameterIndex], oper.parenthesesResults, oper.parenthesesResults.Length);
             int OperatorsToCompressLeft = oper.NumberOfOperators;
             int OperatorToCompressIndex = 0;
             while (OperatorsToCompressLeft > 0)
@@ -579,9 +577,9 @@ namespace EquationCreator
                 if (oper.Operators[OperatorToCompressIndex] != null)
                 {
                     OperatorsToCompressLeft--;
-                    if (oper.Operators[OperatorToCompressIndex].Calculate(parenthesesResults, parameters))
+                    if (oper.Operators[OperatorToCompressIndex].Calculate(oper.parenthesesResults, parameters))
                     {
-                        if (!Tools.IsANumber(parenthesesResults))
+                        if (!Tools.IsANumber(oper.parenthesesResults))
                         {
                             return false;
                         }
@@ -593,7 +591,7 @@ namespace EquationCreator
                 }
                 OperatorToCompressIndex++;
             }
-            oper.ExtraMathFunction.CalculateConnector(result, parenthesesResults, oper);
+            oper.ExtraMathFunction.CalculateConnector(result, oper.parenthesesResults, oper);
             return true;
         }
 
@@ -714,15 +712,14 @@ namespace EquationCreator
     {
         public override bool Calculate(float[] result, float[][] parameters, Operator oper)
         {
-            float[] parenthesesResults = new float[result.Length];
-            parenthesesResults.Fill(oper.RandomNumber);
+            oper.parenthesesResults.Fill(oper.RandomNumber);
             for (int i = 0; i < oper.Operators.Length; i++)
             {
                 if (oper.Operators[i] != null)
                 {
-                    if (oper.Operators[i].Calculate(parenthesesResults, parameters))
+                    if (oper.Operators[i].Calculate(oper.parenthesesResults, parameters))
                     {
-                        if (!Tools.IsANumber(parenthesesResults))
+                        if (!Tools.IsANumber(oper.parenthesesResults))
                         {
                             return false;
                         }
@@ -733,7 +730,7 @@ namespace EquationCreator
                     }
                 }
             }
-            oper.ExtraMathFunction.CalculateConnector(result, parenthesesResults, oper);
+            oper.ExtraMathFunction.CalculateConnector(result, oper.parenthesesResults, oper);
             return true;
         }
         public override void ShowOperator(Operator Oper, StringBuilder Forwards, StringBuilder Backwards)

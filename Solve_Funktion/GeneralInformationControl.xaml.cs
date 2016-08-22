@@ -23,7 +23,7 @@ namespace EquationCreator
     {
         public GeneralInfo GInfo;
         public long OldTotalAttemps = 0;
-        private const int STORED_ATTEMPS_SEC = 100;
+        private const int STORED_ATTEMPS_SEC = 15;
         private List<long> OldAttempsSec = new List<long>(STORED_ATTEMPS_SEC);
 
         public GeneralInformationControl()

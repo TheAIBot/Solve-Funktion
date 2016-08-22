@@ -22,12 +22,14 @@ namespace EquationCreator
         public OperatorHolder Holder;
         public readonly Equation Eq;
         public int AllOperatorsContainedIndex;
+        public readonly float[] parenthesesResults;
 
         //public readonly Vector<double>[] OperatorResults;
 
         public Operator(Equation OEq) : base(OEq.EInfo.MaxSize)
         {
             Eq = OEq;
+            parenthesesResults = new float[OEq.EInfo.coordInfo.expectedResults.Length];
         }
 
         public void MakeRandom(Operator[] OContainedList, OperatorHolder OHolder, int CIndex)
