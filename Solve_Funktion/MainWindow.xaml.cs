@@ -188,7 +188,7 @@ namespace EquationCreator
                     30000,    // CandidatesPerGen
                     Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    8,        // SpeciesAmount
+                    6,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
