@@ -183,12 +183,12 @@ namespace EquationCreator
                 };
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
-                    10,       // MaxSize
+                    20,       // MaxSize
                     0.2,        // MaxChange
-                    200000,    // CandidatesPerGen
+                    30000,    // CandidatesPerGen
                     Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    4,        // SpeciesAmount
+                    6,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
@@ -196,21 +196,36 @@ namespace EquationCreator
                     Operators // Operators that can be used in an equation
                     );
 
-                //singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
-                //singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                //singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+                singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
+                singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-                //GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
-                //GeneralInfoControl.InsertInfo(GInfo);
-                //singleSpecieEnviroment.SimulateEnviroment();
-
-                familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
-                familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
-
-                GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
+                GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
                 GeneralInfoControl.InsertInfo(GInfo);
-                familyEnviroment.SimulateEnviroment();
+                singleSpecieEnviroment.SimulateEnviroment();
+
+                //EvolutionInfo EInfo = new EvolutionInfo(
+                //    Seq,      // Sequence
+                //    10,       // MaxSize
+                //    0.2,        // MaxChange
+                //    200000,    // CandidatesPerGen
+                //    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
+                //    0,     // NumberRangeMin
+                //    4,        // SpeciesAmount
+                //    100,      // MaxStuckGens
+                //    0.8,      // EvolvedCandidatesPerGen
+                //    0,        // RandomCandidatesPerGen
+                //    0.2,      // SmartCandidatesPerGen
+                //    Operators // Operators that can be used in an equation
+                //);
+
+                //familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
+                //familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                //familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+
+                //GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
+                //GeneralInfoControl.InsertInfo(GInfo);
+                //familyEnviroment.SimulateEnviroment();
             }
             catch (Exception e)
             {

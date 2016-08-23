@@ -8,32 +8,32 @@ namespace EquationCreator
 {
     public static class MathLogic
     {
-        public static double NOT(double a)
+        public static float NOT(float a)
         {
             return 1 - a;
         }
 
-        public static double AND(double a, double b)
+        public static float AND(float a, float b)
         {
             return (a == 1 && b == 1) ? 1 : 0;
         }
 
-        public static double NAND(double a, double b)
+        public static float NAND(float a, float b)
         {
             return NOT(AND(a, b));
         }
 
-        public static double OR(double a, double b)
+        public static float OR(float a, float b)
         {
             return (a != b || a == b && a != 0) ? 1 : 0;
         }
 
-        public static double NOR(double a, double b)
+        public static float NOR(float a, float b)
         {
             return NOT(OR(a, b));
         }
 
-        public static double XOR(double a, double b)
+        public static float XOR(float a, float b)
         {
             return  (a != b &&
                      (a == 1 ||
@@ -42,7 +42,7 @@ namespace EquationCreator
                       b == 0)) ? 1 : 0;
         }
 
-        public static double XNOR(double a, double b)
+        public static float XNOR(float a, float b)
         {
             return NOT(XOR(a, b));
         }

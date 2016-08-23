@@ -23,8 +23,8 @@ namespace EquationCreator
     {
         public GeneralInfo GInfo;
         public long OldTotalAttemps = 0;
-        private const int STORED_ATTEMPS_SEC = 100;
-        private List<long> OldAttempsSec = new List<long>(STORED_ATTEMPS_SEC);
+        private const int STORED_ATTEMPS_SEC = 15;
+        private Queue<long> OldAttempsSec = new Queue<long>(STORED_ATTEMPS_SEC);
 
         public GeneralInformationControl()
         {
@@ -35,25 +35,14 @@ namespace EquationCreator
         {
             long Change = GInfo.TotalAttempts - OldTotalAttemps;
             OldTotalAttemps = GInfo.TotalAttempts;
-            OldAttempsSec.Add(Change);
+            OldAttempsSec.Enqueue(Change);
             if (OldAttempsSec.Count > STORED_ATTEMPS_SEC)
             {
-                OldAttempsSec.RemoveAt(0);
+                OldAttempsSec.Dequeue();
             }
-            RemoveIncorrectAttemps();
             if (OldAttempsSec.Count > 0)
             {
                 this.Dispatcher.Invoke(() => AttempsSec.Text = OldAttempsSec.Average().ToString("N0") + " Attemps/Sec");
-            }
-        }
-
-        private void RemoveIncorrectAttemps()
-        {
-            if (OldAttempsSec.Count > 3)
-            {
-                double average = OldAttempsSec.Average();
-                double maxAllowedOffset = 150000; //150.000
-                OldAttempsSec.RemoveAll(x => x < average - maxAllowedOffset || x > average + maxAllowedOffset);
             }
         }
 

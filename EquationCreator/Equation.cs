@@ -24,8 +24,8 @@ namespace EquationCreator
         } // the amount of operators that isn't in use by the equation
         public readonly Stack<Operator> OPStorage; // stores all the operators when they are not used so they don't have to be remade all the time
         public readonly EvolutionInfo EInfo; // the parameters the equation has to work with in order to make the equation
-        public double OffSet; // the total offset of the equation
-        public readonly double[] Results; // is a list of all the calculated results returned by the equation
+        public float OffSet; // the total offset of the equation
+        public readonly float[] Results; // is a list of all the calculated results returned by the equation
         public int _toCalc; // the amount of points that had been used to calcualte the offset
         public readonly SynchronizedRandom Randomizer;
         //public readonly string parameterNames;
@@ -42,7 +42,7 @@ namespace EquationCreator
                 OPStorage.Push(new Operator(this));
             }
             Holders.Add(this);
-            Results = new double[EInfo.coordInfo.expectedResults.Length];
+            Results = new float[EInfo.coordInfo.expectedResults.Length];
         }
 
         /// <summary>
@@ -85,13 +85,13 @@ namespace EquationCreator
                     {
                         if (!Tools.IsANumber(Results))
                         {
-                            OffSet = double.NaN;
+                            OffSet = float.NaN;
                             return;
                         }
                     }
                     else
                     {
-                        OffSet = double.NaN;
+                        OffSet = float.NaN;
                         return;
                     }
                 }
@@ -106,9 +106,9 @@ namespace EquationCreator
         /// <param name="functionResult">results</param>
         /// <param name="coordY"> expected result</param>
         /// <returns></returns>
-        private double CalcOffset(double[] functionResult, double[] coordY)
+        private float CalcOffset(float[] functionResult, float[] coordY)
         {
-            double offset = 0;
+            float offset = 0;
             for (int i = 0; i < functionResult.Length; i++)
             {
                 if (coordY[i] == 0)
@@ -221,7 +221,7 @@ namespace EquationCreator
             return addedOperator.GetOperatorCount();
         }
 
-        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, double ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
+        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             Operator toAdd = OPStorage.Pop();
             toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
