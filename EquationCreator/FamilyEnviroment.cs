@@ -5,11 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.ExceptionServices;
+using System.Collections.Concurrent;
 
 namespace EquationCreator
 {
     public class FamilyEnviroment<T> : SpecieEnviromentBase<FamilyGenome> where T : FamilyGenome, new()
     {
+        public const int PARENT_COUNT = 5;
+
+
+
         public override GeneralInfo SetupEviroment(EvolutionInfo einfo)
         {
             EInfo = einfo;
@@ -26,70 +31,87 @@ namespace EquationCreator
 
         public override void SimulateEnviroment()
         {
-            const int NUMBER_OF_PARENTS = 2; // need to be changeable
-            Equation[] parents = new Equation[NUMBER_OF_PARENTS];
-            for (int i = 0; i < parents.Length; i++)
+            ConcurrentQueue<Family> families = new ConcurrentQueue<Family>();
+            ConcurrentQueue<Equation> parents = new ConcurrentQueue<Equation>();
+            for (int i = 0; i < EInfo.SpeciesAmount; i++)
             {
-                parents[i] = new Equation(EInfo, new SynchronizedRandom());
+                Family newFamily = new Family(EInfo, PARENT_COUNT);
+                for (int y = 0; y < PARENT_COUNT; y++)
+                {
+                    parents.Enqueue(newFamily.parents[y]);
+                    newFamily.parents[y] = null;
+                }
+                families.Enqueue(newFamily);
             }
             while (true)
             {
-                for (int i = 0; i < Species.Length; i++)
+                ConcurrentQueue<Family> processedFamilies = new ConcurrentQueue<Family>();
+
+                foreach (Family family in families)
                 {
-                    RandomCand.MakeValidRandomEquation(Species[i].child);
+                    for (int i = 0; i < PARENT_COUNT; i++)
+                    {
+                        Equation parent = null;
+                        if (!parents.TryDequeue(out parent))
+                        {
+                            throw new NullReferenceException("parent was null");
+                        }
+                        family.parents[i] = parent;
+                    }
                 }
-                for (int i = 0; i < parents.Length; i++)
+                Exception error = null;
+                Parallel.For(0, EInfo.SpeciesAmount, (z, loopState) =>
                 {
-                    parents[i] = Species[i].child.MakeClone(parents[i]);
-                }
-                bool takeBest = true;
-                while (true)
+                    try
+                    {
+                        Family family = null;
+                        if (!families.TryDequeue(out family))
+                        {
+                            throw new NullReferenceException("family was null");
+                        }
+
+                        Species[z].EvolveFamily(family);
+                        Species[z].BestCandidate.Cleanup();
+                        if (Tools.IsANumber(family.children[family.children.Length - 1].OffSet))
+                        {
+                            family.children[family.children.Length - 1].MakeClone(Species[z].BestCandidate);
+                        }
+                        family.MakeChildrenParents();
+                        processedFamilies.Enqueue(family);
+                        for (int i = 0; i < PARENT_COUNT; i++)
+                        {
+                            if (family.parents[i].NumberOfAllOperators == 0)
+                            {
+
+                            }
+                            parents.Enqueue(family.parents[i]);
+                            family.parents[i] = null;
+                        }
+                        CheckBestCandidate(Species[z].SpecInfo.GetCopy());
+                    }
+                    catch (Exception e)
+                    {
+                        error = e;
+                        loopState.Break();
+                    }
+                });
+                if (error != null)
                 {
-                    Exception error = null;
-                    Parallel.For(0, Species.Length, (i, LoopState) =>
-                    {
-                        try
-                        {
-                            Genome FinishedSpecie = Species[i].EvolveFamily(parents);
-                            CheckBestCandidate(FinishedSpecie.SpecInfo.GetCopy());
-                        }
-                        catch (Exception e)
-                        {
-                            error = e;
-                            LoopState.Break();
-                        }
-                    });
-                    if (error != null)
-                    {
-                        ExceptionDispatchInfo.Capture(error).Throw();
-                    }
-                    Equation[] bestEquations = Species.Select(x => x.BestCandidate).OrderBy(x => x.OffSet).ToArray();
-                    if (takeBest)
-                    {
-                        for (int i = 0; i < parents.Length; i++)
-                        {
-                            parents[i].Cleanup();
-                            parents[i] = bestEquations[i].MakeClone(parents[i]);
-                            parents[i].Compress(parents[i]);
-                        }
-                        takeBest = false;
-                    }
-                    else
-                    {
-                        for (int i = parents.Length - 1; i >= 0; i--)
-                        {
-                            parents[i].Cleanup();
-                            parents[i] = bestEquations[i].MakeClone(parents[i]);
-                            parents[i].Compress(parents[i]);
-                        }
-                        takeBest = true;
-                    }
-                    
-                    //parents[parents.Length - 1].Cleanup();
-                    //RandomCand.MakeValidRandomEquation(parents[parents.Length - 1]);
-                    //parents[parents.Length - 1] = bestEquations[parents.Length - 1].MakeClone(parents[parents.Length - 1]);
-                    //parents[parents.Length - 1].Compress(parents[parents.Length - 1]);
+                    ExceptionDispatchInfo.Capture(error).Throw();
                 }
+                foreach (Family family in processedFamilies)
+                {
+                    families.Enqueue(family);
+                }
+                List<Equation> sortedParents = parents.ToList().OrderBy(x => x.OffSet).ToList();
+                //const double SURVIVAL_RATE = 0.01;
+                //for (int i = (int)((double)EInfo.SpeciesAmount * (1 - SURVIVAL_RATE)); i < EInfo.SpeciesAmount; i++)
+                //{
+                //    sortedParents[i].Cleanup();
+                //    RandomCand.MakeValidRandomEquation(sortedParents[i]);
+                //}
+                parents = new ConcurrentQueue<Equation>();
+                sortedParents.ForEach(x => parents.Enqueue(x));
             }
         }
     }
