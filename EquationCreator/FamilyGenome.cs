@@ -25,6 +25,6 @@ namespace EquationCreator
             NewSpecieEvent();
         }
 
-        public abstract Genome EvolveFamily(Equation[] parents);
+        public abstract Family EvolveFamily(Family family);
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EquationCreator
 {
-    internal class Family
+    public class Family
     {
         public readonly Equation[] parents;
         public readonly Equation[] children;
@@ -21,17 +21,44 @@ namespace EquationCreator
             for (int i = 0; i < parents.Length; i++)
             {
                 parents[i] = new Equation(eInfo, random);
+                children[i] = new Equation(eInfo, random);
+
+                RandomCand.MakeValidRandomEquation(parents[i]);
+
+                parents[i].CalcTotalOffSet();
             }
         }
 
-        internal void CheckNewChild(Equation child)
+        public void CheckNewChild(Equation child)
         {
-            throw new NotImplementedException();
+            for (int i = children.Length - 1; i >= 0; i--)
+            {
+                if (children[i].OffSet > child.OffSet || children[i].NumberOfAllOperators == 0)
+                {
+                    Equation worstChild = children[0];
+                    for (int y = 0; y < i; y++)
+                    {
+                        children[y] = children[y + 1];
+                    }
+                    worstChild.Cleanup();
+                    child.MakeClone(worstChild);
+                    children[i] = worstChild;
+                    break;
+                }
+            }
         }
 
-        internal void MakeChildrenParents()
+        public void MakeChildrenParents()
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < parents.Length; i++)
+            {
+                if (children[i].NumberOfAllOperators > 0)
+                {
+                    parents[i].Cleanup();
+                    children[i].MakeClone(parents[i]);
+                }
+                children[i].Cleanup();
+            }
         }
     }
 }

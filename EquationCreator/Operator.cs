@@ -16,7 +16,6 @@ namespace EquationCreator
         public float RandomNumber;
         public bool UseRandomNumber;
         public int ContainedIndex;
-        public Operator[] ContainedList;
         public Connector ExtraMathFunction;
         public int MaxCalculated = NONE_CALCULATED;
         public OperatorHolder Holder;
@@ -32,13 +31,13 @@ namespace EquationCreator
             parenthesesResults = new float[OEq.EInfo.coordInfo.expectedResults.Length];
         }
 
-        public void MakeRandom(Operator[] OContainedList, OperatorHolder OHolder, int CIndex)
+        public void MakeRandom(OperatorHolder OHolder, int CIndex)
         {
             Holder = OHolder;
-            ContainedList = OContainedList;
-            AllOperatorsContainedIndex = Eq.AddOperatorToAlloperators(this);
             ContainedIndex = CIndex;
             Holder.AddOperatorToHolder(this, ContainedIndex);
+            AllOperatorsContainedIndex = Eq.AddOperatorToAlloperators(this);
+            
             ChangeOperator();
         }
 
@@ -111,6 +110,7 @@ namespace EquationCreator
             Holder = null;
 
             ContainedIndex = -1;
+            AllOperatorsContainedIndex = -1;
             ResetMaxCalculated();
             //NumberOfOperators = 0;
         }
@@ -140,6 +140,7 @@ namespace EquationCreator
             Holder = null;
             // these actions might not be required yet but if there is any errors then it will be easier to spot if a null exception is thrown
             ContainedIndex = -1;
+            AllOperatorsContainedIndex = -1;
             ResetMaxCalculated();
             //NumberOfOperators = 0;
         }
@@ -155,22 +156,23 @@ namespace EquationCreator
         /// <param name="Copy">The OP to copy into</param>
         /// <param name="CopyEInfo">The Equationinfo the copy should use</param>
         /// <returns></returns>
-        public Operator GetCopy(Operator Copy, Equation CopyEq, Operator[] CopyContainedList, OperatorHolder CopyHolder)
+        public Operator GetCopy(Operator Copy, Equation CopyEq, OperatorHolder CopyHolder)
         {
             Copy.ResultOnRightSide = ResultOnRightSide;
             Copy.MFunction = MFunction;
             Copy.ParameterIndex = ParameterIndex;
             Copy.RandomNumber = RandomNumber;
             Copy.UseRandomNumber = UseRandomNumber;
-            Copy.AllOperatorsContainedIndex = AllOperatorsContainedIndex;
-            Copy.Eq.AddOperatorToAlloperators(Copy, AllOperatorsContainedIndex);
+            //Copy.AllOperatorsContainedIndex = AllOperatorsContainedIndex;
+            Copy.AllOperatorsContainedIndex = Tools.GetFirstFreeIndex(Copy.Eq.AllOperators);
+            Copy.Eq.AddOperatorToAlloperators(Copy, Copy.AllOperatorsContainedIndex);
             Copy.ContainedIndex = ContainedIndex;
-            Copy.ContainedList = CopyContainedList;
-            Copy.ContainedList[ContainedIndex] = Copy;
-            Copy.MFunction.GetCopy(this, Copy);
+            //Copy.ContainedList[ContainedIndex] = Copy;
+            
             Copy.Holder = CopyHolder;
+            Copy.Holder.AddOperatorToHolder(Copy, Copy.ContainedIndex);
+            Copy.MFunction.GetCopy(this, Copy);
             Copy.MaxCalculated = MaxCalculated;
-            Copy.NumberOfOperators = NumberOfOperators;
             return Copy;
         }
 
@@ -190,26 +192,23 @@ namespace EquationCreator
         public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             Operator toAdd = Eq.OPStorage.Pop();
-            toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
-            NumberOfOperators++;
+            toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, NumberOfOperators, OExtraMathFunction, OHolder);
             return toAdd;
         }
 
-        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber,
-                          Operator[] OContainedlist, int CIndex, Connector OExtraMathFunction, OperatorHolder OHolder)
+        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, int CIndex, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             ResultOnRightSide = OResultOmRightSide;
             MFunction = OMFunction;
             ParameterIndex = OParameterIndex;
             RandomNumber = ORandomNumber;
             UseRandomNumber = OUseRandomNumber;
-            ContainedList = OContainedlist;
             ExtraMathFunction = OExtraMathFunction;
             Holder = OHolder;
+            Holder.AddOperatorToHolder(this);
 
             AllOperatorsContainedIndex = Eq.AddOperatorToAlloperators(this);
             ContainedIndex = CIndex;
-            ContainedList[ContainedIndex] = this;
         }
     }
 }

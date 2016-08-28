@@ -20,7 +20,10 @@ namespace EquationCreator
 
         public abstract void OperatorChanged();
 
-
+        public void AddOperatorToHolder(Operator oper)
+        {
+            AddOperatorToHolder(oper, GetFirstFreeIndex());
+        }
 
         public void AddOperatorToHolder(Operator oper, int index)
         {
@@ -36,7 +39,7 @@ namespace EquationCreator
         public Operator AddOperator(Stack<Operator> operatorStorage, int index)
         {
             Operator ToAdd = operatorStorage.Pop();
-            ToAdd.MakeRandom(Operators, this, index);
+            ToAdd.MakeRandom(this, index);
             return ToAdd;
         }
 

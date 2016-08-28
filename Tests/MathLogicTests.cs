@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 using EquationCreator;
 
-namespace Tests
+namespace Testsss
 {
     [TestClass]
     public class MathLogicTests

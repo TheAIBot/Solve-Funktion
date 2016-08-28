@@ -39,18 +39,18 @@ namespace EquationCreator
                 firstCheck = false;
                 randomNumber = randomParentIndex;
 
-                if (parents[randomParentIndex].NumberOfOperators > index &&
+                if (//parents[randomParentIndex].NumberOfOperators > index &&
                     parents[randomParentIndex].Operators[index] != null &&
                     parents[randomParentIndex].Operators[index].GetOperatorCount() <= childLength - child.NumberOfAllOperators)
                 {
-                    parents[randomParentIndex].Operators[index].GetCopy(child.OPStorage.Pop(), child, child.Operators, child);
+                    parents[randomParentIndex].Operators[index].GetCopy(child.OPStorage.Pop(), child, child);
                 }
                 else
                 {
                     bool anyIsSmallEnough = false;
                     for (int i = 0; i < parents.Length; i++)
                     {
-                        if (parents[i].NumberOfOperators > index &&
+                        if (//parents[i].NumberOfOperators > index &&
                             parents[i].Operators[index] != null &&
                             parents[i].Operators[index].GetOperatorCount() <= childLength - child.NumberOfAllOperators)
                         {
@@ -62,7 +62,7 @@ namespace EquationCreator
                             randomNumber = randomParentIndex;
 
                             anyIsSmallEnough = true;
-                            parents[i].Operators[index].GetCopy(child.OPStorage.Pop(), child, child.Operators, child);
+                            parents[i].Operators[index].GetCopy(child.OPStorage.Pop(), child, child);
                             break;
                         }
                     }
@@ -87,7 +87,10 @@ namespace EquationCreator
                     {
                         EvolveCand.EvolveCandidate(EInfo, child);
                         child.CalcTotalOffSet();
-                        family.CheckNewChild(child);
+                        if (Tools.IsANumber(child.OffSet))
+                        {
+                            family.CheckNewChild(child);
+                        }
                         //if (EvolvedEquation.CreateFunction() == "f(x) = x")
                         //{
                         //    simplestCount++;

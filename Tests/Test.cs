@@ -29,7 +29,7 @@ namespace Tests
             Operator Original = Cand.Operators.First();
             Operator Copy = TestTools.MakeSingleOperator();
             Copy.Eq.Cleanup();
-            Original.GetCopy(Copy, Cand,Cand.Operators, Cand);
+            Original.GetCopy(Copy, Cand, Cand);
 
             RecursiveCompareOperators(Original, Copy);
         }
