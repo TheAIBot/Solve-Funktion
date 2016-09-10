@@ -25,7 +25,8 @@ namespace EquationCreator
             Equation OldEquation = new Equation(EInfo, Randomizer) { OffSet = float.NaN };
             bool BestCandEvolved = false;
             _toCalc = EInfo.coordInfo.expectedResults.Length;
-            while (_toCalc <= EInfo.coordInfo.expectedResults.Length)
+            //while (_toCalc <= EInfo.coordInfo.expectedResults.Length)
+            while(true)
             {
                 int StuckCounter = 0;
                 do
@@ -36,7 +37,7 @@ namespace EquationCreator
                     SpecEnviroment.CheckBestCandidate(this.SpecInfo.GetCopy());
                     //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
                 } while (StuckCounter <= EInfo.MaxStuckGens);
-                break;
+                //break;
                 //_toCalc++;
                 //BestCandidate.OffSet = double.MaxValue;
             }
@@ -107,11 +108,14 @@ namespace EquationCreator
         {
             if (Tools.IsANumber(Eq.OffSet))
             {
-                if (Eq.OffSet < BestEvolvedCand.OffSet &&
+                /*if (Eq.OffSet < BestEvolvedCand.OffSet &&
                     Eq._toCalc >= BestEvolvedCand._toCalc ||
                     Eq.OffSet == BestEvolvedCand.OffSet &&
                     Eq.NumberOfAllOperators < BestEvolvedCand.NumberOfAllOperators &&
                     Eq._toCalc >= BestEvolvedCand._toCalc)
+                    */
+                if(Eq.OffSet < BestEvolvedCand.OffSet ||
+                   Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet)
                 //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
                 {

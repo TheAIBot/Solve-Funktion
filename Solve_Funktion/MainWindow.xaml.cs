@@ -63,8 +63,8 @@ namespace EquationCreator
                 //const string SequenceX = "x = {1,2,3,4, 5, 6, 7, 8, 9,10}";
                 //const string SequenceY = "2,3,5,7,11,13,17,19,23,29";
 
-                //const string SequenceX = "x = {  1,   2,  3, 4,  5,6,  7,8, 9,10}";
-                //const string SequenceY = "432,4567,987,23,765,2,678,9,34,23";
+                const string SequenceX = "x = {  1,   2,  3, 4,  5,6,  7,8, 9,10}";
+                const string SequenceY = "432,4567,987,23,765,2,678,9,34,23";
 
                 //const string SequenceX = "x = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54}";
                 //const string SequenceY = "     1,0,1,0,1,0,0,0,1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1";
@@ -75,8 +75,11 @@ namespace EquationCreator
                 //const string SequenceX = "x = {1,2,3,      4, 5,    6, 7,          8, 9,10}";
                 //const string SequenceY = "2,4,6,2342238,10,23432,14,12232116,18,20";
 
-                const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
-                const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+                //const string SequenceX = "x = { 1,  2, 3,  4, 5, 6,7,  8,  9, 10}";
+                //const string SequenceY = "74,143,34,243,23,52,9,253,224,231";
+
+                //const string SequenceX = "x = { 1}";
+                //const string SequenceY = "2";
 
                 //const string SequenceX = "x = {384, 357, 221, 9, 18, 357, 221, 6}, y = {18, 357, 221, 6, 384, 357, 221, 9}";
                 //const string SequenceY = "     6, 1, 17, 3, 6, 1, 17, 3";
@@ -193,38 +196,14 @@ namespace EquationCreator
                     //new NOT()
                 };
 
-                //EvolutionInfo EInfo = new EvolutionInfo(
-                //    Seq,      // Sequence
-                //    20,       // MaxSize
-                //    0.2,        // MaxChange
-                //    30000,    // CandidatesPerGen
-                //    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
-                //    0,     // NumberRangeMin
-                //    6,        // SpeciesAmount
-                //    100,      // MaxStuckGens
-                //    0.8,      // EvolvedCandidatesPerGen
-                //    0,        // RandomCandidatesPerGen
-                //    0.2,      // SmartCandidatesPerGen
-                //    Operators // Operators that can be used in an equation
-                //);
-
-
-                //singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
-                //singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                //singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
-
-                //GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
-                //GeneralInfoControl.InsertInfo(GInfo);
-                //singleSpecieEnviroment.SimulateEnviroment();
-
                 EvolutionInfo EInfo = new EvolutionInfo(
                     Seq,      // Sequence
-                    20,       // MaxSize
+                    600,       // MaxSize
                     0.2,        // MaxChange
-                    400,    // CandidatesPerGen
+                    30000,    // CandidatesPerGen
                     Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
                     0,     // NumberRangeMin
-                    100,        // SpeciesAmount
+                    6,        // SpeciesAmount
                     100,      // MaxStuckGens
                     0.8,      // EvolvedCandidatesPerGen
                     0,        // RandomCandidatesPerGen
@@ -232,13 +211,37 @@ namespace EquationCreator
                     Operators // Operators that can be used in an equation
                 );
 
-                familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
-                familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-                GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
+                singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
+                singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+
+                GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
                 GeneralInfoControl.InsertInfo(GInfo);
-                familyEnviroment.SimulateEnviroment();
+                singleSpecieEnviroment.SimulateEnviroment();
+
+                //EvolutionInfo EInfo = new EvolutionInfo(
+                //    Seq,      // Sequence
+                //    20,       // MaxSize
+                //    0.2,        // MaxChange
+                //    400,    // CandidatesPerGen
+                //    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
+                //    0,     // NumberRangeMin
+                //    100,        // SpeciesAmount
+                //    100,      // MaxStuckGens
+                //    0.8,      // EvolvedCandidatesPerGen
+                //    0,        // RandomCandidatesPerGen
+                //    0.2,      // SmartCandidatesPerGen
+                //    Operators // Operators that can be used in an equation
+                //);
+
+                //familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
+                //familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                //familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+
+                //GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
+                //GeneralInfoControl.InsertInfo(GInfo);
+                //familyEnviroment.SimulateEnviroment();
             }
             catch (Exception e)
             {
@@ -273,11 +276,14 @@ namespace EquationCreator
                 if (e.BestEquationInfo.OperatorCount > 0)
                 {
                     if (BCandControl.BestFunction == null ||
+                        BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset ||
+                        BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
+                        BCandControl.BestFunction.OperatorCount < e.BestEquationInfo.OperatorCount/* ||
                     BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset &&
                     BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc ||
                     BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
                     BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
-                    BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
+                    BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount*/)
                     {
                         BCandControl.InsertInfo(e.BestEquationInfo);
                         System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
