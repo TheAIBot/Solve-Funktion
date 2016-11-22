@@ -48,6 +48,7 @@
     <Compile Include="Equation.cs" />
     <Compile Include="EvolutionInfo.cs" />
     <Compile Include="EvolveCand.cs" />
+    <Compile Include="Family.cs" />
     <Compile Include="FamilyEnviroment.cs" />
     <Compile Include="FamilySpecieEvolutionMethod.cs" />
     <Compile Include="FamilyGenome.cs" />

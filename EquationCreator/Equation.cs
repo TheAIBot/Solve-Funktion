@@ -194,7 +194,6 @@ namespace EquationCreator
         {
             Copy.OffSet = OffSet;
             Copy._toCalc = _toCalc;
-            Copy.NumberOfOperators = NumberOfOperators;
             Array.Copy(Results, Copy.Results, Results.Length);
             for (int i = 0; i < Operators.Length; i++)
             {
@@ -202,7 +201,7 @@ namespace EquationCreator
                 {
                     //copys each operator and puts it in the new equation so their equation parts are identical
                     //this should also copy the EInfo indirectly, by inserting everything into the SortedOperators list
-                    Operators[i].GetCopy(Copy.OPStorage.Pop(), Copy, Copy.Operators, Copy);
+                    Operators[i].GetCopy(Copy.OPStorage.Pop(), Copy, Copy);
                 }
             }
             return Copy;
@@ -224,8 +223,7 @@ namespace EquationCreator
         public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             Operator toAdd = OPStorage.Pop();
-            toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, Operators, NumberOfOperators, OExtraMathFunction, OHolder);
-            NumberOfOperators++;
+            toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, NumberOfOperators, OExtraMathFunction, OHolder);
             return toAdd;
         }
 
@@ -355,7 +353,7 @@ namespace EquationCreator
 
         public int AddOperatorToAlloperators(Operator oper)
         {
-            int insertionIndex = (AllOperators[NumberOfAllOperators] == null) ? NumberOfAllOperators : GetFirstFreeIndex(AllOperators);
+            int insertionIndex = (AllOperators[NumberOfAllOperators] == null) ? NumberOfAllOperators : Tools.GetFirstFreeIndex(AllOperators);
             AddOperatorToAlloperators(oper, insertionIndex);
             return insertionIndex;
         }
@@ -366,18 +364,7 @@ namespace EquationCreator
             NumberOfAllOperators++;
         }
 
-        private int GetFirstFreeIndex(Operator[] array)
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (array[i] == null)
-                {
-                    return i;
-                }
-
-            }
-            throw new Exception("Array contains no free space. this function shouldn't be called when the array is full");
-        }
+        
 
         public void RemoveOperatorFromAllOperators(int index)
         {

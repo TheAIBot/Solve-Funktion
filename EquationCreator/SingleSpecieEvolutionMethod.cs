@@ -33,7 +33,8 @@ namespace EquationCreator
                     BestCandEvolved = GetNextGen(EvolvedEquation, OldEquation, _toCalc);
                     StuckCounter = SetStuckCounter(StuckCounter, BestCandEvolved);
                     UpdateInfo();
-                //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
+                    SpecEnviroment.CheckBestCandidate(this.SpecInfo.GetCopy());
+                    //} while (StuckCounter <= EInfo.MaxStuckGens && BestCandidate.OffSet != 0);
                 } while (StuckCounter <= EInfo.MaxStuckGens);
                 break;
                 //_toCalc++;

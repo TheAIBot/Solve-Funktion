@@ -25,6 +25,8 @@ namespace EquationCreator
     /// </summary>
     public partial class MainWindow : Window
     {
+        System.Timers.Timer chartUpdateTimer = new System.Timers.Timer(100);
+
         ConcurrentStack<SpecieInfoControl> SpecControls;
         IndividualSpecieEnviroment<SingleSpecieEvolutionMethod> singleSpecieEnviroment;
         FamilyEnviroment<FamilySpecieEvolutionMethod> familyEnviroment;
@@ -36,8 +38,17 @@ namespace EquationCreator
 
         private void Window_ContentRendered_1(object sender, EventArgs e)
         {
+
             SpecControls = new ConcurrentStack<SpecieInfoControl>(new[] { SC8, SC7, SC6, SC5, SC4, SC3, SC2, SC1 });
             Task.Factory.StartNew(() => FindFunctionWithSpecies());
+
+            chartUpdateTimer.Elapsed += ChartUpdateTimer_Elapsed;
+            chartUpdateTimer.Start();
+        }
+
+        private void ChartUpdateTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            DrawGraph();
         }
 
         private void FindFunctionWithSpecies()
@@ -153,21 +164,21 @@ namespace EquationCreator
 
                     new PowerOf(),
                     new Root(),
-                    //new Exponent(),
-                    //new NaturalLog(),
-                    //new Log(),
+                    new Exponent(),
+                    new NaturalLog(),
+                    new Log(),
 
                     //new Modulos(),
                     //new Floor(),
                     //new Ceil(),
                     //new Round(),
 
-                    //new Sin(),
-                    //new Cos(),
-                    //new Tan(),
-                    //new ASin(),
-                    //new ACos(),
-                    //new ATan(),
+                    new Sin(),
+                    new Cos(),
+                    new Tan(),
+                    new ASin(),
+                    new ACos(),
+                    new ATan(),
 
                     new Parentheses(),
                     //new Constant(),
@@ -181,37 +192,15 @@ namespace EquationCreator
                     //new XNOR(),
                     //new NOT()
                 };
-                EvolutionInfo EInfo = new EvolutionInfo(
-                    Seq,      // Sequence
-                    20,       // MaxSize
-                    0.2,        // MaxChange
-                    30000,    // CandidatesPerGen
-                    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
-                    0,     // NumberRangeMin
-                    6,        // SpeciesAmount
-                    100,      // MaxStuckGens
-                    0.8,      // EvolvedCandidatesPerGen
-                    0,        // RandomCandidatesPerGen
-                    0.2,      // SmartCandidatesPerGen
-                    Operators // Operators that can be used in an equation
-                    );
-
-                singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
-                singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
-
-                GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
-                GeneralInfoControl.InsertInfo(GInfo);
-                singleSpecieEnviroment.SimulateEnviroment();
 
                 //EvolutionInfo EInfo = new EvolutionInfo(
                 //    Seq,      // Sequence
-                //    10,       // MaxSize
+                //    20,       // MaxSize
                 //    0.2,        // MaxChange
-                //    200000,    // CandidatesPerGen
+                //    30000,    // CandidatesPerGen
                 //    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
                 //    0,     // NumberRangeMin
-                //    4,        // SpeciesAmount
+                //    6,        // SpeciesAmount
                 //    100,      // MaxStuckGens
                 //    0.8,      // EvolvedCandidatesPerGen
                 //    0,        // RandomCandidatesPerGen
@@ -219,13 +208,37 @@ namespace EquationCreator
                 //    Operators // Operators that can be used in an equation
                 //);
 
-                //familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
-                //familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
-                //familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
 
-                //GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
+                //singleSpecieEnviroment = new IndividualSpecieEnviroment<SingleSpecieEvolutionMethod>();
+                //singleSpecieEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                //singleSpecieEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+
+                //GeneralInfo GInfo = singleSpecieEnviroment.SetupEviroment(EInfo);
                 //GeneralInfoControl.InsertInfo(GInfo);
-                //familyEnviroment.SimulateEnviroment();
+                //singleSpecieEnviroment.SimulateEnviroment();
+
+                EvolutionInfo EInfo = new EvolutionInfo(
+                    Seq,      // Sequence
+                    20,       // MaxSize
+                    0.2,        // MaxChange
+                    400,    // CandidatesPerGen
+                    Math.Max(0, GetMaxNumber(Seq)) + 1,   // NumberRangeMax
+                    0,     // NumberRangeMin
+                    100,        // SpeciesAmount
+                    100,      // MaxStuckGens
+                    0.8,      // EvolvedCandidatesPerGen
+                    0,        // RandomCandidatesPerGen
+                    0.2,      // SmartCandidatesPerGen
+                    Operators // Operators that can be used in an equation
+                );
+
+                familyEnviroment = new FamilyEnviroment<FamilySpecieEvolutionMethod>();
+                familyEnviroment.OnBestEquationChanged += SpecieEnviroment_OnBestEquationChanged;
+                familyEnviroment.OnSubscribeToSpecies += SpecieEnviroment_OnSubscribeToSpecies;
+
+                GeneralInfo GInfo = familyEnviroment.SetupEviroment(EInfo);
+                GeneralInfoControl.InsertInfo(GInfo);
+                familyEnviroment.SimulateEnviroment();
             }
             catch (Exception e)
             {
@@ -257,17 +270,19 @@ namespace EquationCreator
         {
             lock (checkBestEquationLocker)
             {
-                if (BCandControl.BestFunction == null ||
+                if (e.BestEquationInfo.OperatorCount > 0)
+                {
+                    if (BCandControl.BestFunction == null ||
                     BCandControl.BestFunction.Offset > e.BestEquationInfo.Offset &&
                     BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc ||
                     BCandControl.BestFunction.Offset == e.BestEquationInfo.Offset &&
                     BCandControl.BestFunction.toCalc <= e.BestEquationInfo.toCalc &&
                     BCandControl.BestFunction.OperatorCount > e.BestEquationInfo.OperatorCount)
-                {
-                    BCandControl.InsertInfo(e.BestEquationInfo);
-                    System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
+                    {
+                        BCandControl.InsertInfo(e.BestEquationInfo);
+                        System.Diagnostics.Debug.WriteLine(e.BestEquationInfo.Offset);
+                    }
                 }
-                DrawGraph();
             }
         }
 
@@ -276,41 +291,97 @@ namespace EquationCreator
         public void DrawGraph()
         {
             Genome[] Species = (Genome[])singleSpecieEnviroment?.Species ?? (Genome[])familyEnviroment?.Species;
-            lock (ChartLocker)
+            if (Species != null)
             {
-                this.Dispatcher.Invoke(() =>
+                lock (ChartLocker)
                 {
-                    Chart Charter = (Chart)WFHChart.Child;
-                    if (Charter.ChartAreas.Count == 0)
+                    this.Dispatcher.Invoke(() =>
                     {
-                        Charter.ChartAreas.Add("newchartarea");
-                    }
-                    Charter.Series.Clear();
-                    int GenerationIndex = 0;
-                    foreach (Genome Spec in Species)
-                    {
-                        Series Serie = Charter.Series.Add(GenerationIndex.ToString());
-                        Serie.ChartType = SeriesChartType.Spline;
-                        Serie.BorderWidth = 2;
-                        if (Spec.BestCandidate.Results.All(x => x < (double)Decimal.MaxValue))
+                        Chart Charter = (Chart)WFHChart.Child;
+                        if (Charter.ChartAreas.Count == 0)
                         {
-                            for (int i = 0; i < Spec.EInfo.coordInfo.expectedResults.Length; i++)
+                            ChartArea cArea = Charter.ChartAreas.Add("newchartarea");
+                            const double EXTRA_SPACE = 1.00;
+                            cArea.AxisX.Minimum = Species[0].EInfo.coordInfo.parameters[0].Min() * EXTRA_SPACE;
+                            cArea.AxisX.Maximum = Species[0].EInfo.coordInfo.parameters[0].Max() * EXTRA_SPACE;
+                            cArea.AxisY.Minimum = Species[0].EInfo.coordInfo.expectedResults.Min() * EXTRA_SPACE;
+                            cArea.AxisY.Maximum = Species[0].EInfo.coordInfo.expectedResults.Max() * EXTRA_SPACE;
+                        }
+                        Charter.Series.Clear();
+                        int GenerationIndex = 0;
+                        foreach (Genome Spec in Species)
+                        {
+                            if (Spec.BestCandidate != null)
                             {
-                                Serie.Points.AddXY(Spec.EInfo.coordInfo.parameters[0][i], Spec.BestCandidate.Results[i]);
+                                AddSerieToChart(GenerationIndex.ToString(), SeriesChartType.Spline, 2, Spec.EInfo.coordInfo.parameters[0], Spec.BestCandidate.Results, null);
+                                GenerationIndex++;
+                            }
+                            else
+                            {
+                                return;
                             }
                         }
-                        GenerationIndex++;
-                    }
-                    Series Seride = Charter.Series.Add("Correct");
-                    Seride.ChartType = SeriesChartType.Spline;
-                    Seride.BorderWidth = 4;
-                    Seride.Color = System.Drawing.Color.Black;
-                    for (int i = 0; i < Species[0].EInfo.coordInfo.expectedResults.Length; i++)
-                    {
-                        Seride.Points.AddXY(Species[0].EInfo.coordInfo.parameters[0][i], Species[0].EInfo.coordInfo.expectedResults[i]);
-                    }
-                });
+                        AddSerieToChart("Correct", SeriesChartType.Spline, 6, Species[0].EInfo.coordInfo.parameters[0], Species[0].EInfo.coordInfo.expectedResults, System.Drawing.Color.Black);
+
+                        if (BCandControl.BestFunction != null)
+                        {
+                            string[] floats = BCandControl.BestFunction.ResultText.Split(' ');
+                            var floatsWithDot = floats.Select(x => x.Replace(",", "."));
+                            var floatsWithDotNoLastDot = floatsWithDot.Select(x => x.Substring(0,x.Length - 1));
+                            float[] bestResult = floatsWithDotNoLastDot.Select(x => float.Parse(x, CultureInfo.InvariantCulture.NumberFormat)).ToArray();
+                            AddSerieToChart("Best", SeriesChartType.Spline, 4, Species[0].EInfo.coordInfo.parameters[0], bestResult, System.Drawing.Color.Red);
+                        }
+
+                        AddSerieToChart("Average", SeriesChartType.Spline, 4, Species[0].EInfo.coordInfo.parameters[0], GetAverageResult(), System.Drawing.Color.Green);
+
+                        Charter.Legends.Clear();
+                        Charter.Legends.Add("Correct");
+                        Charter.Legends.Add("Best");
+                        Charter.Legends.Add("Average");
+                    });
+                }
             }
+        }
+
+        public Series AddSerieToChart(string name, SeriesChartType chartType, int borderWidth, float[] parameters, float[] results, System.Drawing.Color? color)
+        {
+            if (results.All(x => x < 2000000 && x > -2000000))
+            {
+                Chart Charter = (Chart)WFHChart.Child;
+
+                Series serie = Charter.Series.Add(name);
+                serie.ChartType = chartType;
+                serie.BorderWidth = borderWidth;
+                if (color != null)
+                {
+                    serie.Color = color.Value;
+                }
+
+                for (int i = 0; i < results.Length; i++)
+                {
+                    serie.Points.AddXY(parameters[i], results[i]);
+                }
+
+                return serie;
+            }
+            return null;
+        }
+
+        private float[] GetAverageResult()
+        {
+            Genome[] Species = (Genome[])singleSpecieEnviroment?.Species ?? (Genome[])familyEnviroment?.Species;
+            float[] averageResult = new float[Species[0].EInfo.coordInfo.parameters[0].Length];
+            for (int i = 0; i < averageResult.Length; i++)
+            {
+                float sum = 0;
+                for (int y = 0; y < Species.Length; y++)
+                {
+                    sum += Species[y].BestCandidate.Results[i];
+                }
+                float average = sum / Species.Length;
+                averageResult[i] = average;
+            }
+            return averageResult;
         }
     }
 }

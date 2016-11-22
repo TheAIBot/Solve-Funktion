@@ -38,6 +38,19 @@ namespace EquationCreator
             }
         }
 
+        public static int GetFirstFreeIndex(Operator[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == null)
+                {
+                    return i;
+                }
+
+            }
+            throw new Exception("Array contains no free space. this function shouldn't be called when the array is full");
+        }
+
         public static bool IsEquationsTheSame(Equation Original, Equation Copy)
         {
             if (Original.NumberOfAllOperators != Copy.NumberOfAllOperators)

@@ -664,7 +664,7 @@ namespace EquationCreator
             {
                 if (Original.Operators[i] != null)
                 {
-                    Original.Operators[i].GetCopy(Copy.Eq.OPStorage.Pop(), Copy.Eq, Copy.Operators, Copy);
+                    Original.Operators[i].GetCopy(Copy.Eq.OPStorage.Pop(), Copy.Eq, Copy);
                 }
             }
         }

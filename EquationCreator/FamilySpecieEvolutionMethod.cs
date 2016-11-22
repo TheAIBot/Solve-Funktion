@@ -9,12 +9,12 @@ namespace EquationCreator
     public class FamilySpecieEvolutionMethod : FamilyGenome
     {
 
-        public override Genome EvolveFamily(Equation[] parents)
+        public override Family EvolveFamily(Family family)
         {
             StartFinding();
-            GetNextGen(parents);
+            GetNextGen(family);
             UpdateInfo();
-            return this;
+            return family;
         }
 
         protected bool GetChild(Equation[] parents, Equation child)
@@ -39,23 +39,31 @@ namespace EquationCreator
                 firstCheck = false;
                 randomNumber = randomParentIndex;
 
-                if (parents[randomParentIndex].NumberOfOperators > index &&
+                if (//parents[randomParentIndex].NumberOfOperators > index &&
+                    parents[randomParentIndex].Operators[index] != null &&
                     parents[randomParentIndex].Operators[index].GetOperatorCount() <= childLength - child.NumberOfAllOperators)
                 {
-                    parents[randomParentIndex].Operators[index].GetCopy(child.OPStorage.Pop(), child, child.Operators, child);
-                    child.NumberOfOperators++;
+                    parents[randomParentIndex].Operators[index].GetCopy(child.OPStorage.Pop(), child, child);
                 }
                 else
                 {
                     bool anyIsSmallEnough = false;
                     for (int i = 0; i < parents.Length; i++)
                     {
-                        if (parents[i].NumberOfOperators > index &&
+                        if (//parents[i].NumberOfOperators > index &&
+                            parents[i].Operators[index] != null &&
                             parents[i].Operators[index].GetOperatorCount() <= childLength - child.NumberOfAllOperators)
                         {
+                            if (!firstCheck && randomNumber != randomParentIndex)
+                            {
+                                alwaysSameRandomNumber = false;
+                            }
+                            firstCheck = false;
+                            randomNumber = randomParentIndex;
+
                             anyIsSmallEnough = true;
-                            parents[i].Operators[index].GetCopy(child.OPStorage.Pop(), child, child.Operators, child);
-                            child.NumberOfOperators++;
+                            parents[i].Operators[index].GetCopy(child.OPStorage.Pop(), child, child);
+                            break;
                         }
                     }
                     if (!anyIsSmallEnough)
@@ -68,58 +76,34 @@ namespace EquationCreator
             return !alwaysSameRandomNumber;
         }
 
-        private Equation GetNextGen(Equation[] parents)
+        private void GetNextGen(Family family)
         {
-            child.Cleanup();
-            while (!GetChild(parents, child))
-            {
-                ResetSingle(child);
-            }
-            child.CalcTotalOffSet();
-            BestCandidate.Cleanup();
-            child.MakeClone(BestCandidate);
-            ResetSingle(child);
             //int simplestCount = 0;
             for (double i = 0; i < EInfo.CandidatesPerGen; i++)
             {
-                if (GetChild(parents, child))
+                if (GetChild(family.parents, child))
                 {
-                    EvolveCand.EvolveCandidate(EInfo, child);
-                    child.CalcTotalOffSet();
-                    //if (EvolvedEquation.CreateFunction() == "f(x) = x")
-                    //{
-                    //    simplestCount++;
-                    //}
-                    //Debug.WriteLine(EvolvedEquation.CreateFunction());
-                    //Thread.Sleep(500);
-                    bool EvolvedToBetter = ChangeIfBetter(child);
+                    if (child.NumberOfAllOperators > 0) // maybe not need but just to be sure
+                    {
+                        EvolveCand.EvolveCandidate(EInfo, child);
+                        child.CalcTotalOffSet();
+                        if (Tools.IsANumber(child.OffSet))
+                        {
+                            family.CheckNewChild(child);
+                        }
+                        //if (EvolvedEquation.CreateFunction() == "f(x) = x")
+                        //{
+                        //    simplestCount++;
+                        //}
+                        //Debug.WriteLine(EvolvedEquation.CreateFunction());
+                        //Thread.Sleep(500);
+                    }
                 }
                 
                 ResetSingle(child);
             }
             //Debug.WriteLine(simplestCount);
             //Thread.Sleep(500);
-            return BestCandidate;
-        }
-
-        protected bool ChangeIfBetter(Equation Eq)
-        {
-            if (Tools.IsANumber(Eq.OffSet))
-            {
-                if (Eq.OffSet < BestCandidate.OffSet &&
-                    Eq._toCalc >= BestCandidate._toCalc ||
-                    Eq.OffSet == BestCandidate.OffSet &&
-                    Eq.NumberOfAllOperators < BestCandidate.NumberOfAllOperators &&
-                    Eq._toCalc >= BestCandidate._toCalc)
-                //if (Eq.OffSet < BestEvolvedCand.OffSet)
-                //if (Eq.OffSet < BestEvolvedCand.OffSet || Eq.OffSet == BestEvolvedCand.OffSet && Eq.OperatorsLeft < BestEvolvedCand.OperatorsLeft)
-                {
-                    ResetSingle(BestCandidate);
-                    Eq.MakeClone(BestCandidate);
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

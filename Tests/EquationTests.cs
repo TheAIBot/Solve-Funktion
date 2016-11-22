@@ -3,8 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EquationCreator;
 using System.Collections.Generic;
 using System.Linq;
+using Tests;
 
-namespace Tests
+namespace Testss
 {
     [TestClass]
     public class EquationTests
