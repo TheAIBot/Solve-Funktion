@@ -57,6 +57,7 @@
     <Compile Include="IndividualSpecieEnviroment.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="MathLogic.cs" />
+    <Compile Include="MathOperators.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

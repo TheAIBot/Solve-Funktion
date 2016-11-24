@@ -11,7 +11,7 @@ namespace EquationCreator
         public const int NONE_CALCULATED = -1;
 
         public bool ResultOnRightSide;
-        public MathFunction MFunction;
+        public SimpleOperator MFunction;
         public int ParameterIndex;
         public float RandomNumber;
         public bool UseRandomNumber;
@@ -22,8 +22,6 @@ namespace EquationCreator
         public readonly Equation Eq;
         public int AllOperatorsContainedIndex;
         public readonly float[] parenthesesResults;
-
-        //public readonly Vector<double>[] OperatorResults;
 
         public Operator(Equation OEq) : base(OEq.EInfo.MaxSize)
         {
@@ -47,7 +45,7 @@ namespace EquationCreator
             do
             {
                 MFunction = Eq.EInfo.Operators[Eq.Randomizer.Next(0, Eq.EInfo.Operators.Length)];
-                // should never be an infinete loop because this function should only be called when there is 1 or more operators left
+                // should never be an infinite loop because this function should only be called when there is 1 or more operators left
                 // and there should always be an operator that doesn't need a min of operators
             } while (!MFunction.CanUseOperator(this));
             UseRandomNumber = Eq.Randomizer.RandomBool();
@@ -62,17 +60,21 @@ namespace EquationCreator
         /// <param name="Result">number returned by previous operators or initial number from equation</param>
         /// <param name="x"> value of x</param>
         /// <returns>result of Result and this operator</returns>
-        public bool Calculate(float[] Result, float[][] parameters)
+        public bool Calculate(float[] result, float[][] parameters)
         {
-            //if (MaxCalculated >= Index)
-            //{
-            //    return OperatorResults[Index];
-            //}
-            //else
-            //{
-                //MaxCalculated = Index;
-                return MFunction.Calculate(Result, parameters, this);
-            //}
+            switch (MFunction.getOperatorType())
+            {
+                case OperatorType.Connector:
+                    (MFunction as Connector).CalculateConnector(result, parameters[ParameterIndex], UseRandomNumber, RandomNumber, ResultOnRightSide);
+                    return true;
+                case OperatorType.Single:
+                    (MFunction as OperatorSingle).CalculateSingle(result);
+                    return true;
+                case OperatorType.Complex:
+                    return MFunction.Calculate(result, parameters, this);
+                default:
+                    throw new Exception("Invalid OperatorType");
+            }
         }
 
         /// <summary>
@@ -189,14 +191,14 @@ namespace EquationCreator
             //}
         }
 
-        public Operator AddOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
+        public Operator AddOperator(bool OResultOmRightSide, SimpleOperator OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             Operator toAdd = Eq.OPStorage.Pop();
             toAdd.SetupOperator(OResultOmRightSide, OMFunction, OParameterIndex, ORandomNumber, OUseRandomNumber, NumberOfOperators, OExtraMathFunction, OHolder);
             return toAdd;
         }
 
-        public void SetupOperator(bool OResultOmRightSide, MathFunction OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, int CIndex, Connector OExtraMathFunction, OperatorHolder OHolder)
+        public void SetupOperator(bool OResultOmRightSide, SimpleOperator OMFunction, int OParameterIndex, float ORandomNumber, bool OUseRandomNumber, int CIndex, Connector OExtraMathFunction, OperatorHolder OHolder)
         {
             ResultOnRightSide = OResultOmRightSide;
             MFunction = OMFunction;

@@ -55,7 +55,7 @@ namespace Tests
         {
             CoordInfo Seq = GetSequence(parameters, result);
 
-            MathFunction[] Operators = new MathFunction[]
+            SimpleOperator[] Operators = new SimpleOperator[]
             {
                 new Plus(),
                 new Subtract(),

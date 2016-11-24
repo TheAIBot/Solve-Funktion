@@ -20,7 +20,7 @@ namespace EquationCreator
         public readonly double EvolvedCandidatesPerGen;
         public readonly double RandomCandidatesPerGen;
         public readonly double SmartCandidatesPerGen;
-        public readonly MathFunction[] Operators;
+        public readonly SimpleOperator[] Operators;
         public readonly Connector[] Connectors;
 
         public EvolutionInfo(CoordInfo coordInfoo, 
@@ -34,7 +34,7 @@ namespace EquationCreator
                              double evolvedcandidatespergen, 
                              double randomcandidatespergen,
                              double smartcandidatespergen, 
-                             MathFunction[] operators)
+                             SimpleOperator[] operators)
         {
             coordInfo = coordInfoo;
             MaxSize = maxsize;
